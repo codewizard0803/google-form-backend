@@ -5007,7 +5007,7 @@ router.post("/", async (req, res) => {
     currentFilePath1 = path.join(
       os.homedir(),
       "Downloads",
-      `Initial Intake (${fileIndex1}).docx`
+      `Initial Intake(answer and question) (${fileIndex1}).docx`
     );
   }
 
@@ -5027,7 +5027,7 @@ router.post("/", async (req, res) => {
     currentFilePath = path.join(
       os.homedir(),
       "Downloads",
-      `Initial Intake (${fileIndex}).docx`
+      `Initial Intake(story) (${fileIndex}).docx`
     );
   }
 
