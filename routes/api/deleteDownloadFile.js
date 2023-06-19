@@ -4,39 +4,17 @@ const fs = require("fs");
 const path = require("path");
 
 router.post("/", async (req, res) => {
-  const storyPath = path.join(
-    __dirname,
-    "../../downloads",
-    req.body.fileStoryURL
-  );
+  console.log("res", req.body);
+  const zipPath = path.join(__dirname, "../../downloads", req.body.zipName);
 
-  const qaPath = path.join(__dirname, "../../downloads", req.body.fileQaURL);
-
-  let storyBool = false;
-  let qaBool = false;
-
-  if (storyPath && fs.existsSync(storyPath)) {
-    fs.unlink(storyPath, (err) => {
+  if (zipPath && fs.existsSync(zipPath)) {
+    fs.unlink(zipPath, (err) => {
       if (err) {
         console.log(err);
       } else {
-        storyBool = true;
+        res.json("Success");
       }
     });
-  }
-
-  if (qaPath && fs.existsSync(qaPath)) {
-    fs.unlink(qaPath, (err) => {
-      if (err) {
-        console.log(err);
-      } else {
-        qaBool = true;
-      }
-    });
-  }
-
-  if (storyBool === true && qaBool === true) {
-    res.json("Success");
   }
 });
 

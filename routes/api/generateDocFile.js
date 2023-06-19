@@ -13,6 +13,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
+const JSZip = require("jszip");
 
 router.get("/", (req, res) => res.send("GenerateDocFile!"));
 
@@ -141,491 +142,491 @@ router.post("/", async (req, res) => {
     sections: [
       {
         children: [
-          // TitleParagraph("Demographic Information, Part I"),
-          // questionParagraph("1. What is your full name?"),
-          // answerParagraph(`${req.body.demographicInformation.fullName}`),
-          // questionParagraph("2. What is your date of birth?"),
-          // answerParagraph(`${req.body.demographicInformation.birth}`),
-          // questionParagraph(
-          //   "3. Please select any of the following that represent your race or ethnicity. You may select more than one."
-          // ),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.checkedEthnicityItems}`
-          // ),
-          // questionParagraph("4. What sex was assigned to you at birth?"),
-          // answerParagraph(`${req.body.demographicInformation.radioSexItem}`),
-          // req.body.demographicInformation.radioSexItem === "Female"
-          //   ? questionParagraph(
-          //       "Are you pregnant, planning on getting pregnant, or breastfeeding?"
-          //     )
-          //   : undefined,
-          // req.body.demographicInformation.radioSexItem === "Female"
-          //   ? answerParagraph(`${req.body.demographicInformation.pregnant}`)
-          //   : undefined,
-          // questionParagraph("5. What pronoun do you currently prefer?"),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.radioPreferPronounItem}`
-          // ),
-          // questionParagraph("6. What is your marital status?"),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.maritalStatusItems}`
-          // ),
-          // questionParagraph("7. What is your email?"),
-          // answerParagraph(`${req.body.demographicInformation.email}`),
-          // questionParagraph("8. What is your phone number?"),
-          // answerParagraph(`${req.body.demographicInformation.phoneNumber}`),
+          TitleParagraph("Demographic Information, Part I"),
+          questionParagraph("1. What is your full name?"),
+          answerParagraph(`${req.body.demographicInformation.fullName}`),
+          questionParagraph("2. What is your date of birth?"),
+          answerParagraph(`${req.body.demographicInformation.birth}`),
+          questionParagraph(
+            "3. Please select any of the following that represent your race or ethnicity. You may select more than one."
+          ),
+          answerParagraph(
+            `${req.body.demographicInformation.checkedEthnicityItems}`
+          ),
+          questionParagraph("4. What sex was assigned to you at birth?"),
+          answerParagraph(`${req.body.demographicInformation.radioSexItem}`),
+          req.body.demographicInformation.radioSexItem === "Female"
+            ? questionParagraph(
+                "Are you pregnant, planning on getting pregnant, or breastfeeding?"
+              )
+            : undefined,
+          req.body.demographicInformation.radioSexItem === "Female"
+            ? answerParagraph(`${req.body.demographicInformation.pregnant}`)
+            : undefined,
+          questionParagraph("5. What pronoun do you currently prefer?"),
+          answerParagraph(
+            `${req.body.demographicInformation.radioPreferPronounItem}`
+          ),
+          questionParagraph("6. What is your marital status?"),
+          answerParagraph(
+            `${req.body.demographicInformation.maritalStatusItems}`
+          ),
+          questionParagraph("7. What is your email?"),
+          answerParagraph(`${req.body.demographicInformation.email}`),
+          questionParagraph("8. What is your phone number?"),
+          answerParagraph(`${req.body.demographicInformation.phoneNumber}`),
 
-          // TitleParagraph(
-          //   "Employment Where the Physical or Emotional Injury Occurred"
-          // ),
-          // questionParagraph("9. Name of Current Employer:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.currentEmployerName}`
-          // ),
-          // questionParagraph("10. Nature of Business:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.businessNature}`
-          // ),
-          // questionParagraph("11. Date This Job Began:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.jobBeganDate}`
-          // ),
-          // questionParagraph(
-          //   "12. What was the last day you worked at this job?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.jobLastDate}`
-          // ),
-          // questionParagraph(
-          //   "13. Your Job Title When You Started This Employment:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.startedJobTitle}`
-          // ),
-          // questionParagraph(
-          //   "14. Your Current Title or Title When You Ended This Employment:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.currentTitle}`
-          // ),
-          // questionParagraph("15. Your Employment Duties:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.employmentDuty}`
-          // ),
-          // questionParagraph(
-          //   "16. Your Typical Work Schedule (Hours Worked Per Day, Week, or Month):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.typicalWorkSchedule}`
-          // ),
-          // questionParagraph("17. Your Salary:"),
-          // answerParagraph(`${req.body.employmentInjuryPhysicalValue.salary}`),
-          // questionParagraph("Hourly Rate:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.hourlyRate}`
-          // ),
-          // questionParagraph("Do you receive overtime pay?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.receiveOvertimePay}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
-          //   ? questionParagraph(
-          //       "How much overtime pay do you typically receive?"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.overtimeRate}`
-          //     )
-          //   : undefined,
-          // questionParagraph("18. What Do You Like About This Job?"),
-          // answerParagraph(`${req.body.employmentInjuryPhysicalValue.likeJob}`),
-          // questionParagraph("19. What Do You Not Like About This Job?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.notLikeJob}`
-          // ),
-          // questionParagraph(
-          //   "20. BEFORE The Injury, Were You Being Treated for Any Physical or Medical Condition(s)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioPhysicalConditionBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "21. BEFORE The Injury, Were You Being Treated for Any Mental or Emotional Condition(s)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMentalConditionBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "22. BEFORE The Injury, Were You Experiencing Any Emotional Symptoms?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioEmotionalSymptomsBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "23. Describe These Medical or Emotional Conditions or Symptoms BEFORE The Injury:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.describeMedicalCondition}`
-          // ),
-          // questionParagraph(
-          //   "24. Were you taking any Medications BEFORE The Injury?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMedicationsBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "25. What Medications Were You Taking BEFORE The Injury?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMedicationsNameBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "26. Date of Your Injury (if more than one, list each):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.injuryDate}`
-          // ),
-          // questionParagraph(
-          //   "27. Describe the Injury That Occurred (provide as many details as you can):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred}`
-          // ),
-          // questionParagraph(
-          //   "28. Do You Currently Receive Disability In Connection With Your Claim?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioDisabilityConnectionClaimItem}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue
-          //   .radioDisabilityConnectionClaimItem === "Yes"
-          //   ? questionParagraph("If Yes, Which Current Disability:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue
-          //   .radioDisabilityConnectionClaimItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.currentDisability}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "29. Would You Have Continued Working If Not Injured?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioContinuedWorkingItem}`
-          // ),
-          // questionParagraph("30. Are you currently working"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioConflictsItem}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "How many separate conflicts have you had with others at work"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.conflictsCount}`
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "Please List Separately and Explain Each Conflict that Occurred:"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.eachConflicts}`
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "Please Rate the Percentage That Each of These Conflicts Caused You To Feel Upset, Out of Total of 100% (Example: Conflict #1 30%, #2 50%, #3 20%)"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.conflictsRate}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "32. What Was/Is Your Working Relationship Like With Management or Supervisors in General?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationShipLikeManagement}`
-          // ),
-          // questionParagraph("33. Name of Your Immediate Supervisor:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.immediateSupervisorName}`
-          // ),
-          // questionParagraph("34. Relationship with Immediate Supervisor?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationshipImmediateSupervisor}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue
-          //   .relationshipImmediateSupervisor === "Poor"
-          //   ? questionParagraph("Explain the reason:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue
-          //   .relationshipImmediateSupervisor === "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainSuperVisorReason}`
-          //     )
-          //   : undefined,
-          // questionParagraph("35. How Were Your Performance Appraisals?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.performanceAppraisals}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
-          // "Poor"
-          //   ? questionParagraph(
-          //       "29. Would You Have Continued Working If Not Injured?"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
-          // "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainPerformanceAppraisals}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "36. Have You Ever Received Verbal or Written Warnings?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.verbalWarning}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
-          //   ? questionParagraph("Describe dates and reason given:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.verbalWarningDateReason}`
-          //     )
-          //   : undefined,
-          // questionParagraph("37. Working Relationship with Co-Workers?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationshipCoWorkers}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
-          // "Poor"
-          //   ? questionParagraph(
-          //       "Please give the names and reasons this relationship was poor."
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
-          // "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainRelationshipCoWorkers}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "38. Was There a 'Last Straw' Event Near the Last Day of Work?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.lastStraw}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe your 'Last Straw' event near the last day of your work"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainLastStraw}`
-          //     )
-          //   : undefined,
+          TitleParagraph(
+            "Employment Where the Physical or Emotional Injury Occurred"
+          ),
+          questionParagraph("9. Name of Current Employer:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.currentEmployerName}`
+          ),
+          questionParagraph("10. Nature of Business:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.businessNature}`
+          ),
+          questionParagraph("11. Date This Job Began:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.jobBeganDate}`
+          ),
+          questionParagraph(
+            "12. What was the last day you worked at this job?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.jobLastDate}`
+          ),
+          questionParagraph(
+            "13. Your Job Title When You Started This Employment:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.startedJobTitle}`
+          ),
+          questionParagraph(
+            "14. Your Current Title or Title When You Ended This Employment:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.currentTitle}`
+          ),
+          questionParagraph("15. Your Employment Duties:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.employmentDuty}`
+          ),
+          questionParagraph(
+            "16. Your Typical Work Schedule (Hours Worked Per Day, Week, or Month):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.typicalWorkSchedule}`
+          ),
+          questionParagraph("17. Your Salary:"),
+          answerParagraph(`${req.body.employmentInjuryPhysicalValue.salary}`),
+          questionParagraph("Hourly Rate:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.hourlyRate}`
+          ),
+          questionParagraph("Do you receive overtime pay?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.receiveOvertimePay}`
+          ),
+          req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
+            ? questionParagraph(
+                "How much overtime pay do you typically receive?"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.overtimeRate}`
+              )
+            : undefined,
+          questionParagraph("18. What Do You Like About This Job?"),
+          answerParagraph(`${req.body.employmentInjuryPhysicalValue.likeJob}`),
+          questionParagraph("19. What Do You Not Like About This Job?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.notLikeJob}`
+          ),
+          questionParagraph(
+            "20. BEFORE The Injury, Were You Being Treated for Any Physical or Medical Condition(s)?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioPhysicalConditionBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "21. BEFORE The Injury, Were You Being Treated for Any Mental or Emotional Condition(s)?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMentalConditionBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "22. BEFORE The Injury, Were You Experiencing Any Emotional Symptoms?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioEmotionalSymptomsBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "23. Describe These Medical or Emotional Conditions or Symptoms BEFORE The Injury:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.describeMedicalCondition}`
+          ),
+          questionParagraph(
+            "24. Were you taking any Medications BEFORE The Injury?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMedicationsBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "25. What Medications Were You Taking BEFORE The Injury?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMedicationsNameBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "26. Date of Your Injury (if more than one, list each):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.injuryDate}`
+          ),
+          questionParagraph(
+            "27. Describe the Injury That Occurred (provide as many details as you can):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred}`
+          ),
+          questionParagraph(
+            "28. Do You Currently Receive Disability In Connection With Your Claim?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioDisabilityConnectionClaimItem}`
+          ),
+          req.body.employmentInjuryPhysicalValue
+            .radioDisabilityConnectionClaimItem === "Yes"
+            ? questionParagraph("If Yes, Which Current Disability:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue
+            .radioDisabilityConnectionClaimItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.currentDisability}`
+              )
+            : undefined,
+          questionParagraph(
+            "29. Would You Have Continued Working If Not Injured?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioContinuedWorkingItem}`
+          ),
+          questionParagraph("30. Are you currently working"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioConflictsItem}`
+          ),
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "How many separate conflicts have you had with others at work"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.conflictsCount}`
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "Please List Separately and Explain Each Conflict that Occurred:"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.eachConflicts}`
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "Please Rate the Percentage That Each of These Conflicts Caused You To Feel Upset, Out of Total of 100% (Example: Conflict #1 30%, #2 50%, #3 20%)"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.conflictsRate}`
+              )
+            : undefined,
+          questionParagraph(
+            "32. What Was/Is Your Working Relationship Like With Management or Supervisors in General?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationShipLikeManagement}`
+          ),
+          questionParagraph("33. Name of Your Immediate Supervisor:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.immediateSupervisorName}`
+          ),
+          questionParagraph("34. Relationship with Immediate Supervisor?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationshipImmediateSupervisor}`
+          ),
+          req.body.employmentInjuryPhysicalValue
+            .relationshipImmediateSupervisor === "Poor"
+            ? questionParagraph("Explain the reason:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue
+            .relationshipImmediateSupervisor === "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainSuperVisorReason}`
+              )
+            : undefined,
+          questionParagraph("35. How Were Your Performance Appraisals?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.performanceAppraisals}`
+          ),
+          req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
+          "Poor"
+            ? questionParagraph(
+                "29. Would You Have Continued Working If Not Injured?"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
+          "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainPerformanceAppraisals}`
+              )
+            : undefined,
+          questionParagraph(
+            "36. Have You Ever Received Verbal or Written Warnings?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.verbalWarning}`
+          ),
+          req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
+            ? questionParagraph("Describe dates and reason given:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.verbalWarningDateReason}`
+              )
+            : undefined,
+          questionParagraph("37. Working Relationship with Co-Workers?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationshipCoWorkers}`
+          ),
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
+          "Poor"
+            ? questionParagraph(
+                "Please give the names and reasons this relationship was poor."
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
+          "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainRelationshipCoWorkers}`
+              )
+            : undefined,
+          questionParagraph(
+            "38. Was There a 'Last Straw' Event Near the Last Day of Work?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.lastStraw}`
+          ),
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
+            ? questionParagraph(
+                "Please describe your 'Last Straw' event near the last day of your work"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainLastStraw}`
+              )
+            : undefined,
 
-          // TitleParagraph("Current Employer (If Different Than Above)"),
-          // questionParagraph(
-          //   "39. Do you currently work for the same employer where the above injury occurred?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.currentEmployerValue.currentlyWorkEmployerInjury}`
-          // ),
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Name of Current Employer:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkEmployerName}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Nature of Business:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkNatureBusiness}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Job Title:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobTitle}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Job Duties:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobDuties}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Date This Job Began:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobBeganDate}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph(
-          //       "Your Schedule, Hours Worked Per (day, week, month):"
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkSchedule}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Salary or Hourly rate:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkSalary}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Do you like this job?")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkLikeThisJob}`
-          //     )
-          //   : undefined,
+          TitleParagraph("Current Employer (If Different Than Above)"),
+          questionParagraph(
+            "39. Do you currently work for the same employer where the above injury occurred?"
+          ),
+          answerParagraph(
+            `${req.body.currentEmployerValue.currentlyWorkEmployerInjury}`
+          ),
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Name of Current Employer:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkEmployerName}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Nature of Business:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkNatureBusiness}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Job Title:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobTitle}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Job Duties:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobDuties}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Date This Job Began:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobBeganDate}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph(
+                "Your Schedule, Hours Worked Per (day, week, month):"
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkSchedule}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Salary or Hourly rate:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkSalary}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Do you like this job?")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkLikeThisJob}`
+              )
+            : undefined,
 
-          // TitleParagraph("Physical Injury"),
-          // questionParagraph(
-          //   "40. If Your Injury Was Initially Physical, Describe the First Symptoms (Pain) You Experienced:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.firstSymptoms}`),
-          // questionParagraph(
-          //   "41. If Your Injury Was Initially Physical, Describe the First Treatment You Received Following This Injury(Medical, Chiropractic, Physical Therapy PT, Injections):"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.firstTreatment}`),
-          // questionParagraph(
-          //   "42. If Your Injury Was Initially Physical, Describe the Rest of Your Treatment (Medical, Chiropractic, PT)"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.restYourTreatment}`),
-          // questionParagraph(
-          //   "43. List the Doctors You Have Seen For This Physical Injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.doctorsList}`),
-          // questionParagraph(
-          //   "44. BEFORE The Injury, Were You Being Treated for Any Mental or Emotional Condition(s)?"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.receivedSurgery}`),
-          // questionParagraph(
-          //   "45. List the Surgeries You Have Received for This Physical Injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.surgeryList}`),
-          // questionParagraph(
-          //   "46. List the Medications You Have Received for This Physical Injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.medicationList}`),
-          // questionParagraph(
-          //   "47. Have Any of the Above Treatments Helped Relieve Your Pain?"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.treatmentsHelped}`),
-          // questionParagraph("48. Are You Still Working?"),
-          // answerParagraph(`${req.body.physicalInjuryValue.stillWorking}`),
-          // questionParagraph("49. If Not Working, Reason for Leaving?"),
-          // answerParagraph(`${req.body.physicalInjuryValue.leavingReason}`),
+          TitleParagraph("Physical Injury"),
+          questionParagraph(
+            "40. If Your Injury Was Initially Physical, Describe the First Symptoms (Pain) You Experienced:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.firstSymptoms}`),
+          questionParagraph(
+            "41. If Your Injury Was Initially Physical, Describe the First Treatment You Received Following This Injury(Medical, Chiropractic, Physical Therapy PT, Injections):"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.firstTreatment}`),
+          questionParagraph(
+            "42. If Your Injury Was Initially Physical, Describe the Rest of Your Treatment (Medical, Chiropractic, PT)"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.restYourTreatment}`),
+          questionParagraph(
+            "43. List the Doctors You Have Seen For This Physical Injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.doctorsList}`),
+          questionParagraph(
+            "44. BEFORE The Injury, Were You Being Treated for Any Mental or Emotional Condition(s)?"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.receivedSurgery}`),
+          questionParagraph(
+            "45. List the Surgeries You Have Received for This Physical Injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.surgeryList}`),
+          questionParagraph(
+            "46. List the Medications You Have Received for This Physical Injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.medicationList}`),
+          questionParagraph(
+            "47. Have Any of the Above Treatments Helped Relieve Your Pain?"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.treatmentsHelped}`),
+          questionParagraph("48. Are You Still Working?"),
+          answerParagraph(`${req.body.physicalInjuryValue.stillWorking}`),
+          questionParagraph("49. If Not Working, Reason for Leaving?"),
+          answerParagraph(`${req.body.physicalInjuryValue.leavingReason}`),
 
-          // TitleParagraph("Chief Complaint"),
-          // questionParagraph(
-          //   "50. I am most bothered on this day by the following:"
-          // ),
-          // answerParagraph(`${req.body.chiefComplaintValue.mostBothered}`),
-          // questionParagraph(
-          //   "51. What emotional symptoms are you currently experiencing or recently experienced?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.chiefComplaintValue.currentlyExperiencingSymptom}`
-          // ),
-          // req.body.chiefComplaintValue.currentlyExperiencingSymptom !==
-          // "None of the above"
-          //   ? questionParagraph(
-          //       "When did this current episode of these emotional symptoms begin?"
-          //     )
-          //   : undefined,
-          // answerParagraph(`${req.body.chiefComplaintValue.currentEpisodeDate}`),
-          // questionParagraph(
-          //   "52. Have you experienced any of your above emotional symptoms in response to a specific stressful event in your life?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.chiefComplaintValue.specificStressfulSymptom}`
-          // ),
-          // req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
-          //   ? questionParagraph(
-          //       "What was the stressful event that triggered your emotional symptoms?"
-          //     )
-          //   : undefined,
-          // req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.chiefComplaintValue.specificStressfulEvent}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "53. Do you have stress from any of the following?"
-          // ),
-          // answerParagraph(`${req.body.chiefComplaintValue.stressFollowing}`),
+          TitleParagraph("Chief Complaint"),
+          questionParagraph(
+            "50. I am most bothered on this day by the following:"
+          ),
+          answerParagraph(`${req.body.chiefComplaintValue.mostBothered}`),
+          questionParagraph(
+            "51. What emotional symptoms are you currently experiencing or recently experienced?"
+          ),
+          answerParagraph(
+            `${req.body.chiefComplaintValue.currentlyExperiencingSymptom}`
+          ),
+          req.body.chiefComplaintValue.currentlyExperiencingSymptom !==
+          "None of the above"
+            ? questionParagraph(
+                "When did this current episode of these emotional symptoms begin?"
+              )
+            : undefined,
+          answerParagraph(`${req.body.chiefComplaintValue.currentEpisodeDate}`),
+          questionParagraph(
+            "52. Have you experienced any of your above emotional symptoms in response to a specific stressful event in your life?"
+          ),
+          answerParagraph(
+            `${req.body.chiefComplaintValue.specificStressfulSymptom}`
+          ),
+          req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
+            ? questionParagraph(
+                "What was the stressful event that triggered your emotional symptoms?"
+              )
+            : undefined,
+          req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
+            ? answerParagraph(
+                `${req.body.chiefComplaintValue.specificStressfulEvent}`
+              )
+            : undefined,
+          questionParagraph(
+            "53. Do you have stress from any of the following?"
+          ),
+          answerParagraph(`${req.body.chiefComplaintValue.stressFollowing}`),
 
-          // TitleParagraph("Longitudinal History"),
-          // questionParagraph(
-          //   "54. When did this episode of your depression, anxiety, or post-trauma emotions start?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionEpisodeBegan}`
-          // ),
-          // questionParagraph(
-          //   "55. Describe the Emotional/Psychiatric Symptoms You Have Experienced"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionSymptom}`
-          // ),
-          // questionParagraph(
-          //   "56. During this current or most recent symptom episode, when were your symptoms the worst?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.mostWorstSymptom}`
-          // ),
-          // questionParagraph(
-          //   "57. Have Your Emotional Symptoms Become Worse Or Better Since They Started Or Since A Specific Date Or Event?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionalSymptomBecome}`
-          // ),
-          // questionParagraph("58. How Often Do You Feel the Above Emotions?"),
-          // answerParagraph(`${req.body.longitudinalHistoryValue.feelEmotion}`),
-          // req.body.longitudinalHistoryValue.feelEmotion === "other"
-          //   ? questionParagraph(
-          //       "If other: Explain how often you feel the above emotions"
-          //     )
-          //   : undefined,
-          // req.body.longitudinalHistoryValue.feelEmotion === "other"
-          //   ? answerParagraph(
-          //       `${req.body.longitudinalHistoryValue.explainFeelEmotion}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "59. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how would you rate your depressive, anxiety, or post trauma symptoms when they were most severe?"
-          // ),
+          TitleParagraph("Longitudinal History"),
+          questionParagraph(
+            "54. When did this episode of your depression, anxiety, or post-trauma emotions start?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionEpisodeBegan}`
+          ),
+          questionParagraph(
+            "55. Describe the Emotional/Psychiatric Symptoms You Have Experienced"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionSymptom}`
+          ),
+          questionParagraph(
+            "56. During this current or most recent symptom episode, when were your symptoms the worst?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.mostWorstSymptom}`
+          ),
+          questionParagraph(
+            "57. Have Your Emotional Symptoms Become Worse Or Better Since They Started Or Since A Specific Date Or Event?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionalSymptomBecome}`
+          ),
+          questionParagraph("58. How Often Do You Feel the Above Emotions?"),
+          answerParagraph(`${req.body.longitudinalHistoryValue.feelEmotion}`),
+          req.body.longitudinalHistoryValue.feelEmotion === "other"
+            ? questionParagraph(
+                "If other: Explain how often you feel the above emotions"
+              )
+            : undefined,
+          req.body.longitudinalHistoryValue.feelEmotion === "other"
+            ? answerParagraph(
+                `${req.body.longitudinalHistoryValue.explainFeelEmotion}`
+              )
+            : undefined,
+          questionParagraph(
+            "59. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how would you rate your depressive, anxiety, or post trauma symptoms when they were most severe?"
+          ),
           answerParagraph(
             `Depressive: ${req.body.longitudinalHistoryValue.depressiveSymptom}`
           ),
@@ -4999,22 +5000,26 @@ router.post("/", async (req, res) => {
   const year = now.getFullYear();
   const month = String(now.getMonth() + 1).padStart(2, "0");
   const day = String(now.getDate()).padStart(2, "0");
-  const file1Name = `story_${year}-${month}-${day}-${uuidv4()}.docx`;
-  const file2Name = `question_${year}-${month}-${day}-${uuidv4()}.docx`;
+  const file1Name = `story_${year}-${month}-${day}.docx`;
+  const file2Name = `question_${year}-${month}-${day}.docx`;
 
+  const zipFileName = `Doc_${year}-${month}-${day}-${uuidv4()}.zip`;
   const file1Path = path.join(__dirname, "../../downloads", file1Name);
 
   const file2Path = path.join(__dirname, "../../downloads", file2Name);
 
+  const zipFilePath = path.join(__dirname, "../../downloads", zipFileName);
+  const zip = new JSZip();
+
   await Promise.all([Packer.toBuffer(storyDoc), Packer.toBuffer(doc)])
     .then(async ([file1Data, file2Data]) => {
-      await fs.writeFileSync(file1Path, file1Data);
-      await fs.writeFileSync(file2Path, file2Data);
+      zip.file(file1Name, file1Data);
+      zip.file(file2Name, file2Data);
 
-      res.json({
-        storyPath: file1Name,
-        qaPath: file2Name,
+      zip.generateAsync({ type: "nodebuffer" }).then(function (content) {
+        fs.writeFileSync(zipFilePath, content);
       });
+      res.json(zipFileName);
     })
     .catch((err) => {
       console.error(err);
