@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 8000;
 const generateDocFile = require("./routes/api/generateDocFile");
 const deleteDownloadFile = require("./routes/api/deleteDownloadFile");
 
