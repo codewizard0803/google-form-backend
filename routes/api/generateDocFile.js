@@ -176,1627 +176,1627 @@ router.post("/", async (req, res) => {
     sections: [
       {
         children: [
-          // TitleParagraph("Demographic Information, Part I"),
-          // questionParagraph("1. What is your full name?"),
-          // answerParagraph(`${req.body.demographicInformation.fullName}`),
-          // questionParagraph("2. What is your date of birth?"),
-          // answerParagraph(`${req.body.demographicInformation.birth}`),
-          // questionParagraph(
-          //   "3. Please select any of the following that represent your race or ethnicity. You may select more than one."
-          // ),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.checkedEthnicityItems}`
-          // ),
-          // questionParagraph("4. What sex was assigned to you at birth?"),
-          // answerParagraph(`${req.body.demographicInformation.radioSexItem}`),
-          // req.body.demographicInformation.radioSexItem === "Female"
-          //   ? questionParagraph(
-          //       "Are you pregnant, planning on getting pregnant, or breastfeeding?"
-          //     )
-          //   : undefined,
-          // req.body.demographicInformation.radioSexItem === "Female"
-          //   ? answerParagraph(`${req.body.demographicInformation.pregnant}`)
-          //   : undefined,
-          // questionParagraph("5. What pronoun do you currently prefer?"),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.radioPreferPronounItem}`
-          // ),
-          // questionParagraph("6. What is your marital status?"),
-          // answerParagraph(
-          //   `${req.body.demographicInformation.maritalStatusItems}`
-          // ),
-          // questionParagraph("7. What is your email?"),
-          // answerParagraph(`${req.body.demographicInformation.email}`),
-          // questionParagraph("8. What is your phone number?"),
-          // answerParagraph(`${req.body.demographicInformation.phoneNumber}`),
+          TitleParagraph("Demographic Information, Part I"),
+          questionParagraph("1. What is your full name?"),
+          answerParagraph(`${req.body.demographicInformation.fullName}`),
+          questionParagraph("2. What is your date of birth?"),
+          answerParagraph(`${req.body.demographicInformation.birth}`),
+          questionParagraph(
+            "3. Please select any of the following that represent your race or ethnicity. You may select more than one."
+          ),
+          answerParagraph(
+            `${req.body.demographicInformation.checkedEthnicityItems}`
+          ),
+          questionParagraph("4. What sex was assigned to you at birth?"),
+          answerParagraph(`${req.body.demographicInformation.radioSexItem}`),
+          req.body.demographicInformation.radioSexItem === "Female"
+            ? questionParagraph(
+                "Are you pregnant, planning on getting pregnant, or breastfeeding?"
+              )
+            : undefined,
+          req.body.demographicInformation.radioSexItem === "Female"
+            ? answerParagraph(`${req.body.demographicInformation.pregnant}`)
+            : undefined,
+          questionParagraph("5. What pronoun do you currently prefer?"),
+          answerParagraph(
+            `${req.body.demographicInformation.radioPreferPronounItem}`
+          ),
+          questionParagraph("6. What is your marital status?"),
+          answerParagraph(
+            `${req.body.demographicInformation.maritalStatusItems}`
+          ),
+          questionParagraph("7. What is your email?"),
+          answerParagraph(`${req.body.demographicInformation.email}`),
+          questionParagraph("8. What is your phone number?"),
+          answerParagraph(`${req.body.demographicInformation.phoneNumber}`),
 
-          // TitleParagraph(
-          //   "Employment Where the Physical or Emotional Injury Occurred"
-          // ),
-          // questionParagraph("9. Name of your current employer:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.currentEmployerName}`
-          // ),
-          // questionParagraph("10. What is the nature of this business:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.businessNature}`
-          // ),
-          // questionParagraph("11. Date this job began:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.jobBeganDate}`
-          // ),
-          // questionParagraph(
-          //   "12. What was the last day you worked at this job?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.jobLastDate}`
-          // ),
-          // questionParagraph(
-          //   "13. Your job title when you started this employment:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.startedJobTitle}`
-          // ),
-          // questionParagraph(
-          //   "14. Your current title or title when you ended this employment:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.currentTitle}`
-          // ),
-          // questionParagraph("15. Your employment duties:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.employmentDuty}`
-          // ),
-          // questionParagraph(
-          //   "16. Your typical work schedule (hours worked per day, week, or month):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.typicalWorkSchedule}`
-          // ),
-          // questionParagraph("17. Your salary:"),
-          // answerParagraph(`${req.body.employmentInjuryPhysicalValue.salary}`),
-          // questionParagraph("Hourly Rate:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.hourlyRate}`
-          // ),
-          // questionParagraph("Do you receive overtime pay?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.receiveOvertimePay}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
-          //   ? questionParagraph(
-          //       "How much overtime pay do you typically receive?"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.overtimeRate}`
-          //     )
-          //   : undefined,
-          // questionParagraph("18. What do you like about this job?"),
-          // answerParagraph(`${req.body.employmentInjuryPhysicalValue.likeJob}`),
-          // questionParagraph("19. What do you not like about this job?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.notLikeJob}`
-          // ),
-          // questionParagraph(
-          //   "20. BEFORE the injury, were you being treated for any physical or medical condition(s)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioPhysicalConditionBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "21. BEFORE the injury, were you being treated for any mental or emotional condition(s)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMentalConditionBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "22. BEFORE the injury, were you experiencing any emotional symptoms?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioEmotionalSymptomsBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "23. Describe these medical or emotional conditions or symptoms BEFORE the injury:"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.describeMedicalCondition}`
-          // ),
-          // questionParagraph(
-          //   "24. Were you taking any medications BEFORE the injury?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMedicationsBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "25. What medications were you taking BEFORE the injury?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioMedicationsNameBeforeInjuryItem}`
-          // ),
-          // questionParagraph(
-          //   "26. Date of your injury (if more than one, list each):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.injuryDate}`
-          // ),
-          // questionParagraph(
-          //   "27. Describe the injury that occurred (provide as many details as you can):"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred}`
-          // ),
-          // questionParagraph(
-          //   "28. Do you currently receive disability in connection with your claim?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioDisabilityConnectionClaimItem}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue
-          //   .radioDisabilityConnectionClaimItem === "Yes"
-          //   ? questionParagraph("If Yes, Which Current Disability:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue
-          //   .radioDisabilityConnectionClaimItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.currentDisability}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "29. Would you have continued working if not injured?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioContinuedWorkingItem}`
-          // ),
-          // questionParagraph("30. Are you currently working"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.radioConflictsItem}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "How many separate conflicts have you had with others at work"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.conflictsCount}`
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "Please list separately and explain each conflict that occurred:"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.eachConflicts}`
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? questionParagraph(
-          //       "Please rate the percentage that each of these conflicts caused you to feel upset, out of total of 100% (Example: Conflict #1 30%, #2 50%, #3 20%)"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.conflictsRate}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "32. What was/is your working relationship like with management or supervisors in general?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationShipLikeManagement}`
-          // ),
-          // questionParagraph("33. Name of your immediate supervisor:"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.immediateSupervisorName}`
-          // ),
-          // questionParagraph("34. Relationship with immediate supervisor?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationshipImmediateSupervisor}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue
-          //   .relationshipImmediateSupervisor === "Poor"
-          //   ? questionParagraph("Explain the reason:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue
-          //   .relationshipImmediateSupervisor === "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainSuperVisorReason}`
-          //     )
-          //   : undefined,
-          // questionParagraph("35. How were your performance appraisals?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.performanceAppraisals}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
-          // "Poor"
-          //   ? questionParagraph("Explain reason")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
-          // "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainPerformanceAppraisals}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "36. Have you ever received verbal or written warnings?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.verbalWarning}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
-          //   ? questionParagraph("Describe dates and reason given:")
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.verbalWarningDateReason}`
-          //     )
-          //   : undefined,
-          // questionParagraph("37. Working relationship with co-workers?"),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.relationshipCoWorkers}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
-          // "Poor"
-          //   ? questionParagraph(
-          //       "Please give the names and reasons this relationship was poor."
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
-          // "Poor"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainRelationshipCoWorkers}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "38. Was there a 'last straw' event near the last day of work?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.employmentInjuryPhysicalValue.lastStraw}`
-          // ),
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe your 'last straw' event near the last day of your work"
-          //     )
-          //   : undefined,
-          // req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.employmentInjuryPhysicalValue.explainLastStraw}`
-          //     )
-          //   : undefined,
+          TitleParagraph(
+            "Employment Where the Physical or Emotional Injury Occurred"
+          ),
+          questionParagraph("9. Name of your current employer:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.currentEmployerName}`
+          ),
+          questionParagraph("10. What is the nature of this business:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.businessNature}`
+          ),
+          questionParagraph("11. Date this job began:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.jobBeganDate}`
+          ),
+          questionParagraph(
+            "12. What was the last day you worked at this job?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.jobLastDate}`
+          ),
+          questionParagraph(
+            "13. Your job title when you started this employment:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.startedJobTitle}`
+          ),
+          questionParagraph(
+            "14. Your current title or title when you ended this employment:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.currentTitle}`
+          ),
+          questionParagraph("15. Your employment duties:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.employmentDuty}`
+          ),
+          questionParagraph(
+            "16. Your typical work schedule (hours worked per day, week, or month):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.typicalWorkSchedule}`
+          ),
+          questionParagraph("17. Your salary:"),
+          answerParagraph(`${req.body.employmentInjuryPhysicalValue.salary}`),
+          questionParagraph("Hourly Rate:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.hourlyRate}`
+          ),
+          questionParagraph("Do you receive overtime pay?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.receiveOvertimePay}`
+          ),
+          req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
+            ? questionParagraph(
+                "How much overtime pay do you typically receive?"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.receiveOvertimePay === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.overtimeRate}`
+              )
+            : undefined,
+          questionParagraph("18. What do you like about this job?"),
+          answerParagraph(`${req.body.employmentInjuryPhysicalValue.likeJob}`),
+          questionParagraph("19. What do you not like about this job?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.notLikeJob}`
+          ),
+          questionParagraph(
+            "20. BEFORE the injury, were you being treated for any physical or medical condition(s)?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioPhysicalConditionBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "21. BEFORE the injury, were you being treated for any mental or emotional condition(s)?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMentalConditionBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "22. BEFORE the injury, were you experiencing any emotional symptoms?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioEmotionalSymptomsBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "23. Describe these medical or emotional conditions or symptoms BEFORE the injury:"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.describeMedicalCondition}`
+          ),
+          questionParagraph(
+            "24. Were you taking any medications BEFORE the injury?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMedicationsBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "25. What medications were you taking BEFORE the injury?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioMedicationsNameBeforeInjuryItem}`
+          ),
+          questionParagraph(
+            "26. Date of your injury (if more than one, list each):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.injuryDate}`
+          ),
+          questionParagraph(
+            "27. Describe the injury that occurred (provide as many details as you can):"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred}`
+          ),
+          questionParagraph(
+            "28. Do you currently receive disability in connection with your claim?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioDisabilityConnectionClaimItem}`
+          ),
+          req.body.employmentInjuryPhysicalValue
+            .radioDisabilityConnectionClaimItem === "Yes"
+            ? questionParagraph("If Yes, Which Current Disability:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue
+            .radioDisabilityConnectionClaimItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.currentDisability}`
+              )
+            : undefined,
+          questionParagraph(
+            "29. Would you have continued working if not injured?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioContinuedWorkingItem}`
+          ),
+          questionParagraph("30. Are you currently working"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.radioConflictsItem}`
+          ),
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "How many separate conflicts have you had with others at work"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.conflictsCount}`
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "Please list separately and explain each conflict that occurred:"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.eachConflicts}`
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? questionParagraph(
+                "Please rate the percentage that each of these conflicts caused you to feel upset, out of total of 100% (Example: Conflict #1 30%, #2 50%, #3 20%)"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.radioConflictsItem === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.conflictsRate}`
+              )
+            : undefined,
+          questionParagraph(
+            "32. What was/is your working relationship like with management or supervisors in general?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationShipLikeManagement}`
+          ),
+          questionParagraph("33. Name of your immediate supervisor:"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.immediateSupervisorName}`
+          ),
+          questionParagraph("34. Relationship with immediate supervisor?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationshipImmediateSupervisor}`
+          ),
+          req.body.employmentInjuryPhysicalValue
+            .relationshipImmediateSupervisor === "Poor"
+            ? questionParagraph("Explain the reason:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue
+            .relationshipImmediateSupervisor === "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainSuperVisorReason}`
+              )
+            : undefined,
+          questionParagraph("35. How were your performance appraisals?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.performanceAppraisals}`
+          ),
+          req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
+          "Poor"
+            ? questionParagraph("Explain reason")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.performanceAppraisals ===
+          "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainPerformanceAppraisals}`
+              )
+            : undefined,
+          questionParagraph(
+            "36. Have you ever received verbal or written warnings?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.verbalWarning}`
+          ),
+          req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
+            ? questionParagraph("Describe dates and reason given:")
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.verbalWarning === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.verbalWarningDateReason}`
+              )
+            : undefined,
+          questionParagraph("37. Working relationship with co-workers?"),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.relationshipCoWorkers}`
+          ),
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
+          "Poor"
+            ? questionParagraph(
+                "Please give the names and reasons this relationship was poor."
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers ===
+          "Poor"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainRelationshipCoWorkers}`
+              )
+            : undefined,
+          questionParagraph(
+            "38. Was there a 'last straw' event near the last day of work?"
+          ),
+          answerParagraph(
+            `${req.body.employmentInjuryPhysicalValue.lastStraw}`
+          ),
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
+            ? questionParagraph(
+                "Please describe your 'last straw' event near the last day of your work"
+              )
+            : undefined,
+          req.body.employmentInjuryPhysicalValue.relationshipCoWorkers === "Yes"
+            ? answerParagraph(
+                `${req.body.employmentInjuryPhysicalValue.explainLastStraw}`
+              )
+            : undefined,
 
-          // TitleParagraph("Current Employer (If Different Than Above)"),
-          // questionParagraph(
-          //   "39. Do you currently work for the same employer where the above injury occurred?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.currentEmployerValue.currentlyWorkEmployerInjury}`
-          // ),
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Name of current employer:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkEmployerName}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Nature of business:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkNatureBusiness}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Job title:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobTitle}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Job duties:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobDuties}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Date this job began:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkJobBeganDate}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph(
-          //       "Your schedule, hours worked per (day, week, month):"
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkSchedule}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Salary or hourly rate:")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkSalary}`
-          //     )
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? questionParagraph("Do you like this job?")
-          //   : undefined,
-          // req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
-          //   ? answerParagraph(
-          //       `${req.body.currentEmployerValue.currentlyWorkLikeThisJob}`
-          //     )
-          //   : undefined,
+          TitleParagraph("Current Employer (If Different Than Above)"),
+          questionParagraph(
+            "39. Do you currently work for the same employer where the above injury occurred?"
+          ),
+          answerParagraph(
+            `${req.body.currentEmployerValue.currentlyWorkEmployerInjury}`
+          ),
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Name of current employer:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkEmployerName}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Nature of business:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkNatureBusiness}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Job title:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobTitle}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Job duties:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobDuties}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Date this job began:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkJobBeganDate}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph(
+                "Your schedule, hours worked per (day, week, month):"
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkSchedule}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Salary or hourly rate:")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkSalary}`
+              )
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? questionParagraph("Do you like this job?")
+            : undefined,
+          req.body.currentEmployerValue.currentlyWorkEmployerInjury === "No"
+            ? answerParagraph(
+                `${req.body.currentEmployerValue.currentlyWorkLikeThisJob}`
+              )
+            : undefined,
 
-          // TitleParagraph("Physical Injury"),
-          // questionParagraph(
-          //   "40. If your injury was initially physical, describe the first symptoms (pain) you experienced:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.firstSymptoms}`),
-          // questionParagraph(
-          //   "41. If your injury was initially physical, describe the first treatment you received following this injury (medical, chiropractic, physical therapy pt, injections):"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.firstTreatment}`),
-          // questionParagraph(
-          //   "42. If your injury was initially physical, describe the rest of your treatment (medical, chiropractic, pt)"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.restYourTreatment}`),
-          // questionParagraph(
-          //   "43. List the doctors you have seen for this physical injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.doctorsList}`),
-          // questionParagraph("44. Did you receive surgery for this injury?"),
-          // answerParagraph(`${req.body.physicalInjuryValue.receivedSurgery}`),
-          // questionParagraph(
-          //   "45. List the surgeries you have received for this physical injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.surgeryList}`),
-          // questionParagraph(
-          //   "46. List the medications you have received for this physical injury:"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.medicationList}`),
-          // questionParagraph(
-          //   "47. Have any of the above treatments helped relieve your pain?"
-          // ),
-          // answerParagraph(`${req.body.physicalInjuryValue.treatmentsHelped}`),
-          // questionParagraph("48. Are you still working?"),
-          // answerParagraph(`${req.body.physicalInjuryValue.stillWorking}`),
-          // questionParagraph("49. If not working, reason for leaving?"),
-          // answerParagraph(`${req.body.physicalInjuryValue.leavingReason}`),
+          TitleParagraph("Physical Injury"),
+          questionParagraph(
+            "40. If your injury was initially physical, describe the first symptoms (pain) you experienced:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.firstSymptoms}`),
+          questionParagraph(
+            "41. If your injury was initially physical, describe the first treatment you received following this injury (medical, chiropractic, physical therapy pt, injections):"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.firstTreatment}`),
+          questionParagraph(
+            "42. If your injury was initially physical, describe the rest of your treatment (medical, chiropractic, pt)"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.restYourTreatment}`),
+          questionParagraph(
+            "43. List the doctors you have seen for this physical injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.doctorsList}`),
+          questionParagraph("44. Did you receive surgery for this injury?"),
+          answerParagraph(`${req.body.physicalInjuryValue.receivedSurgery}`),
+          questionParagraph(
+            "45. List the surgeries you have received for this physical injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.surgeryList}`),
+          questionParagraph(
+            "46. List the medications you have received for this physical injury:"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.medicationList}`),
+          questionParagraph(
+            "47. Have any of the above treatments helped relieve your pain?"
+          ),
+          answerParagraph(`${req.body.physicalInjuryValue.treatmentsHelped}`),
+          questionParagraph("48. Are you still working?"),
+          answerParagraph(`${req.body.physicalInjuryValue.stillWorking}`),
+          questionParagraph("49. If not working, reason for leaving?"),
+          answerParagraph(`${req.body.physicalInjuryValue.leavingReason}`),
 
-          // TitleParagraph("Chief Complaint"),
-          // questionParagraph(
-          //   "50. I am most bothered on this day by the following:"
-          // ),
-          // answerParagraph(`${req.body.chiefComplaintValue.mostBothered}`),
-          // questionParagraph(
-          //   "51. What emotional symptoms are you currently experiencing or recently experienced?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.chiefComplaintValue.currentlyExperiencingSymptom}`
-          // ),
-          // req.body.chiefComplaintValue.currentlyExperiencingSymptom !==
-          // "None of the above"
-          //   ? questionParagraph(
-          //       "When did this current episode of these emotional symptoms begin?"
-          //     )
-          //   : undefined,
-          // answerParagraph(`${req.body.chiefComplaintValue.currentEpisodeDate}`),
-          // questionParagraph(
-          //   "52. Have you experienced any of your above emotional symptoms in response to a specific stressful event in your life?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.chiefComplaintValue.specificStressfulSymptom}`
-          // ),
-          // req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
-          //   ? questionParagraph(
-          //       "What was the stressful event that triggered your emotional symptoms?"
-          //     )
-          //   : undefined,
-          // req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.chiefComplaintValue.specificStressfulEvent}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "53. Do you have stress from any of the following?"
-          // ),
-          // answerParagraph(`${req.body.chiefComplaintValue.stressFollowing}`),
+          TitleParagraph("Chief Complaint"),
+          questionParagraph(
+            "50. I am most bothered on this day by the following:"
+          ),
+          answerParagraph(`${req.body.chiefComplaintValue.mostBothered}`),
+          questionParagraph(
+            "51. What emotional symptoms are you currently experiencing or recently experienced?"
+          ),
+          answerParagraph(
+            `${req.body.chiefComplaintValue.currentlyExperiencingSymptom}`
+          ),
+          req.body.chiefComplaintValue.currentlyExperiencingSymptom !==
+          "None of the above"
+            ? questionParagraph(
+                "When did this current episode of these emotional symptoms begin?"
+              )
+            : undefined,
+          answerParagraph(`${req.body.chiefComplaintValue.currentEpisodeDate}`),
+          questionParagraph(
+            "52. Have you experienced any of your above emotional symptoms in response to a specific stressful event in your life?"
+          ),
+          answerParagraph(
+            `${req.body.chiefComplaintValue.specificStressfulSymptom}`
+          ),
+          req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
+            ? questionParagraph(
+                "What was the stressful event that triggered your emotional symptoms?"
+              )
+            : undefined,
+          req.body.chiefComplaintValue.specificStressfulSymptom === "Yes"
+            ? answerParagraph(
+                `${req.body.chiefComplaintValue.specificStressfulEvent}`
+              )
+            : undefined,
+          questionParagraph(
+            "53. Do you have stress from any of the following?"
+          ),
+          answerParagraph(`${req.body.chiefComplaintValue.stressFollowing}`),
 
-          // TitleParagraph("Longitudinal History"),
-          // questionParagraph(
-          //   "54. When did this episode of your depression, anxiety, or post-trauma emotions start?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionEpisodeBegan}`
-          // ),
-          // questionParagraph(
-          //   "55. Describe the emotional/psychiatric symptoms you have experienced"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionSymptom}`
-          // ),
-          // questionParagraph(
-          //   "56. During this current or most recent symptom episode, when were your symptoms the worst?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.mostWorstSymptom}`
-          // ),
-          // questionParagraph(
-          //   "57. Have your emotional symptoms become worse or better since they started or since a specific date or event?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.emotionalSymptomBecome}`
-          // ),
-          // questionParagraph("58. How often do you feel the above emotions?"),
-          // answerParagraph(`${req.body.longitudinalHistoryValue.feelEmotion}`),
-          // req.body.longitudinalHistoryValue.feelEmotion === "other"
-          //   ? questionParagraph(
-          //       "If other: Explain how often you feel the above emotions"
-          //     )
-          //   : undefined,
-          // req.body.longitudinalHistoryValue.feelEmotion === "other"
-          //   ? answerParagraph(
-          //       `${req.body.longitudinalHistoryValue.explainFeelEmotion}`
-          //     )
-          //   : undefined,
-          // questionParagraph(
-          //   "59. How would you rate your depressive, anxiety, or post trauma symptoms <u>when they were most severe</u>, with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms imaginable?"
-          // ),
-          // answerParagraph(
-          //   `Depressive: ${req.body.longitudinalHistoryValue.depressiveSymptom}`
-          // ),
-          // answerParagraph(
-          //   `Anxiety: ${req.body.longitudinalHistoryValue.anxietySymptom}`
-          // ),
-          // answerParagraph(
-          //   `PostTrauma: ${req.body.longitudinalHistoryValue.postTraumaSymptom}`
-          // ),
-          // questionParagraph(
-          //   "60. <u>Currently</u>, how do you rate your depressive, anxiety, or post trauma symptoms on the same 1-10 scale?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.compareEmotionalSymptom}`
-          // ),
-          // questionParagraph(
-          //   "61. Have Your Emotional Symptoms Affected Your Ability to Do Your Job?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.longitudinalHistoryValue.symptomsAffectedJob}`
-          // ),
-          // req.body.longitudinalHistoryValue.symptomsAffectedJob === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe your emotional symptoms have affected your ability to do your job?"
-          //     )
-          //   : undefined,
-          // req.body.longitudinalHistoryValue.symptomsAffectedJob === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.longitudinalHistoryValue.describeSymptomsAffectedJob}`
-          //     )
-          //   : undefined,
+          TitleParagraph("Longitudinal History"),
+          questionParagraph(
+            "54. When did this episode of your depression, anxiety, or post-trauma emotions start?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionEpisodeBegan}`
+          ),
+          questionParagraph(
+            "55. Describe the emotional/psychiatric symptoms you have experienced"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionSymptom}`
+          ),
+          questionParagraph(
+            "56. During this current or most recent symptom episode, when were your symptoms the worst?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.mostWorstSymptom}`
+          ),
+          questionParagraph(
+            "57. Have your emotional symptoms become worse or better since they started or since a specific date or event?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.emotionalSymptomBecome}`
+          ),
+          questionParagraph("58. How often do you feel the above emotions?"),
+          answerParagraph(`${req.body.longitudinalHistoryValue.feelEmotion}`),
+          req.body.longitudinalHistoryValue.feelEmotion === "other"
+            ? questionParagraph(
+                "If other: Explain how often you feel the above emotions"
+              )
+            : undefined,
+          req.body.longitudinalHistoryValue.feelEmotion === "other"
+            ? answerParagraph(
+                `${req.body.longitudinalHistoryValue.explainFeelEmotion}`
+              )
+            : undefined,
+          questionParagraph(
+            "59. How would you rate your depressive, anxiety, or post trauma symptoms <u>when they were most severe</u>, with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms imaginable?"
+          ),
+          answerParagraph(
+            `Depressive: ${req.body.longitudinalHistoryValue.depressiveSymptom}`
+          ),
+          answerParagraph(
+            `Anxiety: ${req.body.longitudinalHistoryValue.anxietySymptom}`
+          ),
+          answerParagraph(
+            `PostTrauma: ${req.body.longitudinalHistoryValue.postTraumaSymptom}`
+          ),
+          questionParagraph(
+            "60. <u>Currently</u>, how do you rate your depressive, anxiety, or post trauma symptoms on the same 1-10 scale?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.compareEmotionalSymptom}`
+          ),
+          questionParagraph(
+            "61. Have Your Emotional Symptoms Affected Your Ability to Do Your Job?"
+          ),
+          answerParagraph(
+            `${req.body.longitudinalHistoryValue.symptomsAffectedJob}`
+          ),
+          req.body.longitudinalHistoryValue.symptomsAffectedJob === "Yes"
+            ? questionParagraph(
+                "Please describe your emotional symptoms have affected your ability to do your job?"
+              )
+            : undefined,
+          req.body.longitudinalHistoryValue.symptomsAffectedJob === "Yes"
+            ? answerParagraph(
+                `${req.body.longitudinalHistoryValue.describeSymptomsAffectedJob}`
+              )
+            : undefined,
 
-          // TitleParagraph("Current Symptoms"),
-          // TitleParagraph("PHQ-9"),
-          // questionParagraph("62. Little interest or pleasure in doing things?"),
-          // answerParagraph(`${req.body.PHQValue.interestThing}`),
-          // req.body.PHQValue.interestThing !== "" &&
-          // req.body.PHQValue.interestThing !== "Not at all"
-          //   ? questionParagraph(
-          //       "If you have lost the ability to enjoy activities that were previously enjoyable, please list those activities that you used to but no longer enjoy."
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.interestThing !== "" &&
-          // req.body.PHQValue.interestThing !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.previouslyEnjoyable}`)
-          //   : undefined,
-          // questionParagraph("63. Feeling down, depressed, or hopeless?"),
-          // answerParagraph(`${req.body.PHQValue.feelingDepressed}`),
+          TitleParagraph("Current Symptoms"),
+          TitleParagraph("PHQ-9"),
+          questionParagraph("62. Little interest or pleasure in doing things?"),
+          answerParagraph(`${req.body.PHQValue.interestThing}`),
+          req.body.PHQValue.interestThing !== "" &&
+          req.body.PHQValue.interestThing !== "Not at all"
+            ? questionParagraph(
+                "If you have lost the ability to enjoy activities that were previously enjoyable, please list those activities that you used to but no longer enjoy."
+              )
+            : undefined,
+          req.body.PHQValue.interestThing !== "" &&
+          req.body.PHQValue.interestThing !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.previouslyEnjoyable}`)
+            : undefined,
+          questionParagraph("63. Feeling down, depressed, or hopeless?"),
+          answerParagraph(`${req.body.PHQValue.feelingDepressed}`),
 
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? questionParagraph(
-          //       "Have your depressive symptoms improved or become worse since they started?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.depressiveSymptomsImproved}`)
-          //   : undefined,
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? questionParagraph(
-          //       "How often do you feel depressed during this or your most recent episode?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.oftenFeelDepressed}`)
-          //   : undefined,
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? questionParagraph(
-          //       "When you experience depression, does it last a majority of the day for most days of the week?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.feelingDepressed !== "" &&
-          // req.body.PHQValue.feelingDepressed !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.experienceDepression}`)
-          //   : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? questionParagraph(
+                "Have your depressive symptoms improved or become worse since they started?"
+              )
+            : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.depressiveSymptomsImproved}`)
+            : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? questionParagraph(
+                "How often do you feel depressed during this or your most recent episode?"
+              )
+            : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.oftenFeelDepressed}`)
+            : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? questionParagraph(
+                "When you experience depression, does it last a majority of the day for most days of the week?"
+              )
+            : undefined,
+          req.body.PHQValue.feelingDepressed !== "" &&
+          req.body.PHQValue.feelingDepressed !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.experienceDepression}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "64. Trouble falling or staying asleep, or sleeping too much?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.troubleFallingAsleep}`),
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? questionParagraph(
-          //       "How many times do you wake up per night before the time you plan to wake up?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.wakeUpTimess}`)
-          //   : undefined,
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? questionParagraph(
-          //       "If trouble staying asleep, when you wake up during the night, how long do you stay awake for?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.stayAwakeLong}`)
-          //   : undefined,
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? questionParagraph(
-          //       "What is the total number of hours you sleep per 24 hours?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.troubleFallingAsleep !== "" &&
-          // req.body.PHQValue.troubleFallingAsleep !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.totalSleepTimes}`)
-          //   : undefined,
+          questionParagraph(
+            "64. Trouble falling or staying asleep, or sleeping too much?"
+          ),
+          answerParagraph(`${req.body.PHQValue.troubleFallingAsleep}`),
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? questionParagraph(
+                "How many times do you wake up per night before the time you plan to wake up?"
+              )
+            : undefined,
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.wakeUpTimess}`)
+            : undefined,
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? questionParagraph(
+                "If trouble staying asleep, when you wake up during the night, how long do you stay awake for?"
+              )
+            : undefined,
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.stayAwakeLong}`)
+            : undefined,
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? questionParagraph(
+                "What is the total number of hours you sleep per 24 hours?"
+              )
+            : undefined,
+          req.body.PHQValue.troubleFallingAsleep !== "" &&
+          req.body.PHQValue.troubleFallingAsleep !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.totalSleepTimes}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "65. Over the last 2 weeks, have you been feeling tired or having little energy?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.feelingEnergy}`),
-          // questionParagraph(
-          //   "66. Over the last 2 weeks, have you had poor appetite or been overeating?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.poorAppetite}`),
-          // req.body.PHQValue.poorAppetite !== "" &&
-          // req.body.PHQValue.poorAppetite !== "Not at all"
-          //   ? questionParagraph(
-          //       "If you have gained or lost weight recently, how many pounds have you gained or lost?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.poorAppetite !== "" &&
-          // req.body.PHQValue.poorAppetite !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.recentlyWeightPounds}`)
-          //   : undefined,
-          // req.body.PHQValue.poorAppetite !== "" &&
-          // req.body.PHQValue.poorAppetite !== "Not at all"
-          //   ? questionParagraph(
-          //       "How long did it take you to gain or lose this weight?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.poorAppetite !== "" &&
-          // req.body.PHQValue.poorAppetite !== "Not at all"
-          //   ? answerParagraph(`${req.body.PHQValue.weightGainLostLong}`)
-          //   : undefined,
+          questionParagraph(
+            "65. Over the last 2 weeks, have you been feeling tired or having little energy?"
+          ),
+          answerParagraph(`${req.body.PHQValue.feelingEnergy}`),
+          questionParagraph(
+            "66. Over the last 2 weeks, have you had poor appetite or been overeating?"
+          ),
+          answerParagraph(`${req.body.PHQValue.poorAppetite}`),
+          req.body.PHQValue.poorAppetite !== "" &&
+          req.body.PHQValue.poorAppetite !== "Not at all"
+            ? questionParagraph(
+                "If you have gained or lost weight recently, how many pounds have you gained or lost?"
+              )
+            : undefined,
+          req.body.PHQValue.poorAppetite !== "" &&
+          req.body.PHQValue.poorAppetite !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.recentlyWeightPounds}`)
+            : undefined,
+          req.body.PHQValue.poorAppetite !== "" &&
+          req.body.PHQValue.poorAppetite !== "Not at all"
+            ? questionParagraph(
+                "How long did it take you to gain or lose this weight?"
+              )
+            : undefined,
+          req.body.PHQValue.poorAppetite !== "" &&
+          req.body.PHQValue.poorAppetite !== "Not at all"
+            ? answerParagraph(`${req.body.PHQValue.weightGainLostLong}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "67. Over the last 2 weeks, have you been feeling bad about yourself — or that you are a failure or have let yourself or your family down?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.yourselfFeelingBad}`),
-          // questionParagraph(
-          //   "68. Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.troubleConCentratingThing}`),
-          // questionParagraph(
-          //   "69. Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or so fidgety or restless that you have been moving a lot more than usual?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.fidgetyMoving}`),
-          // questionParagraph(
-          //   "70. Over the last 2 weeks, have you had thoughts that you would be better off dead, or thoughts of hurting yourself in some way?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.betterOffDeadYourself}`),
-          // questionParagraph(
-          //   "71. In the past month, have you wished you were dead or wished you could go to sleep and not wake up?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.deadWishWakeUp}`),
-          // questionParagraph(
-          //   "72. In the past month, have you had any actual thoughts of killing yourself?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.killingYourself}`),
-          // req.body.PHQValue.killingYourself !== "" &&
-          // req.body.PHQValue.killingYourself !== "No"
-          //   ? questionParagraph(
-          //       "Have you been thinking about how you might kill yourself?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.killingYourself !== "" &&
-          // req.body.PHQValue.killingYourself !== "No"
-          //   ? answerParagraph(`${req.body.PHQValue.killMethod}`)
-          //   : undefined,
-          // req.body.PHQValue.killingYourself !== "No" &&
-          // req.body.PHQValue.killMethod !== "No"
-          //   ? questionParagraph(
-          //       "Have you had these thoughts, and had some intention of acting on them?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.killingYourself !== "No" &&
-          // req.body.PHQValue.killMethod !== "No"
-          //   ? answerParagraph(`${req.body.PHQValue.actingIntention}`)
-          //   : undefined,
-          // req.body.PHQValue.killingYourself !== "No" &&
-          // req.body.PHQValue.killMethod !== "No" &&
-          // req.body.PHQValue.actingIntention !== "No"
-          //   ? questionParagraph(
-          //       "Have you started to work out or worked out the details of how to kill yourself? Do you intend to carry out this plan?"
-          //     )
-          //   : undefined,
-          // req.body.PHQValue.killingYourself !== "No" &&
-          // req.body.PHQValue.killMethod !== "No" &&
-          // req.body.PHQValue.actingIntention !== "No"
-          //   ? answerParagraph(`${req.body.PHQValue.killIntentionCarryout}`)
-          //   : undefined,
+          questionParagraph(
+            "67. Over the last 2 weeks, have you been feeling bad about yourself — or that you are a failure or have let yourself or your family down?"
+          ),
+          answerParagraph(`${req.body.PHQValue.yourselfFeelingBad}`),
+          questionParagraph(
+            "68. Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?"
+          ),
+          answerParagraph(`${req.body.PHQValue.troubleConCentratingThing}`),
+          questionParagraph(
+            "69. Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or so fidgety or restless that you have been moving a lot more than usual?"
+          ),
+          answerParagraph(`${req.body.PHQValue.fidgetyMoving}`),
+          questionParagraph(
+            "70. Over the last 2 weeks, have you had thoughts that you would be better off dead, or thoughts of hurting yourself in some way?"
+          ),
+          answerParagraph(`${req.body.PHQValue.betterOffDeadYourself}`),
+          questionParagraph(
+            "71. In the past month, have you wished you were dead or wished you could go to sleep and not wake up?"
+          ),
+          answerParagraph(`${req.body.PHQValue.deadWishWakeUp}`),
+          questionParagraph(
+            "72. In the past month, have you had any actual thoughts of killing yourself?"
+          ),
+          answerParagraph(`${req.body.PHQValue.killingYourself}`),
+          req.body.PHQValue.killingYourself !== "" &&
+          req.body.PHQValue.killingYourself !== "No"
+            ? questionParagraph(
+                "Have you been thinking about how you might kill yourself?"
+              )
+            : undefined,
+          req.body.PHQValue.killingYourself !== "" &&
+          req.body.PHQValue.killingYourself !== "No"
+            ? answerParagraph(`${req.body.PHQValue.killMethod}`)
+            : undefined,
+          req.body.PHQValue.killingYourself !== "No" &&
+          req.body.PHQValue.killMethod !== "No"
+            ? questionParagraph(
+                "Have you had these thoughts, and had some intention of acting on them?"
+              )
+            : undefined,
+          req.body.PHQValue.killingYourself !== "No" &&
+          req.body.PHQValue.killMethod !== "No"
+            ? answerParagraph(`${req.body.PHQValue.actingIntention}`)
+            : undefined,
+          req.body.PHQValue.killingYourself !== "No" &&
+          req.body.PHQValue.killMethod !== "No" &&
+          req.body.PHQValue.actingIntention !== "No"
+            ? questionParagraph(
+                "Have you started to work out or worked out the details of how to kill yourself? Do you intend to carry out this plan?"
+              )
+            : undefined,
+          req.body.PHQValue.killingYourself !== "No" &&
+          req.body.PHQValue.killMethod !== "No" &&
+          req.body.PHQValue.actingIntention !== "No"
+            ? answerParagraph(`${req.body.PHQValue.killIntentionCarryout}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "73. Have you ever done anything, started to do anything, or prepared to do anything to end your life?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.preparedAnythingEndYourlife}`),
-          // questionParagraph("74. Do you have thoughts of hurting anyone else?"),
-          // answerParagraph(`${req.body.PHQValue.hurtingAnyone}`),
-          // questionParagraph(
-          //   "75. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current depressive symptoms?"
-          // ),
-          // answerParagraph(`${req.body.PHQValue.currentDepressiveSymptoms}`),
+          questionParagraph(
+            "73. Have you ever done anything, started to do anything, or prepared to do anything to end your life?"
+          ),
+          answerParagraph(`${req.body.PHQValue.preparedAnythingEndYourlife}`),
+          questionParagraph("74. Do you have thoughts of hurting anyone else?"),
+          answerParagraph(`${req.body.PHQValue.hurtingAnyone}`),
+          questionParagraph(
+            "75. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current depressive symptoms?"
+          ),
+          answerParagraph(`${req.body.PHQValue.currentDepressiveSymptoms}`),
 
-          // TitleParagraph("GAD-7"),
-          // questionParagraph(
-          //   "76. Over the last <u>2 weeks</u>, how often have you been feeling nervous, anxious, or on edge"
-          // ),
-          // answerParagraph(`${req.body.GADValue.feelingNervous}`),
-          // req.body.GADValue.feelingNervous !== "" &&
-          // req.body.GADValue.feelingNervous !== "Not at all"
-          //   ? questionParagraph(
-          //       "How long have you felt anxious during this or your most recent episode?"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.feelingNervous !== "" &&
-          // req.body.GADValue.feelingNervous !== "Not at all"
-          //   ? answerParagraph(`${req.body.GADValue.feltAnxiousLong}`)
-          //   : undefined,
-          // req.body.GADValue.feelingNervous !== "" &&
-          // req.body.GADValue.feelingNervous !== "Not at all"
-          //   ? questionParagraph("How often do you feel anxious?")
-          //   : undefined,
-          // req.body.GADValue.feelingNervous !== "" &&
-          // req.body.GADValue.feelingNervous !== "Not at all"
-          //   ? answerParagraph(`${req.body.GADValue.feelAnxiousOften}`)
-          //   : undefined,
-          // questionParagraph(
-          //   "77. Over the last <u>2 weeks</u>, how often have you been not being able to stop or control worrying"
-          // ),
-          // answerParagraph(`${req.body.GADValue.stopControlWorring}`),
-          // questionParagraph(
-          //   "78. Over the last <u>2 weeks</u>, how often have you been worrying too much about different things"
-          // ),
-          // answerParagraph(`${req.body.GADValue.worringDifferentThing}`),
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all"
-          //   ? questionParagraph("What do you worry about?")
-          //   : undefined,
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all"
-          //   ? answerParagraph(`${req.body.GADValue.worringThing}`)
-          //   : undefined,
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all" &&
-          // req.body.GADValue.worringThing === "Other"
-          //   ? questionParagraph(
-          //       "You selected 'other'. Please describe what you worry about."
-          //     )
-          //   : undefined,
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all" &&
-          // req.body.GADValue.worringThing === "Other"
-          //   ? answerParagraph(`${req.body.GADValue.describeWorringThing}`)
-          //   : undefined,
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all"
-          //   ? questionParagraph(
-          //       "Does anything specific make your anxiety worse?"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.worringDifferentThing !== "" &&
-          // req.body.GADValue.worringDifferentThing !== "Not at all"
-          //   ? answerParagraph(`${req.body.GADValue.specificAnxietyWorse}`)
-          //   : undefined,
+          TitleParagraph("GAD-7"),
+          questionParagraph(
+            "76. Over the last <u>2 weeks</u>, how often have you been feeling nervous, anxious, or on edge"
+          ),
+          answerParagraph(`${req.body.GADValue.feelingNervous}`),
+          req.body.GADValue.feelingNervous !== "" &&
+          req.body.GADValue.feelingNervous !== "Not at all"
+            ? questionParagraph(
+                "How long have you felt anxious during this or your most recent episode?"
+              )
+            : undefined,
+          req.body.GADValue.feelingNervous !== "" &&
+          req.body.GADValue.feelingNervous !== "Not at all"
+            ? answerParagraph(`${req.body.GADValue.feltAnxiousLong}`)
+            : undefined,
+          req.body.GADValue.feelingNervous !== "" &&
+          req.body.GADValue.feelingNervous !== "Not at all"
+            ? questionParagraph("How often do you feel anxious?")
+            : undefined,
+          req.body.GADValue.feelingNervous !== "" &&
+          req.body.GADValue.feelingNervous !== "Not at all"
+            ? answerParagraph(`${req.body.GADValue.feelAnxiousOften}`)
+            : undefined,
+          questionParagraph(
+            "77. Over the last <u>2 weeks</u>, how often have you been not being able to stop or control worrying"
+          ),
+          answerParagraph(`${req.body.GADValue.stopControlWorring}`),
+          questionParagraph(
+            "78. Over the last <u>2 weeks</u>, how often have you been worrying too much about different things"
+          ),
+          answerParagraph(`${req.body.GADValue.worringDifferentThing}`),
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all"
+            ? questionParagraph("What do you worry about?")
+            : undefined,
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all"
+            ? answerParagraph(`${req.body.GADValue.worringThing}`)
+            : undefined,
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all" &&
+          req.body.GADValue.worringThing === "Other"
+            ? questionParagraph(
+                "You selected 'other'. Please describe what you worry about."
+              )
+            : undefined,
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all" &&
+          req.body.GADValue.worringThing === "Other"
+            ? answerParagraph(`${req.body.GADValue.describeWorringThing}`)
+            : undefined,
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all"
+            ? questionParagraph(
+                "Does anything specific make your anxiety worse?"
+              )
+            : undefined,
+          req.body.GADValue.worringDifferentThing !== "" &&
+          req.body.GADValue.worringDifferentThing !== "Not at all"
+            ? answerParagraph(`${req.body.GADValue.specificAnxietyWorse}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "79. Over the last <u>2 weeks</u>, how often have you been trouble relaxing"
-          // ),
-          // answerParagraph(`${req.body.GADValue.troubleRelaxing}`),
-          // questionParagraph(
-          //   "80. Over the last <u>2 weeks</u>, how often have you been being so restless that it's hard to sit still"
-          // ),
-          // answerParagraph(`${req.body.GADValue.restlessSitHard}`),
-          // questionParagraph(
-          //   "81. Over the last <u>2 weeks</u>, how often have you been becoming easily annoyed or irritable"
-          // ),
-          // answerParagraph(`${req.body.GADValue.easilyAnnoyed}`),
-          // questionParagraph(
-          //   "82. Over the last <u>2 weeks</u>, how often have you been feeling afraid as if something awful might happen"
-          // ),
-          // answerParagraph(`${req.body.GADValue.feelingAfraidAwfulThing}`),
-          // questionParagraph(
-          //   "83. Over the last <u>2 weeks</u>, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
-          // ),
-          // answerParagraph(`${req.body.GADValue.currentAnxietySymptoms}`),
-          // questionParagraph(
-          //   "84. Over the last <u>2 weeks</u>, how often have you been experience panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
-          // ),
-          // answerParagraph(`${req.body.GADValue.panicAttacks}`),
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? questionParagraph(
-          //       "If you experience panic attacks, indicate the physical symptoms that occur."
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "79. Over the last <u>2 weeks</u>, how often have you been trouble relaxing"
+          ),
+          answerParagraph(`${req.body.GADValue.troubleRelaxing}`),
+          questionParagraph(
+            "80. Over the last <u>2 weeks</u>, how often have you been being so restless that it's hard to sit still"
+          ),
+          answerParagraph(`${req.body.GADValue.restlessSitHard}`),
+          questionParagraph(
+            "81. Over the last <u>2 weeks</u>, how often have you been becoming easily annoyed or irritable"
+          ),
+          answerParagraph(`${req.body.GADValue.easilyAnnoyed}`),
+          questionParagraph(
+            "82. Over the last <u>2 weeks</u>, how often have you been feeling afraid as if something awful might happen"
+          ),
+          answerParagraph(`${req.body.GADValue.feelingAfraidAwfulThing}`),
+          questionParagraph(
+            "83. Over the last <u>2 weeks</u>, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
+          ),
+          answerParagraph(`${req.body.GADValue.currentAnxietySymptoms}`),
+          questionParagraph(
+            "84. Over the last <u>2 weeks</u>, how often have you been experience panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
+          ),
+          answerParagraph(`${req.body.GADValue.panicAttacks}`),
+          req.body.GADValue.panicAttacks === "Yes"
+            ? questionParagraph(
+                "If you experience panic attacks, indicate the physical symptoms that occur."
+              )
+            : undefined,
 
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? answerParagraph(`${req.body.GADValue.panicPhysicalSymptoms}`)
-          //   : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? answerParagraph(`${req.body.GADValue.panicPhysicalSymptoms}`)
+            : undefined,
 
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? questionParagraph(
-          //       "If you experience panic attacks, how often do they occur?"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? answerParagraph(`${req.body.GADValue.panicOccur}`)
-          //   : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? questionParagraph(
+                "If you experience panic attacks, how often do they occur?"
+              )
+            : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? answerParagraph(`${req.body.GADValue.panicOccur}`)
+            : undefined,
 
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? questionParagraph(
-          //       "If you experience panic attacks, how long do they last?"
-          //     )
-          //   : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? questionParagraph(
+                "If you experience panic attacks, how long do they last?"
+              )
+            : undefined,
 
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? answerParagraph(`${req.body.GADValue.panicAttacksLastLong}`)
-          //   : undefined,
-          // req.body.GADValue.panicAttacks === "Yes" &&
-          // req.body.GADValue.panicAttacksList !== ""
-          //   ? questionParagraph(
-          //       "Please list anything that triggers your panic attacks:"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.panicAttacks === "Yes" &&
-          // req.body.GADValue.panicAttacksList !== ""
-          //   ? answerParagraph(`${req.body.GADValue.panicAttacksList}`)
-          //   : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? answerParagraph(`${req.body.GADValue.panicAttacksLastLong}`)
+            : undefined,
+          req.body.GADValue.panicAttacks === "Yes" &&
+          req.body.GADValue.panicAttacksList !== ""
+            ? questionParagraph(
+                "Please list anything that triggers your panic attacks:"
+              )
+            : undefined,
+          req.body.GADValue.panicAttacks === "Yes" &&
+          req.body.GADValue.panicAttacksList !== ""
+            ? answerParagraph(`${req.body.GADValue.panicAttacksList}`)
+            : undefined,
 
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? questionParagraph(
-          //       "Are your panic attacks spontaneous and unrelated to any events?"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.panicAttacks === "Yes"
-          //   ? answerParagraph(`${req.body.GADValue.panicAttacksSpontaneous}`)
-          //   : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? questionParagraph(
+                "Are your panic attacks spontaneous and unrelated to any events?"
+              )
+            : undefined,
+          req.body.GADValue.panicAttacks === "Yes"
+            ? answerParagraph(`${req.body.GADValue.panicAttacksSpontaneous}`)
+            : undefined,
 
-          // questionParagraph("85. Have you experienced past traumatic event(s)"),
-          // answerParagraph(`${req.body.GADValue.pastTraumaticEvents}`),
-          // req.body.GADValue.pastTraumaticEvents == "Yes"
-          //   ? questionParagraph("What traumatic event(s) did you experience?")
-          //   : undefined,
-          // req.body.GADValue.pastTraumaticEvents == "Yes"
-          //   ? answerParagraph(`${req.body.GADValue.traumaticEventExperience}`)
-          //   : undefined,
-          // req.body.GADValue.pastTraumaticEvents == "Yes"
-          //   ? questionParagraph(
-          //       "If you feel comfortable, please describe your traumatic experiences:"
-          //     )
-          //   : undefined,
-          // req.body.GADValue.pastTraumaticEvents == "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.GADValue.describeTraumaticExperience}`
-          //     )
-          //   : undefined,
+          questionParagraph("85. Have you experienced past traumatic event(s)"),
+          answerParagraph(`${req.body.GADValue.pastTraumaticEvents}`),
+          req.body.GADValue.pastTraumaticEvents == "Yes"
+            ? questionParagraph("What traumatic event(s) did you experience?")
+            : undefined,
+          req.body.GADValue.pastTraumaticEvents == "Yes"
+            ? answerParagraph(`${req.body.GADValue.traumaticEventExperience}`)
+            : undefined,
+          req.body.GADValue.pastTraumaticEvents == "Yes"
+            ? questionParagraph(
+                "If you feel comfortable, please describe your traumatic experiences:"
+              )
+            : undefined,
+          req.body.GADValue.pastTraumaticEvents == "Yes"
+            ? answerParagraph(
+                `${req.body.GADValue.describeTraumaticExperience}`
+              )
+            : undefined,
 
-          // TitleParagraph("PCL-5"),
-          // questionParagraph(
-          //   "86. Repeated, disturbing, and unwanted memories of the stressful experience?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.stressfulExperienceMemories}`),
-          // questionParagraph(
-          //   "87. Repeated, disturbing dreams of the stressful experience?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.stressfulExperience}`),
-          // req.body.PCLValue.stressfulExperience !== "" &&
-          // req.body.PCLValue.stressfulExperience !== "Not at all"
-          //   ? questionParagraph("These disturbing dreams occur")
-          //   : undefined,
-          // req.body.PCLValue.stressfulExperience !== "" &&
-          // req.body.PCLValue.stressfulExperience !== "Not at all"
-          //   ? answerParagraph(`${req.body.PCLValue.disturbingDreamsOccur}`)
-          //   : undefined,
-          // questionParagraph(
-          //   "88. Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.suddenlyStressfulExperience}`),
-          // questionParagraph(
-          //   "89. Feeling very upset when something reminded you of the stressful experience?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.veryUpsetStressfulExperience}`),
-          // questionParagraph(
-          //   "90. Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.PCLValue.strongPhysicalReactionStressfulExperience}`
-          // ),
-          // questionParagraph(
-          //   "91. Avoiding memories, thoughts, or feelings related to the stressful experience?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.avoidingMemories}`),
-          // questionParagraph(
-          //   "92. Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.avoidingExternalReminders}`),
-          // req.body.PCLValue.avoidingExternalReminders !== "" &&
-          // req.body.PCLValue.avoidingExternalReminders !== "Not at all"
-          //   ? questionParagraph(
-          //       "Please describe the people, places, conversations, objects, or situations you avoid:"
-          //     )
-          //   : undefined,
-          // req.body.PCLValue.avoidingExternalReminders !== "" &&
-          // req.body.PCLValue.avoidingExternalReminders !== "Not at all"
-          //   ? answerParagraph(`${req.body.PCLValue.describeSituations}`)
-          //   : undefined,
-          // req.body.PCLValue.avoidingExternalReminders !== "" &&
-          // req.body.PCLValue.avoidingExternalReminders !== "Not at all"
-          //   ? questionParagraph(
-          //       "What activities do you avoid, in relation to the trauma you have experienced?"
-          //     )
-          //   : undefined,
-          // req.body.PCLValue.avoidingExternalReminders !== "" &&
-          // req.body.PCLValue.avoidingExternalReminders !== "Not at all"
-          //   ? answerParagraph(`${req.body.PCLValue.avoidActivities}`)
-          //   : undefined,
-          // questionParagraph(
-          //   "93. Trouble remembering important parts of the stressful experience?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.troubleStressfulExperience}`),
-          // questionParagraph(
-          //   "94. Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.strongNegativeBeliefs}`),
-          // questionParagraph(
-          //   "95. Blaming yourself or someone else for the stressful experience or what happened after it?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.stressfulExperienceBlaming}`),
-          // questionParagraph(
-          //   "96. Having strong negative feelings such as fear, horror, anger, guilt, or shame?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.strongNegativefeelings}`),
-          // questionParagraph(
-          //   "97. Loss of interest in activities that you used to enjoy (although this is a repeat question, please answer again)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.lossInterestActivity}`),
-          // questionParagraph(
-          //   "98. Feeling distant or cut off from other people?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.feelingDistantPeople}`),
-          // questionParagraph(
-          //   "99. Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.PCLValue.troubleExperiencePositiveFeeling}`
-          // ),
-          // questionParagraph(
-          //   "100. Irritable behavior, angry outbursts, or acting aggressively?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.irritableBehavior}`),
-          // questionParagraph(
-          //   "101. Taking too many risks or doing things that could cause you harm?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.manyRisksThing}`),
-          // questionParagraph("102. Being “superalert” or watchful or on guard?"),
-          // answerParagraph(`${req.body.PCLValue.beingWatchful}`),
-          // questionParagraph("103. Feeling jumpy or easily startled?"),
-          // answerParagraph(`${req.body.PCLValue.easilyStartled}`),
-          // questionParagraph(
-          //   "104. Having difficulty concentrating (although this is a repeat question, please answer again)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.difficultyConcentrating}`),
-          // questionParagraph(
-          //   "105. Trouble falling or staying asleep (although this is a repeat question, please answer again)?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.troubleFallingAsleep}`),
-          // questionParagraph(
-          //   "106. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current post trauma related symptoms?"
-          // ),
-          // answerParagraph(`${req.body.PCLValue.currentRelatedSymptoms}`),
+          TitleParagraph("PCL-5"),
+          questionParagraph(
+            "86. Repeated, disturbing, and unwanted memories of the stressful experience?"
+          ),
+          answerParagraph(`${req.body.PCLValue.stressfulExperienceMemories}`),
+          questionParagraph(
+            "87. Repeated, disturbing dreams of the stressful experience?"
+          ),
+          answerParagraph(`${req.body.PCLValue.stressfulExperience}`),
+          req.body.PCLValue.stressfulExperience !== "" &&
+          req.body.PCLValue.stressfulExperience !== "Not at all"
+            ? questionParagraph("These disturbing dreams occur")
+            : undefined,
+          req.body.PCLValue.stressfulExperience !== "" &&
+          req.body.PCLValue.stressfulExperience !== "Not at all"
+            ? answerParagraph(`${req.body.PCLValue.disturbingDreamsOccur}`)
+            : undefined,
+          questionParagraph(
+            "88. Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.suddenlyStressfulExperience}`),
+          questionParagraph(
+            "89. Feeling very upset when something reminded you of the stressful experience?"
+          ),
+          answerParagraph(`${req.body.PCLValue.veryUpsetStressfulExperience}`),
+          questionParagraph(
+            "90. Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating)?"
+          ),
+          answerParagraph(
+            `${req.body.PCLValue.strongPhysicalReactionStressfulExperience}`
+          ),
+          questionParagraph(
+            "91. Avoiding memories, thoughts, or feelings related to the stressful experience?"
+          ),
+          answerParagraph(`${req.body.PCLValue.avoidingMemories}`),
+          questionParagraph(
+            "92. Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.avoidingExternalReminders}`),
+          req.body.PCLValue.avoidingExternalReminders !== "" &&
+          req.body.PCLValue.avoidingExternalReminders !== "Not at all"
+            ? questionParagraph(
+                "Please describe the people, places, conversations, objects, or situations you avoid:"
+              )
+            : undefined,
+          req.body.PCLValue.avoidingExternalReminders !== "" &&
+          req.body.PCLValue.avoidingExternalReminders !== "Not at all"
+            ? answerParagraph(`${req.body.PCLValue.describeSituations}`)
+            : undefined,
+          req.body.PCLValue.avoidingExternalReminders !== "" &&
+          req.body.PCLValue.avoidingExternalReminders !== "Not at all"
+            ? questionParagraph(
+                "What activities do you avoid, in relation to the trauma you have experienced?"
+              )
+            : undefined,
+          req.body.PCLValue.avoidingExternalReminders !== "" &&
+          req.body.PCLValue.avoidingExternalReminders !== "Not at all"
+            ? answerParagraph(`${req.body.PCLValue.avoidActivities}`)
+            : undefined,
+          questionParagraph(
+            "93. Trouble remembering important parts of the stressful experience?"
+          ),
+          answerParagraph(`${req.body.PCLValue.troubleStressfulExperience}`),
+          questionParagraph(
+            "94. Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.strongNegativeBeliefs}`),
+          questionParagraph(
+            "95. Blaming yourself or someone else for the stressful experience or what happened after it?"
+          ),
+          answerParagraph(`${req.body.PCLValue.stressfulExperienceBlaming}`),
+          questionParagraph(
+            "96. Having strong negative feelings such as fear, horror, anger, guilt, or shame?"
+          ),
+          answerParagraph(`${req.body.PCLValue.strongNegativefeelings}`),
+          questionParagraph(
+            "97. Loss of interest in activities that you used to enjoy (although this is a repeat question, please answer again)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.lossInterestActivity}`),
+          questionParagraph(
+            "98. Feeling distant or cut off from other people?"
+          ),
+          answerParagraph(`${req.body.PCLValue.feelingDistantPeople}`),
+          questionParagraph(
+            "99. Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you)?"
+          ),
+          answerParagraph(
+            `${req.body.PCLValue.troubleExperiencePositiveFeeling}`
+          ),
+          questionParagraph(
+            "100. Irritable behavior, angry outbursts, or acting aggressively?"
+          ),
+          answerParagraph(`${req.body.PCLValue.irritableBehavior}`),
+          questionParagraph(
+            "101. Taking too many risks or doing things that could cause you harm?"
+          ),
+          answerParagraph(`${req.body.PCLValue.manyRisksThing}`),
+          questionParagraph("102. Being “superalert” or watchful or on guard?"),
+          answerParagraph(`${req.body.PCLValue.beingWatchful}`),
+          questionParagraph("103. Feeling jumpy or easily startled?"),
+          answerParagraph(`${req.body.PCLValue.easilyStartled}`),
+          questionParagraph(
+            "104. Having difficulty concentrating (although this is a repeat question, please answer again)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.difficultyConcentrating}`),
+          questionParagraph(
+            "105. Trouble falling or staying asleep (although this is a repeat question, please answer again)?"
+          ),
+          answerParagraph(`${req.body.PCLValue.troubleFallingAsleep}`),
+          questionParagraph(
+            "106. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current post trauma related symptoms?"
+          ),
+          answerParagraph(`${req.body.PCLValue.currentRelatedSymptoms}`),
 
-          // TitleParagraph("Current Treatment"),
-          // questionParagraph(
-          //   "107. Do you currently take any psychiatric medications."
-          // ),
-          // answerParagraph(
-          //   `${req.body.currentTreatmentValue.currentlyPsychiatricMedications}`
-          // ),
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "Please list the name, dose, and how often you take this medication."
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.medicationList}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "How long have you been taking this medication?"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.medicationLong}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "What is the reason you take these medications you listed above? Select all that apply."
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.medicationReason}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          //   "Yes" &&
-          // req.body.currentTreatmentValue?.medicationReason &&
-          // req.body.currentTreatmentValue?.medicationReason.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? questionParagraph(
-          //       "Please explain the reason you take these medications you listed above."
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          //   "Yes" &&
-          // req.body.currentTreatmentValue?.medicationReason &&
-          // req.body.currentTreatmentValue?.medicationReason.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.describeMedicationReason}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "The current medications you take have produced the following effects on your condition:"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       cardFieldType(
-          //         req.body.currentTreatmentValue.medicationsEffectYourCondition
-          //       )
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "Do you always take the medication as prescribed by your medical provider?"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.medicationAsPrescribed}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "Have you experienced any of the following side effects from your medication(s)?"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.experiencedSideEffects}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          //   "Yes" &&
-          // req.body.currentTreatmentValue?.experiencedSideEffects &&
-          // req.body.currentTreatmentValue?.experiencedSideEffects.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? questionParagraph(
-          //       "You selected 'other,' please describe your side effects here."
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          //   "Yes" &&
-          // req.body.currentTreatmentValue?.experiencedSideEffects &&
-          // req.body.currentTreatmentValue?.experiencedSideEffects.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.describeSideEffect}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "Your current or most recent psychiatric medication treatment provider was (name/facility/clinic):"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.recentTreatmentProvider}`
-          //     )
-          //   : undefined,
+          TitleParagraph("Current Treatment"),
+          questionParagraph(
+            "107. Do you currently take any psychiatric medications."
+          ),
+          answerParagraph(
+            `${req.body.currentTreatmentValue.currentlyPsychiatricMedications}`
+          ),
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "Please list the name, dose, and how often you take this medication."
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.medicationList}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "How long have you been taking this medication?"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.medicationLong}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "What is the reason you take these medications you listed above? Select all that apply."
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.medicationReason}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+            "Yes" &&
+          req.body.currentTreatmentValue?.medicationReason &&
+          req.body.currentTreatmentValue?.medicationReason.filter(
+            (item) => item === "Other"
+          ).length
+            ? questionParagraph(
+                "Please explain the reason you take these medications you listed above."
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+            "Yes" &&
+          req.body.currentTreatmentValue?.medicationReason &&
+          req.body.currentTreatmentValue?.medicationReason.filter(
+            (item) => item === "Other"
+          ).length
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.describeMedicationReason}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "The current medications you take have produced the following effects on your condition:"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                cardFieldType(
+                  req.body.currentTreatmentValue.medicationsEffectYourCondition
+                )
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "Do you always take the medication as prescribed by your medical provider?"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.medicationAsPrescribed}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "Have you experienced any of the following side effects from your medication(s)?"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.experiencedSideEffects}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+            "Yes" &&
+          req.body.currentTreatmentValue?.experiencedSideEffects &&
+          req.body.currentTreatmentValue?.experiencedSideEffects.filter(
+            (item) => item === "Other"
+          ).length
+            ? questionParagraph(
+                "You selected 'other,' please describe your side effects here."
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+            "Yes" &&
+          req.body.currentTreatmentValue?.experiencedSideEffects &&
+          req.body.currentTreatmentValue?.experiencedSideEffects.filter(
+            (item) => item === "Other"
+          ).length
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.describeSideEffect}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? questionParagraph(
+                "Your current or most recent psychiatric medication treatment provider was (name/facility/clinic):"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychiatricMedications ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.recentTreatmentProvider}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "108. Are you currently in psychotherapy treatment?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.currentTreatmentValue.currentlyPsychotherapyTreatment}`
-          // ),
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "When did your current psychotherapy treatment begin?"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.recentPsychotherapyBegin}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "When was your most recent psychotherapy session?"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.recentPsychotherapySession}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? questionParagraph("I attend psychotherapy sessions:")
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.psychotherapySessionsDate}`
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? questionParagraph(
-          //       "Your current or most recent psychotherapy treatment provider is (name/facility/clinic):"
-          //     )
-          //   : undefined,
-          // req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          // "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.currentTreatmentValue.psychotherapistTreatmentProvider}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "108. Are you currently in psychotherapy treatment?"
+          ),
+          answerParagraph(
+            `${req.body.currentTreatmentValue.currentlyPsychotherapyTreatment}`
+          ),
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? questionParagraph(
+                "When did your current psychotherapy treatment begin?"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.recentPsychotherapyBegin}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? questionParagraph(
+                "When was your most recent psychotherapy session?"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.recentPsychotherapySession}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? questionParagraph("I attend psychotherapy sessions:")
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.psychotherapySessionsDate}`
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? questionParagraph(
+                "Your current or most recent psychotherapy treatment provider is (name/facility/clinic):"
+              )
+            : undefined,
+          req.body.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
+          "Yes"
+            ? answerParagraph(
+                `${req.body.currentTreatmentValue.psychotherapistTreatmentProvider}`
+              )
+            : undefined,
 
-          // TitleParagraph("Past History"),
-          // questionParagraph(
-          //   "109. Have you ever previously experienced any of the following symptoms"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.previouslyExperiencedSymptom}`
-          // ),
-          // questionParagraph(
-          //   "110. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.experienceMuchEnergy}`),
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph(
-          //       "During this time, if you slept fewer than 4 hours per night, how many nights did it last?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.sleptFewer4Hours}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph(
-          //       "During this time of lack of sleep, how was your energy when awake?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.lackSleepEnergy}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph(
-          //       "During this time, did you sleep fewer than 4 hours per night for 4-7 or more consecutive nights, without feeling excessively tired?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.sleepFewer}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph("During this time, how was your mood?")
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.mood}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
-          // req.body.pastHistoryValue?.mood === "Other"
-          //   ? questionParagraph("Please describe your mood here.")
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
-          // req.body.pastHistoryValue?.mood === "Other"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.describeMood}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph(
-          //       "During this high energy time did you engage in any high-risk behaviors?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.highEnergyTime}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? questionParagraph(
-          //       "During this time, did you drink alcohol or use any other substances?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.alcoholSubstances}`)
-          //   : undefined,
+          TitleParagraph("Past History"),
+          questionParagraph(
+            "109. Have you ever previously experienced any of the following symptoms"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.previouslyExperiencedSymptom}`
+          ),
+          questionParagraph(
+            "110. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.experienceMuchEnergy}`),
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph(
+                "During this time, if you slept fewer than 4 hours per night, how many nights did it last?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.sleptFewer4Hours}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph(
+                "During this time of lack of sleep, how was your energy when awake?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.lackSleepEnergy}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph(
+                "During this time, did you sleep fewer than 4 hours per night for 4-7 or more consecutive nights, without feeling excessively tired?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.sleepFewer}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph("During this time, how was your mood?")
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.mood}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
+          req.body.pastHistoryValue?.mood === "Other"
+            ? questionParagraph("Please describe your mood here.")
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
+          req.body.pastHistoryValue?.mood === "Other"
+            ? answerParagraph(`${req.body.pastHistoryValue.describeMood}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph(
+                "During this high energy time did you engage in any high-risk behaviors?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.highEnergyTime}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? questionParagraph(
+                "During this time, did you drink alcohol or use any other substances?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceMuchEnergy === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.alcoholSubstances}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "111. Have you ever experienced any of the following?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.experienceFollowing}`),
-          // req.body.pastHistoryValue?.experienceFollowing.filter(
-          //   (item) =>
-          //     item ===
-          //     "Had thoughts, behaviors, or rituals that are recurrent, intrusive, and time consuming"
-          // ).length > 0
-          //   ? questionParagraph(
-          //       "If you have thoughts, behaviors, or rituals that are recurrent, what thoughts, behaviors, or rituals are you having?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceFollowing.filter(
-          //   (item) =>
-          //     item ===
-          //     "Had thoughts, behaviors, or rituals that are recurrent, intrusive, and time consuming"
-          // ).length > 0
-          //   ? answerParagraph(`${req.body.pastHistoryValue.recurrentRituals}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceFollowing.length > 0
-          //   ? questionParagraph(
-          //       "When experiencing these symptoms, were you drinking alcohol or using any substances?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.experienceFollowing.length > 0
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.symptomsDrinkingAlcohol}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "111. Have you ever experienced any of the following?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.experienceFollowing}`),
+          req.body.pastHistoryValue?.experienceFollowing.filter(
+            (item) =>
+              item ===
+              "Had thoughts, behaviors, or rituals that are recurrent, intrusive, and time consuming"
+          ).length > 0
+            ? questionParagraph(
+                "If you have thoughts, behaviors, or rituals that are recurrent, what thoughts, behaviors, or rituals are you having?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceFollowing.filter(
+            (item) =>
+              item ===
+              "Had thoughts, behaviors, or rituals that are recurrent, intrusive, and time consuming"
+          ).length > 0
+            ? answerParagraph(`${req.body.pastHistoryValue.recurrentRituals}`)
+            : undefined,
+          req.body.pastHistoryValue?.experienceFollowing.length > 0
+            ? questionParagraph(
+                "When experiencing these symptoms, were you drinking alcohol or using any substances?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.experienceFollowing.length > 0
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.symptomsDrinkingAlcohol}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "112. Recently, have you been thinking about how you might harm or kill yourself?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.harmKillYourSelf}`),
-          // questionParagraph(
-          //   "113. Have any of your emotional symptoms (sadness, depression, anxiety) had a negative effect upon your work, school, or relationships?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.emotionalSymptomsRelationShip}`
-          // ),
-          // questionParagraph(
-          //   "114. If you have ever experienced symptoms of depression, when did you first feel depressed?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.firstFeelDepressed}`),
-          // questionParagraph(
-          //   "115. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.feelHighLevelAnxiety}`),
-          // questionParagraph(
-          //   "115. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.feelHighLevelAnxiety}`),
-          // questionParagraph(
-          //   "116. Have you ever been diagnosed by a healthcare provider with any of the following mental health conditions?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.diagnosedMentalHealth}`),
-          // req.body.pastHistoryValue?.diagnosedMentalHealth &&
-          // req.body.pastHistoryValue?.diagnosedMentalHealth.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? questionParagraph(
-          //       "Please enter your mental health conditions here."
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.diagnosedMentalHealth &&
-          // req.body.pastHistoryValue?.diagnosedMentalHealth.filter(
-          //   (item) => item === "Other"
-          // ).length
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.describeHealthCondition}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "112. Recently, have you been thinking about how you might harm or kill yourself?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.harmKillYourSelf}`),
+          questionParagraph(
+            "113. Have any of your emotional symptoms (sadness, depression, anxiety) had a negative effect upon your work, school, or relationships?"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.emotionalSymptomsRelationShip}`
+          ),
+          questionParagraph(
+            "114. If you have ever experienced symptoms of depression, when did you first feel depressed?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.firstFeelDepressed}`),
+          questionParagraph(
+            "115. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.feelHighLevelAnxiety}`),
+          questionParagraph(
+            "115. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.feelHighLevelAnxiety}`),
+          questionParagraph(
+            "116. Have you ever been diagnosed by a healthcare provider with any of the following mental health conditions?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.diagnosedMentalHealth}`),
+          req.body.pastHistoryValue?.diagnosedMentalHealth &&
+          req.body.pastHistoryValue?.diagnosedMentalHealth.filter(
+            (item) => item === "Other"
+          ).length
+            ? questionParagraph(
+                "Please enter your mental health conditions here."
+              )
+            : undefined,
+          req.body.pastHistoryValue?.diagnosedMentalHealth &&
+          req.body.pastHistoryValue?.diagnosedMentalHealth.filter(
+            (item) => item === "Other"
+          ).length
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.describeHealthCondition}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "117. Have you ever taken any other medications in the past for a psychiatric or mental health condition, not listed above? This may include medications that did not work well or that were stopped for other reasons."
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.otherMedications}`),
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the name(s) of the past medication(s), dose(s), and how often you took the medication."
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.pastMedicationName}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the approximate date you started taking the medication (if applicable)"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.pastMedicationName}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the approximate date you stopped taking the medication (if applicable)"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.stopedMedicationDate}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph("These past psychiatric medication produced:")
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       cardFieldType(
-          //         req.body.pastHistoryValue.pastPsychiatricMedication
-          //       )
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "117. Have you ever taken any other medications in the past for a psychiatric or mental health condition, not listed above? This may include medications that did not work well or that were stopped for other reasons."
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.otherMedications}`),
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Please list the name(s) of the past medication(s), dose(s), and how often you took the medication."
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.pastMedicationName}`)
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Please list the approximate date you started taking the medication (if applicable)"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.pastMedicationName}`)
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Please list the approximate date you stopped taking the medication (if applicable)"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.stopedMedicationDate}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph("These past psychiatric medication produced:")
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                cardFieldType(
+                  req.body.pastHistoryValue.pastPsychiatricMedication
+                )
+              )
+            : undefined,
 
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Past psychiatric medications were stopped due to:"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.stopedPsychiatricMedicationsReason}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Did a psychiatrist, psychiatric nurse practitionaer, or primacy care clinician prescribe this medication to you?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.prescribeThisMedication}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the name(s) of your past clinician(s) who prescribed these medication(s) and dates you saw them."
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.prescribeThisMedicationNameDate}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph("At what clinic or office did they work at?")
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.whatClinicWorked}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "Please list any other psychiatrists you have ever seen."
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.otherPsychiatrists}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "From what date(s) to what date(s) did you see these psychiatrists?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.thisPsychiatristSeeDate}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? questionParagraph(
-          //       "During this psychiatric treatment, how often did you attend sessions with your psychiatrist?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherMedications === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.attendedSessionsPsychiatrist}`
-          //     )
-          //   : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Past psychiatric medications were stopped due to:"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.stopedPsychiatricMedicationsReason}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Did a psychiatrist, psychiatric nurse practitionaer, or primacy care clinician prescribe this medication to you?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.prescribeThisMedication}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Please list the name(s) of your past clinician(s) who prescribed these medication(s) and dates you saw them."
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.prescribeThisMedicationNameDate}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph("At what clinic or office did they work at?")
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.whatClinicWorked}`)
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "Please list any other psychiatrists you have ever seen."
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.otherPsychiatrists}`)
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "From what date(s) to what date(s) did you see these psychiatrists?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.thisPsychiatristSeeDate}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? questionParagraph(
+                "During this psychiatric treatment, how often did you attend sessions with your psychiatrist?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherMedications === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.attendedSessionsPsychiatrist}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "118. Have you ever previously received psychotherapy (talk therapy/counseling)?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.previouslyReceivedPsychotherapy}`
-          // ),
+          questionParagraph(
+            "118. Have you ever previously received psychotherapy (talk therapy/counseling)?"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.previouslyReceivedPsychotherapy}`
+          ),
 
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? questionParagraph(
-          //       "If you have ever received psychotherapy, when did your psychotherapy begin?"
-          //     )
-          //   : null,
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.receivedPsychotherapyBegin}`
-          //     )
-          //   : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? questionParagraph(
+                "If you have ever received psychotherapy, when did your psychotherapy begin?"
+              )
+            : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.receivedPsychotherapyBegin}`
+              )
+            : null,
 
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? questionParagraph("How long did you receive psychotherapy?")
-          //   : null,
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.receivedPsychotherapyLong}`
-          //     )
-          //   : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? questionParagraph("How long did you receive psychotherapy?")
+            : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.receivedPsychotherapyLong}`
+              )
+            : null,
 
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? questionParagraph(
-          //       "During this psychotherapy treatment, how often did you attend these sessions:"
-          //     )
-          //   : null,
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.attendedSessionsPsychotherapy}`
-          //     )
-          //   : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? questionParagraph(
+                "During this psychotherapy treatment, how often did you attend these sessions:"
+              )
+            : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.attendedSessionsPsychotherapy}`
+              )
+            : null,
 
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the names of your past psychotherapists and dates you saw them."
-          //     )
-          //   : null,
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.pastPsychotherapistsDate}`
-          //     )
-          //   : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? questionParagraph(
+                "Please list the names of your past psychotherapists and dates you saw them."
+              )
+            : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.pastPsychotherapistsDate}`
+              )
+            : null,
 
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe any other psychotherapy treatment not listed above:"
-          //     )
-          //   : null,
-          // req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.otherPsychotherapyTreatmentList}`
-          //     )
-          //   : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? questionParagraph(
+                "Please describe any other psychotherapy treatment not listed above:"
+              )
+            : null,
+          req.body.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.otherPsychotherapyTreatmentList}`
+              )
+            : null,
 
-          // questionParagraph(
-          //   "119. Have you ever been admitted to a psychiatric hospital?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.admittedPsychiatricHospital}`
-          // ),
+          questionParagraph(
+            "119. Have you ever been admitted to a psychiatric hospital?"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.admittedPsychiatricHospital}`
+          ),
 
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the reason for the psychiatric hospitalization"
-          //     )
-          //   : null,
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.psychiatricHospitalizationReason}`
-          //     )
-          //   : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? questionParagraph(
+                "Please list the reason for the psychiatric hospitalization"
+              )
+            : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.psychiatricHospitalizationReason}`
+              )
+            : null,
 
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the treatment you received during the psychiatric hospitalization"
-          //     )
-          //   : null,
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.receivedTreatment}`)
-          //   : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? questionParagraph(
+                "Please list the treatment you received during the psychiatric hospitalization"
+              )
+            : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.receivedTreatment}`)
+            : null,
 
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the name(s) of the hospital you were admitted to. If there is more than one instance, please list the information for all admissions."
-          //     )
-          //   : null,
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.admittedHospitalName}`
-          //     )
-          //   : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? questionParagraph(
+                "Please list the name(s) of the hospital you were admitted to. If there is more than one instance, please list the information for all admissions."
+              )
+            : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.admittedHospitalName}`
+              )
+            : null,
 
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? questionParagraph(
-          //       "Please list the dates or year(s) in which you were hospitalized"
-          //     )
-          //   : null,
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.hospitalizedDate}`)
-          //   : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? questionParagraph(
+                "Please list the dates or year(s) in which you were hospitalized"
+              )
+            : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.hospitalizedDate}`)
+            : null,
 
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? questionParagraph(
-          //       "Please list how long you were hospitalized on each occasion"
-          //     )
-          //   : null,
-          // req.body?.admittedPsychiatricHospital === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.hospitalizedLong}`)
-          //   : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? questionParagraph(
+                "Please list how long you were hospitalized on each occasion"
+              )
+            : null,
+          req.body?.admittedPsychiatricHospital === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.hospitalizedLong}`)
+            : null,
 
-          // questionParagraph(
-          //   "120. Have you ever experienced suicidal ideation?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.suicidalIdeation}`),
-          // questionParagraph("121. Have you ever made a suicide attempt?"),
-          // answerParagraph(`${req.body.pastHistoryValue.suicideAttempt}`),
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? questionParagraph(
-          //       "If yes, how many times have you attempted suicide?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.attemptedSuicideTimes}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? questionParagraph(
-          //       "How did you attempt suicide (list all methods ever used)?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.suicideAllMethods}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? questionParagraph(
-          //       "When was the most recent time you attempted suicide?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.suicideAttempt === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.attemptedSuicideDate}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "120. Have you ever experienced suicidal ideation?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.suicidalIdeation}`),
+          questionParagraph("121. Have you ever made a suicide attempt?"),
+          answerParagraph(`${req.body.pastHistoryValue.suicideAttempt}`),
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? questionParagraph(
+                "If yes, how many times have you attempted suicide?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.attemptedSuicideTimes}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? questionParagraph(
+                "How did you attempt suicide (list all methods ever used)?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.suicideAllMethods}`)
+            : undefined,
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? questionParagraph(
+                "When was the most recent time you attempted suicide?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.suicideAttempt === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.attemptedSuicideDate}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "122. Have you ever experienced any other psychiatric symptoms that are not described above"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.otherPsychiatricSymptoms}`
-          // ),
-          // req.body.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe the psychiatric symptoms you experienced that were not previously identified above:"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.describeOtherPsychiatricSymptoms}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "122. Have you ever experienced any other psychiatric symptoms that are not described above"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.otherPsychiatricSymptoms}`
+          ),
+          req.body.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+            ? questionParagraph(
+                "Please describe the psychiatric symptoms you experienced that were not previously identified above:"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.describeOtherPsychiatricSymptoms}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "123. Have you received any other psychotherapy or psychiatric medication treatment besides that described above?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.otherPsychotherapyTreatment}`
-          // ),
-          // req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe the additional psychotherapy or psychiatric medication treatment that was not described above"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.describeOtherPsychotherapyTreatment}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "123. Have you received any other psychotherapy or psychiatric medication treatment besides that described above?"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.otherPsychotherapyTreatment}`
+          ),
+          req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
+            ? questionParagraph(
+                "Please describe the additional psychotherapy or psychiatric medication treatment that was not described above"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.describeOtherPsychotherapyTreatment}`
+              )
+            : undefined,
 
-          // questionParagraph(
-          //   "124. Have you ever been evaluated otherwise by psychiatrists or psychologists for any other purpose?"
-          // ),
-          // answerParagraph(
-          //   `${req.body.pastHistoryValue.evaluatedOtherwisePsychiatrists}`
-          // ),
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? questionParagraph(
-          //       "Please describe the reason for this psychiatric or psychotherapy evaluation."
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.evaluationReason}`)
-          //   : undefined,
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? questionParagraph("Who performed this evaluation?")
-          //   : undefined,
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.evaluationPerformed}`
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? questionParagraph("When did this evaluation occur?")
-          //   : undefined,
-          // req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-          //   ? answerParagraph(`${req.body.pastHistoryValue.evaluationOccur}`)
-          //   : undefined,
+          questionParagraph(
+            "124. Have you ever been evaluated otherwise by psychiatrists or psychologists for any other purpose?"
+          ),
+          answerParagraph(
+            `${req.body.pastHistoryValue.evaluatedOtherwisePsychiatrists}`
+          ),
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? questionParagraph(
+                "Please describe the reason for this psychiatric or psychotherapy evaluation."
+              )
+            : undefined,
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.evaluationReason}`)
+            : undefined,
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? questionParagraph("Who performed this evaluation?")
+            : undefined,
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.evaluationPerformed}`
+              )
+            : undefined,
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? questionParagraph("When did this evaluation occur?")
+            : undefined,
+          req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
+            ? answerParagraph(`${req.body.pastHistoryValue.evaluationOccur}`)
+            : undefined,
 
-          // questionParagraph(
-          //   "125. Have you ever been involved in physical altercations or violence?"
-          // ),
-          // answerParagraph(`${req.body.pastHistoryValue.physicalAltercations}`),
-          // req.body.pastHistoryValue?.physicalAltercations === "Yes"
-          //   ? questionParagraph(
-          //       "How many physicial altercations have you been invovled in?"
-          //     )
-          //   : undefined,
-          // req.body.pastHistoryValue?.physicalAltercations === "Yes"
-          //   ? answerParagraph(
-          //       `${req.body.pastHistoryValue.physicialAltercationsMany}`
-          //     )
-          //   : undefined,
+          questionParagraph(
+            "125. Have you ever been involved in physical altercations or violence?"
+          ),
+          answerParagraph(`${req.body.pastHistoryValue.physicalAltercations}`),
+          req.body.pastHistoryValue?.physicalAltercations === "Yes"
+            ? questionParagraph(
+                "How many physicial altercations have you been invovled in?"
+              )
+            : undefined,
+          req.body.pastHistoryValue?.physicalAltercations === "Yes"
+            ? answerParagraph(
+                `${req.body.pastHistoryValue.physicialAltercationsMany}`
+              )
+            : undefined,
 
           TitleParagraph("Substance Use"),
           questionParagraph(
@@ -2578,38 +2578,6 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body.socialHistoryValue.livesYourHome}`)
             : undefined,
 
-          req.body.socialHistoryValue?.describeCurrentLivingSituation.length !==
-            0 &&
-          !(
-            socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "Homeless"
-            ).length > 0
-          ) &&
-          !(
-            socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "Live alone"
-            ).length > 0
-          )
-            ? questionParagraph(
-                "If yes, how many times have you attempted suicide?"
-              )
-            : undefined,
-          req.body.socialHistoryValue?.describeCurrentLivingSituation.length !==
-            0 &&
-          !(
-            socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "Homeless"
-            ).length > 0
-          ) &&
-          !(
-            socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "Live alone"
-            ).length > 0
-          )
-            ? answerParagraph(
-                `${req.body.socialHistoryValue.residedCurrentHomeLong}`
-              )
-            : undefined,
           req.body.socialHistoryValue?.describeCurrentLivingSituation.length !==
             0 &&
           !(
