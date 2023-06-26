@@ -1639,12 +1639,12 @@ router.post("/", async (req, res) => {
             `${req.body.pastHistoryValue.admittedPsychiatricHospital}`
           ),
 
-          req.body?.admittedPsychiatricHospital === "Yes"
+          req.body?.pastHistoryValue.admittedPsychiatricHospital === "Yes"
             ? questionParagraph(
               "Please list the reason for the psychiatric hospitalization"
             )
             : undefined,
-          req.body?.admittedPsychiatricHospital === "Yes"
+          req.body?.pastHistoryValue.admittedPsychiatricHospital === "Yes"
             ? answerParagraph(
               `${req.body.pastHistoryValue.psychiatricHospitalizationReason}`
             )
@@ -4242,13 +4242,13 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
             ? storyParagraph(`${req.body.demographicInformation.fullName} has been admitted to a psychiatric hospital.
-            ${pronounPrefer} was admitted to these hospitals for`)
+            ${pronounPrefer} was admitted to these hospitals for.`)
             : storyParagraph(
               `${req.body.demographicInformation.fullName} has never been admitted to a psychiatric hospital.`
             ),
           req.body.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} was admitted to these hospitals for ${req.body.pastHistoryValue?.psychiatricHospitalizationReason}`
+              `${pronounPrefer} was admitted to these hospitals for ${req.body.pastHistoryValue.psychiatricHospitalizationReason}`
             )
             : undefined,
           req.body.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
@@ -4261,7 +4261,7 @@ router.post("/", async (req, res) => {
               `has been admitted to the following psychiatric hospitals? ${req.body.pastHistoryValue?.admittedHospitalName}`
             )
             : storyParagraph(
-              `has never been admitted to a psychiatric hospital`
+              `has never been admitted to a psychiatric hospital.`
             ),
           req.body.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
             ? storyParagraph(
@@ -4270,16 +4270,16 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.pastHistoryValue?.suicidalIdeation === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} had experienced suicidal ideation`
+              `${pronounPrefer} had experienced suicidal ideation.`
             )
             : storyParagraph(
-              `${pronounPrefer} had never experienced suicidal ideation`
+              `${pronounPrefer} had never experienced suicidal ideation.`
             ),
 
           req.body.pastHistoryValue?.suicideAttempt === "Yes"
-            ? storyParagraph(`${pronounPrefer} had made a suicide attempt`)
+            ? storyParagraph(`${pronounPrefer} had made a suicide attempt.`)
             : storyParagraph(
-              `${pronounPrefer} had never made a suicide attempt`
+              `${pronounPrefer} had never made a suicide attempt.`
             ),
 
           req.body.pastHistoryValue?.suicideAttempt === "Yes"
@@ -4313,15 +4313,15 @@ router.post("/", async (req, res) => {
 
           req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} receiving any other psychotherapy or psychiatric medication treatment .`
+              `${pronounPrefer} receiving any other psychotherapy or psychiatric medication treatment.`
             )
             : storyParagraph(
-              `${pronounPrefer} denied receiving any other psychotherapy or psychiatric medication treatment .`
+              `${pronounPrefer} denied receiving any other psychotherapy or psychiatric medication treatment.`
             ),
 
           req.body.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body.pastHistoryValue?.describeOtherPsychotherapyTreatment}`
+              `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body.pastHistoryValue?.describeOtherPsychotherapyTreatment}.`
             )
             : undefined,
           req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
@@ -4333,17 +4333,17 @@ router.post("/", async (req, res) => {
             ),
           req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body.pastHistoryValue?.evaluationReason}`
+              `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body.pastHistoryValue?.evaluationReason}.`
             )
             : undefined,
           req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
             ? storyParagraph(
-              `This evaluation was performed by ${req.body.pastHistoryValue?.evaluationPerformed}`
+              `This evaluation was performed by ${req.body.pastHistoryValue?.evaluationPerformed}.`
             )
             : undefined,
           req.body.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
             ? storyParagraph(
-              `and occurred ${req.body.pastHistoryValue?.evaluationOccur}`
+              `and occurred ${req.body.pastHistoryValue?.evaluationOccur}.`
             )
             : undefined,
 
@@ -4356,7 +4356,7 @@ router.post("/", async (req, res) => {
             ),
           req.body.pastHistoryValue?.physicalAltercations === "Yes"
             ? storyParagraph(
-              `${req.body.pastHistoryValue?.physicialAltercationsMany} times`
+              `${req.body.pastHistoryValue?.physicialAltercationsMany} times.`
             )
             : undefined,
 
@@ -4365,7 +4365,7 @@ router.post("/", async (req, res) => {
               `${req.body.demographicInformation.fullName} endorsed using ${req.body.substanceUseValue?.followingSubstances}.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied ever uding`
+              `${req.body.demographicInformation.fullName} denied ever uding.`
             ),
 
           req.body.substanceUseValue?.followingSubstances.length > 0
@@ -4441,7 +4441,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? storyParagraph(
-              `Following ${pronoun} treatment program, ${req.body.demographicInformation.fullName} remained clean and sober for ${req.body.substanceUseValue?.remainedTreatmentClean}. from ${req.body.substanceUseValue?.cleanSoberLastedFrom} to ${req.body.substanceUseValue.cleanSoberLastedTo}`
+              `Following ${pronoun} treatment program, ${req.body.demographicInformation.fullName} remained clean and sober for ${req.body.substanceUseValue?.remainedTreatmentClean}. from ${req.body.substanceUseValue?.cleanSoberLastedFrom} to ${req.body.substanceUseValue.cleanSoberLastedTo}.`
             )
             : undefined,
           req.body.substanceUseValue?.enrolledTreatmentProgram === "Yes"
@@ -4463,7 +4463,7 @@ router.post("/", async (req, res) => {
             ? storyParagraph(
               `${req.body.demographicInformation.fullName} reported having medical conditions consisting of ${req.body.medicalHistoryValue?.diagnosedHealthcareProvider}.`
             )
-            : storyParagraph(`${req.body.demographicInformation.fullName} denied suffering from any general medical conditions
+            : storyParagraph(`${req.body.demographicInformation.fullName} denied suffering from any general medical conditions.
         `),
           req.body.demographicInformation.radioSexItem === "Female"
             ? req.body.medicalHistoryValue?.pregnantPlanning === "Yes"
@@ -4515,27 +4515,27 @@ router.post("/", async (req, res) => {
             )
             : undefined,
           storyParagraph(
-            `${pronoun} current primary care provider is ${req.body.medicalHistoryValue?.currentPrimarycarePractitioner}`
+            `${pronoun} current primary care provider is ${req.body.medicalHistoryValue?.currentPrimarycarePractitioner}.`
           ),
           storyParagraph(
             `${pronoun} past primary care provider was  ${req.body.medicalHistoryValue.pastprimarycarePractitioner}.`
           ),
           storyParagraph(
-            `${pronounPrefer} received this care as follows: ${req.body.medicalHistoryValue.periodReceiveProvider}`
+            `${pronounPrefer} received this care as follows: ${req.body.medicalHistoryValue.periodReceiveProvider}.`
           ),
           storyParagraph(
-            `${pronounPrefer} described his hospitalization history as follows: ${req.body.medicalHistoryValue.hospitalListEverBeen}`
+            `${pronounPrefer} described his hospitalization history as follows: ${req.body.medicalHistoryValue.hospitalListEverBeen}.`
           ),
           storyParagraph(
-            `${pronounPrefer} described his current medication treatment as follows: ${req.body.medicalHistoryValue.medicationsListTaking}`
+            `${pronounPrefer} described his current medication treatment as follows: ${req.body.medicalHistoryValue.medicationsListTaking}.`
           ),
 
           req.body.medicalHistoryValue?.allergiesMedication === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} suffers from allergies or intolerances to medication or food`
+              `${pronounPrefer} suffers from allergies or intolerances to medication or food.`
             )
             : storyParagraph(
-              `${pronounPrefer} does not suffer from allergies or intolerances to medication or food`
+              `${pronounPrefer} does not suffer from allergies or intolerances to medication or food.`
             ),
 
           req.body.medicalHistoryValue?.allergiesMedication === "Yes"
@@ -4546,23 +4546,23 @@ router.post("/", async (req, res) => {
 
           req.body.familyHistoryValue?.familyPsychiatricConditions !== ""
             ? storyParagraph(
-              `${req.body.demographicInformation.fullName} reported a family history of psychiatric conditions, consisting of ${req.body.familyHistoryValue?.familyPsychiatricConditions}`
+              `${req.body.demographicInformation.fullName} reported a family history of psychiatric conditions, consisting of ${req.body.familyHistoryValue?.familyPsychiatricConditions}.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied any family history of psychiatric diagnoses`
+              `${req.body.demographicInformation.fullName} denied any family history of psychiatric diagnoses.`
             ),
           req.body.familyHistoryValue?.familyPsychiatricConditions.filter(
             (item) => item === "Other"
           ).length > 0
             ? storyParagraph(
-              `Additional psychiatric conditions ${pronoun} family members have been diagnosed with include ${req.body.familyHistoryValue?.psychiatricConditionsList}`
+              `Additional psychiatric conditions ${pronoun} family members have been diagnosed with include ${req.body.familyHistoryValue?.psychiatricConditionsList}.`
             )
             : undefined,
           req.body.familyHistoryValue?.familyPsychiatricConditions.filter(
             (item) => item === "Other"
           ).length > 0
             ? storyParagraph(
-              `with treatment consisting of ${req.body.familyHistoryValue?.psychiatricConditionsTreatment}`
+              `with treatment consisting of ${req.body.familyHistoryValue?.psychiatricConditionsTreatment}.`
             )
             : undefined,
           req.body.familyHistoryValue?.psychiatricConditionsTreatment === "Yes"
@@ -4604,7 +4604,7 @@ router.post("/", async (req, res) => {
           req.body.relationshipHistoryValue?.currentlyIntimateRelationship ===
             "Yes"
             ? storyParagraph(
-              `${pronounPrefer} described the occupation of ${pronoun} significant other as follows: ${req.body.relationshipHistoryValue?.PartnerOccupation}`
+              `${pronounPrefer} described the occupation of ${pronoun} significant other as follows: ${req.body.relationshipHistoryValue?.PartnerOccupation}.`
             )
             : undefined,
           storyParagraph(
@@ -4637,7 +4637,7 @@ router.post("/", async (req, res) => {
 
           req.body.relationshipHistoryValue?.haveChildren === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} has ${req.body.relationshipHistoryValue.childrenNumberAndAge}`
+              `${pronounPrefer} has ${req.body.relationshipHistoryValue.childrenNumberAndAge}.`
             )
             : undefined,
           req.body.relationshipHistoryValue?.haveChildren === "Yes"
@@ -4647,7 +4647,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.relationshipHistoryValue?.haveChildren === "Yes"
             ? storyParagraph(
-              `${pronoun} relationship with ${pronoun} children is ${req.body.relationshipHistoryValue?.relationshipChildren}`
+              `${pronoun} relationship with ${pronoun} children is ${req.body.relationshipHistoryValue?.relationshipChildren}.`
             )
             : undefined,
           req.body.relationshipHistoryValue?.haveChildren === "Yes" &&
@@ -4660,7 +4660,7 @@ router.post("/", async (req, res) => {
             ),
 
           storyParagraph(
-            `${req.body.demographicInformation.fullName} reported that his current employment status is ${req.body.employmentHistoryValue?.currentEmploymentStatus}`
+            `${req.body.demographicInformation.fullName} reported that his current employment status is ${req.body.employmentHistoryValue?.currentEmploymentStatus}.`
           ),
           req.body.employmentHistoryValue?.currentEmploymentStatus ===
             "Employed <20 hours per week" ||
@@ -4669,7 +4669,7 @@ router.post("/", async (req, res) => {
             req.body.employmentHistoryValue?.currentEmploymentStatus ===
             "Employed full time"
             ? storyParagraph(
-              `at ${req.body.employmentHistoryValue?.employerName}`
+              `at ${req.body.employmentHistoryValue?.employerName}.`
             )
             : undefined,
           req.body.employmentHistoryValue?.currentEmploymentStatus ===
@@ -4689,7 +4689,7 @@ router.post("/", async (req, res) => {
             req.body.employmentHistoryValue?.currentEmploymentStatus ===
             "Employed full time"
             ? storyParagraph(
-              `${pronoun} employment duties include ${req.body.employmentHistoryValue?.jobDuties}`
+              `${pronoun} employment duties include ${req.body.employmentHistoryValue?.jobDuties}.`
             )
             : undefined,
           req.body.employmentHistoryValue?.currentEmploymentStatus ===
@@ -4706,18 +4706,22 @@ router.post("/", async (req, res) => {
               `${pronounPrefer} does not have difficuilty performing ${pronoun} job duties.`
             ),
 
+          // storyParagraph(
+          //   `${req.body.demographicInformation.fullName} began ${pronoun} past employment at ${req.body.employmentHistoryValue.pastEmployerName}`
+          // ),
+          // storyParagraph(`as a ${req.body.employmentHistoryValue.jobTitle}`),
+          // storyParagraph(
+          //   `from ${req.body.employmentHistoryValue.pastEmploymentBegan}`
+          // ),
+          // storyParagraph(
+          //   `to ${req.body.employmentHistoryValue.pastEmploymentEnd}`
+          // ),
+          // storyParagraph(
+          //   `${pronounPrefer} ended this employment due to ${req.body.employmentHistoryValue.pastEmploymentEndReason}.`
+          // ),
+
           storyParagraph(
-            `${req.body.demographicInformation.fullName} began ${pronoun} past employment at ${req.body.employmentHistoryValue.pastEmployerName}`
-          ),
-          storyParagraph(`as a ${req.body.employmentHistoryValue.jobTitle}`),
-          storyParagraph(
-            `from ${req.body.employmentHistoryValue.pastEmploymentBegan}`
-          ),
-          storyParagraph(
-            `to ${req.body.employmentHistoryValue.pastEmploymentEnd}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} ended this employment due to ${req.body.employmentHistoryValue.pastEmploymentEndReason}.`
+            `${pronounPrefer} Employer History: ${employerList(req.body.employmentHistoryValue.employerList)}.`
           ),
 
           req.body.employmentHistoryValue?.pastWorkplaceInjuries === "Yes"
@@ -4734,7 +4738,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.employmentHistoryValue?.pastWorkplaceInjuries === "Yes"
             ? storyParagraph(
-              `${pronoun} injury consisted of the following:${req.body.employmentHistoryValue?.injuryNature} `
+              `${pronoun} injury consisted of the following:${req.body.employmentHistoryValue?.injuryNature}.`
             )
             : undefined,
 
@@ -4743,7 +4747,7 @@ router.post("/", async (req, res) => {
               `${req.body.demographicInformation.fullName} reported a history of submitting (a) Workers’ Compensation claim(s).`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied ever submitting a Workers’ Compensation claim`
+              `${req.body.demographicInformation.fullName} denied ever submitting a Workers’ Compensation claim.`
             ),
           req.body.employmentHistoryValue?.placedDisability === "Yes"
             ? storyParagraph(
@@ -4753,18 +4757,18 @@ router.post("/", async (req, res) => {
 
           req.body.employmentHistoryValue?.receivedNegativeWork === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} has received negative work evaluations, terminations, or disciplinary action for`
+              `${pronounPrefer} has received negative work evaluations, terminations, or disciplinary action for.`
             )
             : storyParagraph(
-              `${pronounPrefer} has never received negative work evaluations, terminations, or disciplinary action`
+              `${pronounPrefer} has never received negative work evaluations, terminations, or disciplinary action.`
             ),
 
           storyParagraph(
-            ` described his other employment as: ${req.body.employmentHistoryValue?.otherEmploymentList}`
+            ` described his other employment as: ${req.body.employmentHistoryValue?.otherEmploymentList}.`
           ),
 
           storyParagraph(
-            `${req.body.demographicInformation.fullName}'s highest education level is ${req.body.educationHistoryValue?.highestLevelEducation}`
+            `${req.body.demographicInformation.fullName}'s highest education level is ${req.body.educationHistoryValue?.highestLevelEducation}.`
           ),
           req.body.educationHistoryValue.highestLevelEducation ===
             "Currently a student"
@@ -4773,7 +4777,7 @@ router.post("/", async (req, res) => {
             )
             : undefined,
           storyParagraph(
-            `${pronounPrefer} reported that ${pronounPrefer} received mostly ${req.body.educationHistoryValue?.mostlyReceiveGrade} throughout ${pronoun} education`
+            `${pronounPrefer} reported that ${pronounPrefer} received mostly ${req.body.educationHistoryValue?.mostlyReceiveGrade} throughout ${pronoun} education.`
           ),
 
           req.body.educationHistoryValue.learningDisability === "Yes"
@@ -4781,11 +4785,11 @@ router.post("/", async (req, res) => {
               `${req.body.demographicInformation.fullName} reported a history of having learning disabilities or being placed in special education classes.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied any history of having learning disabilities or being placed in special education classes`
+              `${req.body.demographicInformation.fullName} denied any history of having learning disabilities or being placed in special education classes.`
             ),
           req.body.educationHistoryValue.learningDisability === "Yes"
             ? storyParagraph(
-              `consisting of ${req.body.educationHistoryValue?.describeLearningDifficulties}`
+              `consisting of ${req.body.educationHistoryValue?.describeLearningDifficulties}.`
             )
             : undefined,
           req.body.educationHistoryValue.graduateHighSchool === "Yes"
@@ -4799,8 +4803,8 @@ router.post("/", async (req, res) => {
               )
             : undefined,
           req.body.educationHistoryValue.goToCollege === "Yes"
-            ? storyParagraph(`${pronounPrefer} attended college`)
-            : storyParagraph(`${pronounPrefer} did not attend college`),
+            ? storyParagraph(`${pronounPrefer} attended college.`)
+            : storyParagraph(`${pronounPrefer} did not attend college.`),
 
           req.body.educationHistoryValue.goToCollege === "Yes"
             ? req.body.educationHistoryValue?.completeYourDegree === "Yes"
@@ -4808,34 +4812,34 @@ router.post("/", async (req, res) => {
               : storyParagraph(`${pronounPrefer} did not complete a degree.`)
             : undefined,
           req.body.educationHistoryValue.goToCollege === "Yes"
-            ? storyParagraph(`${pronounPrefer} attended college`)
+            ? storyParagraph(`${pronounPrefer} attended college.`)
             : undefined,
 
           req.body.educationHistoryValue.goToCollege === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} attended ${req.body.educationHistoryValue?.collegeName}`
+              `${pronounPrefer} attended ${req.body.educationHistoryValue?.collegeName}.`
             )
             : undefined,
           req.body.educationHistoryValue.goToCollege === "Yes"
             ? storyParagraph(
-              `and studied ${req.body.educationHistoryValue?.collegeMajor}`
+              `and studied ${req.body.educationHistoryValue?.collegeMajor}.`
             )
             : undefined,
 
           req.body.socialHistoryValue?.barriersReceivingHealthcare === "Yes"
             ? storyParagraph(
-              `${req.body.demographicInformation.fullName} is experiencing barriers to receiving healthcare`
+              `${req.body.demographicInformation.fullName} is experiencing barriers to receiving healthcare.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} is not experiencing barriers to receiving healthcare`
+              `${req.body.demographicInformation.fullName} is not experiencing barriers to receiving healthcare.`
             ),
           req.body.socialHistoryValue?.barriersReceivingHealthcare === "Yes"
             ? storyParagraph(
-              `consisting of ${req.body.socialHistoryValue?.selectbarriersHealthcare}`
+              `consisting of ${req.body.socialHistoryValue?.selectbarriersHealthcare}.`
             )
             : undefined,
           storyParagraph(
-            `${pronoun} current living situation consists of ${req.body.socialHistoryValue?.describeCurrentLivingSituation}`
+            `${pronoun} current living situation consists of ${req.body.socialHistoryValue?.describeCurrentLivingSituation}.`
           ),
           req.body.socialHistoryValue?.describeCurrentLivingSituation.length !==
             0 &&
@@ -4850,7 +4854,7 @@ router.post("/", async (req, res) => {
               ).length > 0
             )
             ? storyParagraph(
-              `${req.body.demographicInformation.fullName} lives in ${req.body.socialHistoryValue?.describeCurrentLivingSituation} with ${pronoun} ${req.body.socialHistoryValue?.livesYourHome}`
+              `${req.body.demographicInformation.fullName} lives in ${req.body.socialHistoryValue?.describeCurrentLivingSituation} with ${pronoun} ${req.body.socialHistoryValue?.livesYourHome}.`
             )
             : undefined,
 
@@ -4878,7 +4882,7 @@ router.post("/", async (req, res) => {
               (item) => item !== "Homeless" && item !== "Other"
             ).length > 0
             ? storyParagraph(
-              `${pronounPrefer} is experiencing additional stressors in ${pronoun} life [consisting of ${req.body.socialHistoryValue?.describeAdditionalStressors}.`
+              `${pronounPrefer} is experiencing additional stressors in ${pronoun} life [consisting of ${req.body.socialHistoryValue?.describeAdditionalStressors}].`
             )
             : undefined,
           req.body.socialHistoryValue?.presentTimeDanger === "Yes"
@@ -4889,14 +4893,14 @@ router.post("/", async (req, res) => {
               `${pronounPrefer} does not feel in any danger at the present time.`
             ),
           storyParagraph(
-            `${pronounPrefer} described the stressors that are related to work that occurred in the past year as follows: ${req.body.socialHistoryValue.allStressorsPastYear}`
+            `${pronounPrefer} described the stressors that are related to work that occurred in the past year as follows: ${req.body.socialHistoryValue.allStressorsPastYear}.`
           ),
           req.body.socialHistoryValue?.stressorsAffect === "Yes"
             ? storyParagraph(
-              `These stressors contributed to ${pronoun} emotional symptoms`
+              `These stressors contributed to ${pronoun} emotional symptoms.`
             )
             : storyParagraph(
-              `These stressors did not contribute to ${pronoun} emotional symptoms`
+              `These stressors did not contribute to ${pronoun} emotional symptoms.`
             ),
           storyParagraph(
             `in the following ways: ${req.body.socialHistoryValue.eachStressorsAffect} `
@@ -4914,15 +4918,15 @@ router.post("/", async (req, res) => {
           req.body.socialHistoryValue?.otherStressorsBesides === "Yes"
             ? req.body.socialHistoryValue?.affectEmotionalSymptoms === "Yes"
               ? storyParagraph(
-                `These stressors contributed to ${pronoun} emotional symptoms`
+                `These stressors contributed to ${pronoun} emotional symptoms.`
               )
               : storyParagraph(
-                `These stressors did not contribute to ${pronoun} emotional symptoms`
+                `These stressors did not contribute to ${pronoun} emotional symptoms.`
               )
             : undefined,
           req.body.socialHistoryValue?.otherStressorsBesides === "Yes"
             ? storyParagraph(
-              `in the following ways: ${req.body.socialHistoryValue?.eachAffectEmotionalSymptoms}`
+              `in the following ways: ${req.body.socialHistoryValue?.eachAffectEmotionalSymptoms}.`
             )
             : undefined,
 
@@ -4935,9 +4939,9 @@ router.post("/", async (req, res) => {
             ),
 
           req.body.criminalHistoryValue?.arrested === "Yes"
-            ? storyParagraph(`${pronounPrefer} reported a history of arrests`)
+            ? storyParagraph(`${pronounPrefer} reported a history of arrests.`)
             : storyParagraph(
-              `${pronounPrefer} denied any history of criminal behavior or arrests`
+              `${pronounPrefer} denied any history of criminal behavior or arrests.`
             ),
 
           req.body.criminalHistoryValue?.arrested === "Yes"
@@ -4947,7 +4951,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.criminalHistoryValue?.arrested === "Yes"
             ? storyParagraph(
-              `${pronoun} past sentences lasted ${req.body.criminalHistoryValue?.everIncarcerated}}`
+              `${pronoun} past sentences lasted ${req.body.criminalHistoryValue?.everIncarcerated}.`
             )
             : undefined,
 
@@ -4963,20 +4967,20 @@ router.post("/", async (req, res) => {
 
           req.body.violenceHistoryValue?.physicalAltercations === "Yes"
             ? storyParagraph(
-              `${req.body.demographicInformation.fullName} reported a history of physical violence`
+              `${req.body.demographicInformation.fullName} reported a history of physical violence.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied any history of physical altercations or violence`
+              `${req.body.demographicInformation.fullName} denied any history of physical altercations or violence.`
             ),
 
           req.body.violenceHistoryValue?.physicalAltercations === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} has been involved in ${req.body.violenceHistoryValue?.altercationsTimes}`
+              `${pronounPrefer} has been involved in ${req.body.violenceHistoryValue?.altercationsTimes}.`
             )
             : undefined,
           req.body.violenceHistoryValue?.physicalAltercations === "Yes"
             ? storyParagraph(
-              `physical altercations in #his lifetime. These altercations were due to ${req.body.violenceHistoryValue?.circumstancesSurrounding}.`
+              `physical altercations in ${pronoun} lifetime. These altercations were due to ${req.body.violenceHistoryValue?.circumstancesSurrounding}.`
             )
             : undefined,
           req.body.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
@@ -5007,10 +5011,10 @@ router.post("/", async (req, res) => {
 
           req.body.militaryHistoryValue?.enrolledMilitary === "Yes"
             ? storyParagraph(
-              `${req.body.demographicInformation.fullName} reported a history of enlisting in the military consisting of ${req.body.militaryHistoryValue?.branchMilitary} from ${req.body.militaryHistoryValue?.militaryDatesFrom} to ${req.body.militaryHistoryValue?.militaryDatesTo} as a ${req.body.militaryHistoryValue?.militaryJob}`
+              `${req.body.demographicInformation.fullName} reported a history of enlisting in the military consisting of ${req.body.militaryHistoryValue?.branchMilitary} from ${req.body.militaryHistoryValue?.militaryDatesFrom} to ${req.body.militaryHistoryValue?.militaryDatesTo} as a ${req.body.militaryHistoryValue?.militaryJob}.`
             )
             : storyParagraph(
-              `${req.body.demographicInformation.fullName} denied a history of enlisting in the military`
+              `${req.body.demographicInformation.fullName} denied a history of enlisting in the military.`
             ),
 
           req.body.militaryHistoryValue?.enrolledMilitary === "Yes"
@@ -5020,16 +5024,16 @@ router.post("/", async (req, res) => {
             : undefined,
 
           storyParagraph(
-            `${req.body.demographicInformation.fullName} awakens on work days at ${req.body.currentDailyActivitiesValue?.awakenTimeWorkDays}`
+            `${req.body.demographicInformation.fullName} awakens on work days at ${req.body.currentDailyActivitiesValue?.awakenTimeWorkDays}.`
           ),
           storyParagraph(
-            `${pronounPrefer} awakens on non-work days at ${req.body.currentDailyActivitiesValue?.awakenTimeNotWorkDays}`
+            `${pronounPrefer} awakens on non-work days at ${req.body.currentDailyActivitiesValue?.awakenTimeNotWorkDays}.`
           ),
           storyParagraph(
-            `${pronounPrefer} typically goes to bed at ${req.body.currentDailyActivitiesValue?.goToBed}`
+            `${pronounPrefer} typically goes to bed at ${req.body.currentDailyActivitiesValue?.goToBed}.`
           ),
           storyParagraph(
-            `and falls asleep at ${req.body.currentDailyActivitiesValue?.fallAsleepTime}`
+            `and falls asleep at ${req.body.currentDailyActivitiesValue?.fallAsleepTime}.`
           ),
           storyParagraph(
             `${req.body.demographicInformation.fullName} described ${pronoun} activites from 6 a.m. to 8 a.m as ${req.body.currentDailyActivitiesValue.do6am};`
@@ -5084,7 +5088,7 @@ router.post("/", async (req, res) => {
           ),
 
           storyParagraph(
-            `${req.body.demographicInformation.fullName} reported that #he was born in ${req.body.developmentalValue?.bornPlace}`
+            `${req.body.demographicInformation.fullName} reported that ${pronounPrefer} was born in ${req.body.developmentalValue?.bornPlace}`
           ),
           storyParagraph(
             `and raised in ${req.body.developmentalValue?.primarilyRaised}.`
@@ -5096,7 +5100,7 @@ router.post("/", async (req, res) => {
             `${pronounPrefer} was raised by ${req.body.developmentalValue.describeRelationshipPerson}`
           ),
           storyParagraph(
-            `${pronounPrefer} described ${pronoun} relationship with the primary adults who raised ${prepositionPronoun} when ${pronounPrefer} was a child as ${req.body.developmentalValue?.relationshipPrimaryAdults}`
+            `${pronounPrefer} described ${pronoun} relationship with the primary adults who raised ${prepositionPronoun} when ${pronounPrefer} was a child as ${req.body.developmentalValue?.relationshipPrimaryAdults}.`
           ),
           req.body.developmentalValue?.haveSiblings === "Yes"
             ? storyParagraph(`${pronounPrefer} has`)
@@ -5113,7 +5117,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body.developmentalValue?.haveSiblings === "Yes"
             ? storyParagraph(
-              `${pronounPrefer} describes ${pronoun} relationship with ${pronoun} siblings as ${req.body.developmentalValue?.relationshipSiblings}`
+              `${pronounPrefer} describes ${pronoun} relationship with ${pronoun} siblings as ${req.body.developmentalValue?.relationshipSiblings}.`
             )
             : undefined,
           storyParagraph(
@@ -5139,7 +5143,7 @@ router.post("/", async (req, res) => {
 
           req.body.developmentalValue?.motherWork === "Yes"
             ? storyParagraph(
-              `${pronoun} mother was employed as a ${req.body.developmentalValue?.motherJob}`
+              `${pronoun} mother was employed as a ${req.body.developmentalValue?.motherJob}.`
             )
             : undefined,
           req.body.developmentalValue?.motherWork === "Yes"
@@ -5151,7 +5155,7 @@ router.post("/", async (req, res) => {
             : storyParagraph(`${pronoun} mother is currently deceased.`),
           req.body.developmentalValue?.motherCurrentLiving === "No"
             ? storyParagraph(
-              `She died when she was ${req.body.developmentalValue?.diedMotherOld}`
+              `She died when she was ${req.body.developmentalValue?.diedMotherOld}.`
             )
             : undefined,
           req.body.developmentalValue?.motherCurrentLiving === "No"
@@ -5162,7 +5166,7 @@ router.post("/", async (req, res) => {
 
           req.body.developmentalValue?.fatherWork === "Yes"
             ? storyParagraph(
-              `${pronoun} father was employed as a ${req.body.developmentalValue?.fatherJob}`
+              `${pronoun} father was employed as a ${req.body.developmentalValue?.fatherJob}.`
             )
             : undefined,
           req.body.developmentalValue?.fatherWork === "Yes"
