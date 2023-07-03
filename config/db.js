@@ -1,8 +1,7 @@
 /** @format */
 
 const mongoose = require("mongoose");
-const dbURI =
-  "mongodb://ec2-13-49-138-23.eu-north-1.compute.amazonaws.com:27017/google-form";
+const dbURI = "mongodb://127.0.0.1:27017/google-form";
 
 const connectDB = async () => {
   try {
