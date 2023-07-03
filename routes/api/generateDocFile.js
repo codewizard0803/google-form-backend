@@ -5295,7 +5295,9 @@ router.post("/", async (req, res) => {
   const file1Name = `story_${year}-${month}-${day}.docx`;
   const file2Name = `question_${year}-${month}-${day}.docx`;
 
-  const zipFileName = `Doc_${year}-${month}-${day}-${uuidv4()}.zip`;
+  const zipFileName = `${
+    req.body.demographicInformation?.fullName
+  }_${year}-${month}-${day}-${uuidv4()}.zip`;
   const file1Path = path.join(__dirname, "../../downloads", file1Name);
 
   const file2Path = path.join(__dirname, "../../downloads", file2Name);
