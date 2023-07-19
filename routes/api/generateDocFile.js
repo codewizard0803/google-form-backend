@@ -123,6 +123,24 @@ router.post("/", async (req, res) => {
     });
   };
 
+  const formatRegardingAlcoholAnyFollowing = (value) => {
+    let outPut = value
+      .map((item, index) => {
+        if (item === "tolerance as defined by either of the following") {
+          return "tolerance";
+        } else if (
+          item === "withdrawal as manifested by either of the following"
+        ) {
+          return "characteristic withdrawal symptoms";
+        } else {
+          return item;
+        }
+      })
+      .join(", ");
+
+    return outPut;
+  };
+
   const cardField = (value) => {
     let outPut = value.map((item, index) => {
       if (index === value.length - 1) {
@@ -254,25 +272,24 @@ router.post("/", async (req, res) => {
 
     if (
       value1.filter(
-        (item) => item === "Tolerance as defined by either of the following:"
+        (item) => item === "tolerance as defined by either of the following"
       ).length > 0
     ) {
       newItem = newItem.map((item) =>
-        item === "Tolerance as defined by either of the following:"
-          ? "Tolerance as defined by either of the following: " + value2
+        item === "tolerance as defined by either of the following"
+          ? "tolerance as defined by either of the following: " + value2
           : item
       );
     }
 
     if (
       value1.filter(
-        (item) =>
-          item === "Withdrawal as manifested by either of the following:"
+        (item) => item === "withdrawal as manifested by either of the following"
       ).length > 0
     ) {
       newItem = newItem.map((item) =>
-        item === "Withdrawal as manifested by either of the following:"
-          ? "Withdrawal as manifested by either of the following: " + value3
+        item === "withdrawal as manifested by either of the following"
+          ? "withdrawal as manifested by either of the following: " + value3
           : item
       );
     }
@@ -537,6 +554,31 @@ router.post("/", async (req, res) => {
     let result = "";
     const filteredObjects = value.filter(
       (obj) => Object.values(obj)[0] === "Yes"
+    );
+
+    if (filteredObjects.length > 0) {
+      const keys = filteredObjects.map((obj) =>
+        Object.keys(obj)[0].toLowerCase()
+      );
+
+      const keysLength = keys.length;
+
+      if (keysLength === 1) {
+        result = keys[0];
+      } else if (keysLength === 2) {
+        result = `${keys[0]} and ${keys[1]}`;
+      } else {
+        result = `${keys.slice(0, -1).join(", ")}, and ${keys[keysLength - 1]}`;
+      }
+    }
+
+    return result;
+  };
+
+  const formatTroubleFollowingNo = (value) => {
+    let result = "";
+    const filteredObjects = value.filter(
+      (obj) => Object.values(obj)[0] === "No"
     );
 
     if (filteredObjects.length > 0) {
@@ -5191,7 +5233,11 @@ router.post("/", async (req, res) => {
 
           req.body?.substanceUseValue?.followingSubstances.length > 0
             ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.fullName} endorsed the following substance related symptoms: ${req.body?.substanceUseValue?.regardingAlcoholAnyFollowing}.`
+                `${surname}${
+                  req.body?.demographicInformation?.fullName
+                } endorsed the following substance related symptoms: ${formatRegardingAlcoholAnyFollowing(
+                  req.body?.substanceUseValue?.regardingAlcoholAnyFollowing
+                )}.`
               )
             : undefined,
 
@@ -5799,7 +5845,7 @@ router.post("/", async (req, res) => {
               ),
           req.body?.criminalHistoryValue?.arrested === "Yes"
             ? storyLowCaseParagraph(
-                `arrested date: ${req.body?.criminalHistoryValue?.arrestedDate}`
+                `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate}`
               )
             : undefined,
 
@@ -5852,6 +5898,12 @@ router.post("/", async (req, res) => {
             : storyParagraph(
                 `${pronounPrefer} denies having thoughts of wanting to hurt anyone.`
               ),
+
+          req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
+            ? storyParagraph(
+                `${pronounPrefer} described ${pronoun} thoughts of violence towards others as follows: ${req.body?.violenceHistoryValue?.explainAccomplishingHurt}`
+              )
+            : undefined,
 
           req.body?.violenceHistoryValue?.victimViolence === "Yes"
             ? storyParagraph(
@@ -5955,6 +6007,19 @@ router.post("/", async (req, res) => {
                 )}`
               )
             : undefined,
+
+          formatTroubleFollowingNo(
+            req.body?.currentDailyActivitiesValue?.troubleFollowing
+          )
+            ? storyParagraph(
+                `${surname}${
+                  req.body?.demographicInformation?.fullName
+                } reported impairment in ${formatTroubleFollowingNo(
+                  req.body?.currentDailyActivitiesValue?.troubleFollowing
+                )}`
+              )
+            : undefined,
+
           storyParagraph(""),
           formatDailyLivingFollowing(
             req.body?.currentDailyActivitiesValue.dailyLivingFollowing
