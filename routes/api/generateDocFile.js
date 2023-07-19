@@ -5466,7 +5466,7 @@ router.post("/", async (req, res) => {
             ? req.body?.relationshipHistoryValue
                 ?.sufferPsychiatricConditions === "Yes"
               ? storyParagraph(
-                  `${pronoun} spouse or partner sufferes from any general medical or psychiatric condition(s).`
+                  `${pronoun} spouse or partner suffers from any general medical or psychiatric condition(s).`
                 )
               : storyParagraph(
                   `${pronoun} spouse or partner doesn't suffer from any general medical or psychiatric condition(s).`
