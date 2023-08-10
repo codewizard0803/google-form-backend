@@ -28,8 +28,24 @@ router.post("/", async (req, res) => {
       alignment: AlignmentType.CENTER,
       textRun: {
         bold: true,
-        size: 45,
+        font: "Times New Roman",
+        size: 24,
       },
+    });
+  };
+
+  const TitleStoryParagraph = (value) => {
+    return new Paragraph({
+      children: [
+        new TextRun({
+          text: value,
+          bold: true,
+          size: 24,
+          color: "000000",
+          font: "Times New Roman",
+          alignment: AlignmentType.LEFT,
+        }),
+      ],
     });
   };
 
@@ -38,7 +54,8 @@ router.post("/", async (req, res) => {
       children: [
         new TextRun({
           text: question,
-          size: 30,
+          font: "Times New Roman",
+          size: 24,
         }),
       ],
     });
@@ -61,6 +78,10 @@ router.post("/", async (req, res) => {
     }
     if (value.length === 1) {
       return value[0];
+    }
+
+    if(value.length === 2) {
+      return value[0] + " and " + value[1]
     }
 
     const lastElement = ", and " + value[value.length - 1];
@@ -102,7 +123,8 @@ router.post("/", async (req, res) => {
       children: [
         new TextRun({
           text: answer,
-          size: 25,
+          font: "Times New Roman",
+          size: 24,
           color: "#119795",
         }),
       ],
@@ -121,6 +143,8 @@ router.post("/", async (req, res) => {
         return `${item.condition} ${item.effect} and `;
       }
     });
+
+    return outPut;
   };
 
   const formatRegardingAlcoholAnyFollowing = (value) => {
@@ -143,10 +167,10 @@ router.post("/", async (req, res) => {
 
   const cardField = (value) => {
     let outPut = value.map((item, index) => {
-      if (index === value.length - 1) {
-        return `${item.condition} was ${item.effect}`;
-      } else if (index === value.length - 2) {
-        return `and ${item.condition} was ${item.effect}`;
+      if (index === value.length - 2) {
+        return `${item.condition} was ${item.effect} `;
+      } else if (index === value.length - 1) {
+        return `and ${item.condition} was ${item.effect} `;
       } else {
         return `${item.condition} was ${item.effect}, `;
       }
@@ -304,16 +328,50 @@ router.post("/", async (req, res) => {
       children: [
         new TextRun({
           text: capitalizedValue,
-          size: 30,
+          font: "Times New Roman",
+          size: 24,
         }),
       ],
+    });
+  };
+
+  const storyLine = (value) => {
+    const capitalizedValue = value.charAt(0).toUpperCase() + value.slice(1);
+
+    return new TextRun({
+      text: capitalizedValue,
+      font: "Times New Roman",
+      size: 24,
+    });
+  };
+
+  const storyLowCaseLine = (value) => {
+    return new TextRun({
+      text: value,
+      font: "Times New Roman",
+      size: 24,
+    });
+  };
+
+  const createTextRuns = (lines) => {
+    return lines.map((line) => {
+      const capitalizedLine = line.charAt(0).toUpperCase() + line.slice(1);
+      return storyLine(capitalizedLine);
+    });
+  };
+
+  const createTextLowerRuns = (lines) => {
+    return lines.map((line) => {
+      const lowerCaseLine = line.charAt(0).toLowerCase() + line.slice(1);
+
+      return storyLowCaseLine(lowerCaseLine);
     });
   };
 
   const formatEachSubstance = (value) => {
     let outPut = value.map((item, index) => {
       if (index === value.length - 1) {
-        return `${item.condition} in the amount of ${item.effect}`;
+        return `${item.condition} in the amount of ${item.effect} `;
       } else if (index === value.length - 2) {
         return `and ${item.condition} in the amount of ${item.effect}`;
       } else {
@@ -351,12 +409,13 @@ router.post("/", async (req, res) => {
 
     if (outPutYes !== "" && outPutNo !== "") {
       outPut = outPutYes + " and " + outPutNo;
-    } else if (outPut !== "") {
+    } else if (outPutYes !== "" && outPutNo == "") {
       outPut = outPutYes;
     } else if (outPutYes === "" && outPutNo !== "") {
       outPut = outPutNo;
     }
 
+  
     return outPut;
   };
 
@@ -369,6 +428,7 @@ router.post("/", async (req, res) => {
 
     value.map(({ condition, effect }) => {
       if (effect === "Yes") {
+        console.log('here')
         WithdrawalFollwingYes.push(condition);
       } else {
         WithdrawalFollwingNo.push(condition);
@@ -377,7 +437,7 @@ router.post("/", async (req, res) => {
 
     if (WithdrawalFollwingYes.length > 0) {
       outPutYes =
-        `has experienced a history of Withdrawal to ` +
+        `has experienced a history of withdrawal to ` +
         WithdrawalFollwingYes.join(", ");
     }
 
@@ -387,7 +447,7 @@ router.post("/", async (req, res) => {
 
     if (outPutYes !== "" && outPutNo !== "") {
       outPut = outPutYes + " and " + outPutNo;
-    } else if (outPut !== "") {
+    } else if (outPutYes !== "" && outPutNo == "") {
       outPut = outPutYes;
     } else if (outPutYes === "" && outPutNo !== "") {
       outPut = outPutNo;
@@ -428,7 +488,8 @@ router.post("/", async (req, res) => {
         new TextRun({
           text: value,
           bold: true,
-          size: 30,
+          font: "Times New Roman",
+          size: 24,
         }),
       ],
     });
@@ -439,7 +500,8 @@ router.post("/", async (req, res) => {
       children: [
         new TextRun({
           text: value,
-          size: 30,
+          font: "Times New Roman",
+          size: 24,
         }),
       ],
     });
@@ -451,13 +513,23 @@ router.post("/", async (req, res) => {
     req.body?.demographicInformation?.radioPreferPronounItem === "Ze" ||
     req.body?.demographicInformation?.radioPreferPronounItem === "Hir";
   const validateBoolean = (value) => {
+    console.log(value)
     let isValid = false;
     if (value === "Yes") {
       isValid = true;
     } else {
       isValid = false;
     }
+
     return isValid;
+  };
+
+  const formatAge = (value) => {
+    let bornYear = value.slice(0, 4);
+    let d = new Date();
+    let year = d.getFullYear();
+
+    return year - bornYear;
   };
 
   const socialLife = (value) => {
@@ -1096,13 +1168,13 @@ router.post("/", async (req, res) => {
           answerParagraph(
             `${req.body?.employmentInjuryPhysicalValue?.lastStraw}`
           ),
-          req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers ===
+          req.body?.employmentInjuryPhysicalValue?.lastStraw ===
           "Yes"
             ? questionParagraph(
                 "Please describe your 'last straw' event near the last day of your work"
               )
             : undefined,
-          req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers ===
+          req.body?.employmentInjuryPhysicalValue?.lastStraw ===
           "Yes"
             ? answerParagraph(
                 `${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}`
@@ -1221,7 +1293,7 @@ router.post("/", async (req, res) => {
           questionParagraph("50. If not working, reason for leaving?"),
           answerParagraph(`${req.body?.physicalInjuryValue?.leavingReason}`),
 
-          TitleParagraph("Chief Complaint"),
+          TitleParagraph("Emotional Symptoms and Injuries"),
           questionParagraph(
             "51. I am most bothered on this day by the following:"
           ),
@@ -1300,7 +1372,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
           questionParagraph(
-            "60. How would you rate your depressive, anxiety, or post trauma symptoms when they were most severe, with zero to 1 equalling no or minimal symptoms and 10 equalling the most severe symptoms imaginable?"
+            "60. How would you rate your depressive, anxiety, or post-trauma symptoms when they were most severe, with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms imaginable?"
           ),
           answerParagraph(
             `Depressive: ${req.body?.longitudinalHistoryValue?.depressiveSymptom}`
@@ -1312,7 +1384,7 @@ router.post("/", async (req, res) => {
             `PostTrauma: ${req.body?.longitudinalHistoryValue?.postTraumaSymptom}`
           ),
           questionParagraph(
-            "61. Currently, how do you rate your depressive, anxiety, or post trauma symptoms on the same 1-10 scale?"
+            "61. Currently, how do you rate your depressive, anxiety, or post-trauma symptoms on the same 1-10 scale?"
           ),
           answerParagraph(
             `${req.body?.longitudinalHistoryValue?.compareEmotionalSymptom}`
@@ -1522,7 +1594,7 @@ router.post("/", async (req, res) => {
           questionParagraph("75. Do you have thoughts of hurting anyone else?"),
           answerParagraph(`${req.body?.PHQValue?.hurtingAnyone}`),
           questionParagraph(
-            "76. With zero to 1 equalling no or minimal symptoms and 10 equalling the most severe symptoms possible, how do you rate your current depressive symptoms?"
+            "76. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current depressive symptoms?"
           ),
           answerParagraph(`${req.body?.PHQValue?.currentDepressiveSymptoms}`),
 
@@ -1605,7 +1677,7 @@ router.post("/", async (req, res) => {
           ),
           answerParagraph(`${req.body?.GADValue?.feelingAfraidAwfulThing}`),
           questionParagraph(
-            "84. Over the last 2 weeks, how often have you been with zero to 1 equalling no or minimal symptoms and 10 equalling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
+            "84. Over the last 2 weeks, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
           ),
           answerParagraph(`${req.body?.GADValue?.currentAnxietySymptoms}`),
           questionParagraph(
@@ -1791,7 +1863,7 @@ router.post("/", async (req, res) => {
           ),
           answerParagraph(`${req.body?.PCLValue?.troubleFallingAsleep}`),
           questionParagraph(
-            "107. With zero to 1 equalling no or minimal symptoms and 10 equalling the most severe symptoms possible, how do you rate your current post trauma related symptoms?"
+            "107. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current post-trauma related symptoms?"
           ),
           answerParagraph(`${req.body?.PCLValue?.currentRelatedSymptoms}`),
 
@@ -1805,7 +1877,7 @@ router.post("/", async (req, res) => {
           req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
           "Yes"
             ? questionParagraph(
-                "Please list the name, dose, and how often you take this medication."
+                "Please list the name(s), dose(s), and how often you take each of these medications."
               )
             : undefined,
           req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
@@ -1990,6 +2062,8 @@ router.post("/", async (req, res) => {
           answerParagraph(
             `${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}`
           ),
+          questionParagraph("Please describe your post traumatic stress symptoms at that time:"),
+          answerParagraph(`${req.body?.pastHistoryValue?.describeSymptoms}`),
           questionParagraph(
             "111. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
           ),
@@ -2149,7 +2223,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body?.pastHistoryValue?.otherMedications === "Yes"
             ? answerParagraph(
-                `${req.body?.pastHistoryValue?.pastMedicationName}`
+                `${req.body?.pastHistoryValue?.startedMedicationDate}`
               )
             : undefined,
           req.body?.pastHistoryValue?.otherMedications === "Yes"
@@ -2976,75 +3050,75 @@ router.post("/", async (req, res) => {
             `${req.body?.employmentHistoryValue?.currentEmploymentStatus}`
           ),
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? questionParagraph("What is the name of your employer?")
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? answerParagraph(
                 `${req.body?.employmentHistoryValue?.employerName}`
               )
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? questionParagraph(
                 "What is your employment title at this position?"
               )
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? answerParagraph(
                 `${req.body?.employmentHistoryValue?.employmentTitle}`
               )
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? questionParagraph("What are your job duties?")
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? answerParagraph(`${req.body?.employmentHistoryValue?.jobDuties}`)
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? questionParagraph(
                 "Are you having any difficulty performing your job duties?"
               )
             : undefined,
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed <20 hours per week" ||
+            "employed at less than 20 hours per week" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed >20 hours per week, but not full time" ||
+            "employed at more than 20 hours per week, but not full time" ||
           req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "Employed full time"
+            "employed full time"
             ? answerParagraph(
                 `${req.body?.employmentHistoryValue?.difficultyJobDuties}`
               )
@@ -3598,6 +3672,13 @@ router.post("/", async (req, res) => {
             "179. Who primarlily raised you during your childhood?"
           ),
           answerParagraph(`${req.body?.developmentalValue?.raisedChilhood}`),
+          
+          req.body.developmentalValue?.raisedChilhood !== "" ?
+          questionParagraph("Please describe your relationship with the person who primarily raised you during your childhood:") : undefined,
+          
+          req.body.developmentalValue?.raisedChildhood !== "" ?
+          answerParagraph(`${req.body.developmentalValue?.describeRelationshipPerson}`) : undefined,
+
           questionParagraph(
             "180. How would you rate your relationship with the primary adults who raised you when you were a child?"
           ),
@@ -3766,2242 +3847,2613 @@ router.post("/", async (req, res) => {
     sections: [
       {
         children: [
-          TitleParagraph("Psychiatric History Form"),
-          TitleParagraph("Demographic Information"),
+          TitleStoryParagraph("Psychiatric History Form"),
+          TitleStoryParagraph("Demographic Information"),
           storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${req.body?.demographicInformation?.firstName} ${
+                  req.body?.demographicInformation?.lastName
+                } is a ${formatAge(
+                  req.body?.demographicInformation?.birth
+                )}-year-old,`
+              ]),
+              ...createTextLowerRuns([
+                `${req.body?.demographicInformation?.maritalStatusItems}, ${req.body?.demographicInformation?.checkedEthnicityItems}, `
+              ]),
+              ...createTextLowerRuns([
+                `${req.body?.demographicInformation?.radioSexItem}. `
+              ]),
+            ],
+          }),
+
           storyParagraph(
-            `${req.body?.demographicInformation?.firstName} ${req.body?.demographicInformation?.lastName} is a ${req.body?.demographicInformation?.birth}-year-old,`
+            `who goes by a preferred pronoun of ${req.body?.demographicInformation?.radioPreferPronounItem}. `
           ),
-          storyLowCaseParagraph(
-            `${req.body?.demographicInformation?.maritalStatusItems},${req.body?.demographicInformation?.checkedEthnicityItems},`
-          ),
-          storyLowCaseParagraph(
-            `${req.body?.demographicInformation?.radioSexItem}.`
-          ),
-          storyParagraph(
-            `who goes by a preferred pronoun of ${req.body?.demographicInformation?.radioPreferPronounItem}.`
-          ),
-          TitleParagraph(
+          storyParagraph(""),
+
+          TitleStoryParagraph(
             `Employment Where the Physical or Emotional Injury Occurred`
           ),
           storyParagraph(""),
-          storyParagraph(
-            `At the time of his injury, ${surname}${req.body?.demographicInformation?.lastName} worked for ${req.body?.employmentInjuryPhysicalValue?.currentEmployerName}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} described this business as ${req.body?.employmentInjuryPhysicalValue?.businessNature}.`
-          ),
-          storyParagraph(
-            `${pronoun} first day of work there was ${req.body?.employmentInjuryPhysicalValue?.jobBeganDate}.`
-          ),
-          storyParagraph(
-            `The most recent day ${pronounPrefer} worked at this job was ${req.body?.employmentInjuryPhysicalValue?.jobLastDate}.`
-          ),
-          storyParagraph(
-            `${pronoun} job title when ${pronounPrefer} started this employment was as a ${req.body?.employmentInjuryPhysicalValue?.startedJobTitle}.`
-          ),
-          storyParagraph(
-            `${pronoun} most recent job title at this employment was ${req.body?.employmentInjuryPhysicalValue?.currentTitle}.`
-          ),
-          storyParagraph(
-            `${pronoun} employment duties included the following: ${req.body?.employmentInjuryPhysicalValue?.employmentDuty}.`
-          ),
-          storyParagraph(
-            `${pronoun} typical work schedule was ${req.body?.employmentInjuryPhysicalValue?.typicalWorkSchedule}.`
-          ),
-          storyParagraph(
-            `${pronoun} salary at this position is ${req.body?.employmentInjuryPhysicalValue?.salary}.`
-          ),
-          storyParagraph(
-            `${pronoun} hourly rate is ${req.body?.employmentInjuryPhysicalValue?.hourlyRate}.`
-          ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.receiveOvertimePay
-          )
-            ? storyParagraph(
-                `${pronounPrefer} does receive overtime pay consisting of ${req.body?.employmentInjuryPhysicalValue?.overtimeRate}.`
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `At the time of his injury, ${surname}${req.body?.demographicInformation?.lastName} worked for ${req.body?.employmentInjuryPhysicalValue?.currentEmployerName}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described this business as ${req.body?.employmentInjuryPhysicalValue?.businessNature}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} first day of work there was ${req.body?.employmentInjuryPhysicalValue?.jobBeganDate}. `,
+              ]),
+              ...createTextRuns([
+                `The most recent day ${pronounPrefer} worked at this job was ${req.body?.employmentInjuryPhysicalValue?.jobLastDate}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} job title when ${pronounPrefer} started this employment was as a ${req.body?.employmentInjuryPhysicalValue?.startedJobTitle}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} most recent job title at this employment was ${req.body?.employmentInjuryPhysicalValue?.currentTitle}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} employment duties included the following: ${req.body?.employmentInjuryPhysicalValue?.employmentDuty}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} typical work schedule was ${req.body?.employmentInjuryPhysicalValue?.typicalWorkSchedule}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} salary at this position is ${req.body?.employmentInjuryPhysicalValue?.salary}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} hourly rate is ${req.body?.employmentInjuryPhysicalValue?.hourlyRate}. `,
+              ]),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.receiveOvertimePay
               )
-            : storyParagraph(
-                `${pronounPrefer} does not receive overtime pay ${req.body?.employmentInjuryPhysicalValue?.overtimeRate}.`
-              ),
-          storyParagraph(
-            `${pronounPrefer} stated that ${pronounPrefer} likes his job because of ${req.body?.employmentInjuryPhysicalValue?.likeJob}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} stated that ${pronounPrefer} does not like this job due to ${req.body?.employmentInjuryPhysicalValue?.notLikeJob}.`
-          ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue
-              .radioPhysicalConditionBeforeInjuryItem
-          )
-            ? storyParagraph(
-                `Prior to the injury, ${pronounPrefer} was treated for physical or medical condition(s).`
-              )
-            : storyParagraph(
-                `Prior to the injury, ${pronounPrefer} was not treated for any physical or medical condition(s).`
-              ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue
-              .radioMentalConditionBeforeInjuryItem
-          )
-            ? storyParagraph(
-                `Before the injury, ${pronounPrefer} was being treated for any mental or emotional condition(s).`
-              )
-            : storyParagraph(
-                `Before the injury, ${pronounPrefer} was not being treated for any mental or emotional condition(s).`
-              ),
+                ? createTextRuns([
+                    `${pronounPrefer} does receive overtime pay consisting of ${req.body?.employmentInjuryPhysicalValue?.overtimeRate}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} does not receive overtime pay ${req.body?.employmentInjuryPhysicalValue?.overtimeRate}. `,
+                  ])),
+              ...createTextRuns([
+                `${pronounPrefer} stated that ${pronounPrefer} likes his job because of ${req.body?.employmentInjuryPhysicalValue?.likeJob}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} stated that ${pronounPrefer} does not like this job due to ${req.body?.employmentInjuryPhysicalValue?.notLikeJob}. `,
+              ]),
+            ],
+          }),
 
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue
-              .radioEmotionalSymptomsBeforeInjuryItem
-          )
-            ? storyParagraph(
-                `Before the injury, ${pronounPrefer} was experiencing any emotional symptoms.`
+          new Paragraph({
+            children: [
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  .radioPhysicalConditionBeforeInjuryItem
               )
-            : storyParagraph(
-                `Before the injury, ${pronounPrefer} was not experiencing any emotional symptoms.`
-              ),
+                ? createTextRuns([
+                    `Prior to the injury, ${surname}${req.body?.demographicInformation?.lastName} was treated for physical or medical condition(s). `,
+                  ])
+                : createTextRuns([
+                    `Prior to the injury, ${surname}${req.body?.demographicInformation?.lastName} was not treated for any physical or medical condition(s). `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  .radioMentalConditionBeforeInjuryItem
+              )
+                ? createTextRuns([
+                    `Before the injury, ${pronounPrefer} was being treated for any mental or emotional condition(s). `,
+                  ])
+                : createTextRuns([
+                    `Before the injury, ${pronounPrefer} was not being treated for any mental or emotional condition(s). `,
+                  ])),
 
-          storyParagraph(
-            `${pronounPrefer} described these medical or emotional conditions or symptoms before the injury as follows:`
-          ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.describeMedicalCondition
-          )
-            ? storyParagraph(
-                `${pronounPrefer} was taking medications before ${pronoun} injury.`
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  .radioEmotionalSymptomsBeforeInjuryItem
               )
-            : storyParagraph(
-                `${pronounPrefer} was not taking medications before ${pronoun} injury.`
-              ),
+                ? createTextRuns([
+                    `Before the injury, ${pronounPrefer} was experiencing any emotional symptoms. `,
+                  ])
+                : createTextRuns([
+                    `Before the injury, ${pronounPrefer} was not experiencing any emotional symptoms. `,
+                  ])),
 
-          req.body.employmentInjuryPhysicalValue
-            ?.radioMedicationsBeforeInjuryItem === "Yes"
-            ? storyParagraph(
-                `The medications ${pronounPrefer} was taking before the injury were the following:`
+              ...createTextRuns([
+                `${pronounPrefer} described these medical or emotional conditions or symptoms before the injury as follows: ${req.body.employmentInjuryPhysicalValue?.describeMedicalCondition}.`,
+              ]),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  ?.radioMedicationsBeforeInjuryItem
               )
-            : undefined,
-          storyParagraph(`${pronoun} injury occurred on the following date:`),
-          storyParagraph(
-            `${pronounPrefer} described ${pronoun} injury as follows:`
-          ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue
-              .radioDisabilityConnectionClaimItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} is currently receiving disability in connection with ${pronoun} claim.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} is not currently receiving disability in connection With ${pronoun} claim.`
-              ),
+                ? createTextRuns([
+                    `${pronounPrefer} was taking medications before ${pronoun} injury. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} was not taking medications before ${pronoun} injury. `,
+                  ])),
 
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue
-              .radioDisabilityConnectionClaimItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} currently receives disability: ${req.body?.employmentInjuryPhysicalValue?.currentDisability}`
+              ...(req.body.employmentInjuryPhysicalValue
+                ?.radioMedicationsBeforeInjuryItem === "Yes"
+                ? createTextRuns([
+                    `The medications ${pronounPrefer} was taking before the injury were the following: `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronoun} injury occurred on the following date: ${req.body.employmentInjuryPhysicalValue?.injuryDate} `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} injury as follows: ${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred} `,
+              ]),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  .radioDisabilityConnectionClaimItem
               )
-            : undefined,
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.radioCurrentlyWorkingItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} stated that ${pronounPrefer} would have continued working if injured.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} stated that ${pronounPrefer} would not have continued working if not injured.`
-              ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} reported that ${pronounPrefer} has had conflicts with other people at his work.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} reported that ${pronounPrefer} has not had conflicts with other people at his work.`
-              ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
-          )
-            ? storyParagraph(
-                `In total, ${pronounPrefer} estimated that ${pronounPrefer} has ${req.body?.employmentInjuryPhysicalValue?.conflictsCount} separate conflicts with others at work.`
-              )
-            : undefined,
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} described these conflicts as follows: ${req.body?.employmentInjuryPhysicalValue?.eachConflicts}`
-              )
-            : undefined,
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
-          )
-            ? storyParagraph(
-                `${pronounPrefer} rated the percentage that each of these conflicts caused ${pronoun} to feel upset as follows: ${req.body?.employmentInjuryPhysicalValue?.conflictsRate}`
-              )
-            : undefined,
+                ? createTextRuns([
+                    `${pronounPrefer} is currently receiving disability in connection with ${pronoun} claim. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not currently receiving disability in connection With ${pronoun} claim. `,
+                  ])),
 
-          storyParagraph(
-            `${pronounPrefer} described ${pronoun} working relationship with management or ${pronoun} supervisors as ${req.body?.employmentInjuryPhysicalValue?.relationShipLikeManagement}`
-          ),
-          storyParagraph(
-            `${pronoun} immediate supervisor was ${req.body?.employmentInjuryPhysicalValue?.immediateSupervisorName},`
-          ),
-          storyLowCaseParagraph(
-            `and ${pronounPrefer} described their relationship as ${req.body?.employmentInjuryPhysicalValue?.relationshipImmediateSupervisor},`
-          ),
-          req.body?.employmentInjuryPhysicalValue
-            .relationshipImmediateSupervisor === "poor"
-            ? storyLowCaseParagraph(
-                `due to ${req.body?.employmentInjuryPhysicalValue?.explainSuperVisorReason}.`
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  .radioDisabilityConnectionClaimItem
               )
-            : undefined,
-          storyParagraph(
-            `${pronoun} performance appraisals were ${req.body?.employmentInjuryPhysicalValue?.performanceAppraisals}`
-          ),
-          req.body?.employmentInjuryPhysicalValue?.performanceAppraisals ===
-          "poor"
-            ? storyParagraph(
-                `due to ${req.body?.employmentInjuryPhysicalValue?.explainPerformanceAppraisals}`
+                ? createTextRuns([
+                    `${pronounPrefer} currently receives disability consisting of ${req.body?.employmentInjuryPhysicalValue?.currentDisability}. `,
+                  ])
+                : []),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue
+                  ?.radioContinuedWorkingItem
               )
-            : undefined,
+                ? createTextRuns([
+                    `${pronounPrefer} stated that ${pronounPrefer} would have continued working if injured. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} stated that ${pronounPrefer} would not have continued working if not injured. `,
+                  ])),
+            ],
+          }),
+          storyParagraph(""),
 
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.verbalWarning
-          )
-            ? storyParagraph(
-                `${pronounPrefer} has received verbal or written warnings,`
+          new Paragraph({
+            childre: [
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
               )
-            : storyParagraph(
-                `${pronounPrefer} has not received any verbal or written warnings,`
-              ),
-          validateBoolean(
-            req.body?.employmentInjuryPhysicalValue?.verbalWarning
-          )
-            ? storyLowCaseParagraph(
-                `consisting of ${req.body?.employmentInjuryPhysicalValue?.verbalWarningDateReason}`
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} has had conflicts with other people at his work. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} has not had conflicts with other people at his work. `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
               )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} described ${pronoun} working relationship with ${pronoun} coworkers as ${req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers},`
-          ),
-          req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers ===
-          "poor"
-            ? storyLowCaseParagraph(
-                `due to ${req.body?.employmentInjuryPhysicalValue?.explainRelationshipCoWorkers}`
+                ? createTextRuns([
+                    `In total, ${pronounPrefer} estimated that ${pronounPrefer} has ${req.body?.employmentInjuryPhysicalValue?.conflictsCount} separate conflicts with others at work. `,
+                  ])
+                : []),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
               )
-            : undefined,
+                ? createTextRuns([
+                    `${pronounPrefer} described these conflicts as follows: ${req.body?.employmentInjuryPhysicalValue?.eachConflicts}. `,
+                  ])
+                : []),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
+              )
+                ? createTextRuns([
+                    `${pronounPrefer} rated the percentage that each of these conflicts caused ${prepositionPronoun} to feel upset as follows: ${req.body?.employmentInjuryPhysicalValue?.conflictsRate}. `,
+                  ])
+                : []),
+
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} working relationship with management or ${pronoun} supervisors as ${req.body?.employmentInjuryPhysicalValue?.relationShipLikeManagement}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} immediate supervisor was ${req.body?.employmentInjuryPhysicalValue?.immediateSupervisorName}, `,
+              ]),
+              ...createTextLowerRuns([
+                `and ${pronounPrefer} described their relationship as ${req.body?.employmentInjuryPhysicalValue?.relationshipImmediateSupervisor}, `,
+              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                ?.relationshipImmediateSupervisor === "poor"
+                ? createTextLowerRuns([
+                    `due to ${req.body?.employmentInjuryPhysicalValue?.explainSuperVisorReason}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronoun} performance appraisals were ${req.body?.employmentInjuryPhysicalValue?.performanceAppraisals}. `,
+              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                ?.performanceAppraisals === "poor"
+                ? createTextRuns([
+                    `due to ${req.body?.employmentInjuryPhysicalValue?.explainPerformanceAppraisals}. `,
+                  ])
+                : []),
+
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.verbalWarning
+              )
+                ? createTextRuns([
+                    `${pronounPrefer} has received verbal or written warnings, `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not received any verbal or written warnings, `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.verbalWarning
+              )
+                ? createTextLowerRuns([
+                    `consisting of ${req.body?.employmentInjuryPhysicalValue?.verbalWarningDateReason}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} working relationship with ${pronoun} coworkers as ${req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers}, `,
+              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                ?.relationshipCoWorkers === "poor"
+                ? createTextLowerRuns([
+                    `due to ${req.body?.employmentInjuryPhysicalValue?.explainRelationshipCoWorkers}. `,
+                  ])
+                : []),
+            ],
+          }),
 
           storyParagraph(""),
-          validateBoolean(req.body?.employmentInjuryPhysicalValue?.lastStraw)
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} stated that there was not a "Last Straw" event near the last day of work`
-              ),
-          validateBoolean(req.body?.employmentInjuryPhysicalValue?.lastStraw)
-            ? storyLowCaseParagraph(
-                `consisting of ${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}`
-              )
-            : undefined,
 
-          TitleParagraph("Current Employer (If Different Than Above)"),
+          new Paragraph({
+            children: [
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.lastStraw
+              )
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was not a "Last Straw" event near the last day of work. `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.employmentInjuryPhysicalValue?.lastStraw
+              )
+                ? createTextLowerRuns([
+                    `consisting of ${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}. `,
+                  ])
+                : []),
+            ],
+          }),
+
           storyParagraph(""),
-          validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} currently works for the same employer where the above injury occurred.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} currently does not work for the same employer where the above injury occurred.`
-              ),
 
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `Currently, ${pronounPrefer} works for ${req.body?.currentEmployerValue?.currentlyWorkEmployerName}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronounPrefer} described this business as ${req.body?.currentEmployerValue?.currentlyWorkNatureBusiness}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronoun} job title at this employment is ${req.body?.currentEmployerValue?.currentlyWorkJobTitle}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronoun} employment duties include the following: ${req.body?.currentEmployerValue?.currentlyWorkJobDuties}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronoun} first day of work there was ${req.body?.currentEmployerValue?.currentlyWorkJobBeganDate}.`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronoun} typical work schedule is ${req.body?.currentEmployerValue?.currentlyWorkSchedule}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          )
-            ? storyParagraph(
-                `${pronoun} pay rate is ${req.body?.currentEmployerValue?.currentlyWorkSalary}`
-              )
-            : undefined,
-          !validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
-          ) &&
-          validateBoolean(
-            req.body?.currentEmployerValue?.currentlyWorkLikeThisJob
-          )
-            ? storyParagraph(`${pronounPrefer} enjoys this job.`)
-            : storyParagraph(`${pronounPrefer} does not enjoy this job.`),
-
-          TitleParagraph("Physical Injury"),
+          TitleStoryParagraph("Current Employer (If Different Than Above)"),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} injury was in part or entirely physical.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} stated that the first symptoms that ${pronounPrefer} experienced were ${req.body?.physicalInjuryValue?.firstSymptoms}`
-          ),
-          storyParagraph(
-            `Following this injury, the first treatment that ${pronounPrefer} received was ${req.body?.physicalInjuryValue?.firstTreatment}`
-          ),
-          storyParagraph(
-            `The remainder of ${pronoun} treatment has consisted of the following: ${req.body?.physicalInjuryValue?.restYourTreatment}`
-          ),
-          storyParagraph(
-            `The doctors ${pronounPrefer} has seen for this physical injury are ${req.body?.physicalInjuryValue?.doctorsList}`
-          ),
-          validateBoolean(req.body?.physicalInjuryValue?.receivedSurgery)
-            ? storyParagraph(
-                `${pronounPrefer} received surgery for this injury`
+          new Paragraph({
+            children: [
+              ...(validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
               )
-            : storyParagraph(
-                `${pronounPrefer} did not receive surgery for this injury`
-              ),
-          storyParagraph(
-            `${pronoun} surgeries consisted of ${req.body?.physicalInjuryValue?.surgeryList}`
-          ),
-          storyParagraph(
-            `The medications ${pronounPrefer} received for this physical injury include: ${req.body?.physicalInjuryValue?.medicationList}`
-          ),
-          validateBoolean(req.body?.physicalInjuryValue?.treatmentsHelped)
-            ? storyParagraph(
-                `${pronounPrefer} reported that the above treatments have helped relieve ${pronoun} pain.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} reported that the above treatments have not helped relieve ${pronoun} pain.`
-              ),
-          validateBoolean(req.body?.physicalInjuryValue?.stillWorking)
-            ? storyParagraph(`${pronounPrefer} is currently working.`)
-            : storyParagraph(`${pronounPrefer} is not currently working.`),
-          storyParagraph(
-            `${pronounPrefer} explained that ${pronounPrefer} is not working due to ${req.body?.physicalInjuryValue?.leavingReason}`
-          ),
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} currently works for the same employer where the above injury occurred. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} currently does not work for the same employer where the above injury occurred. `,
+                  ])),
 
-          TitleParagraph("Chief Complaint"),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `Currently, ${pronounPrefer} works for ${req.body?.currentEmployerValue?.currentlyWorkEmployerName}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronounPrefer} described this business as ${req.body?.currentEmployerValue?.currentlyWorkNatureBusiness}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronoun} job title at this employment is ${req.body?.currentEmployerValue?.currentlyWorkJobTitle}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronoun} employment duties include the following: ${req.body?.currentEmployerValue?.currentlyWorkJobDuties}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronoun} first day of work there was ${req.body?.currentEmployerValue?.currentlyWorkJobBeganDate}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronoun} typical work schedule is ${req.body?.currentEmployerValue?.currentlyWorkSchedule}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              )
+                ? createTextRuns([
+                    `${pronoun} pay rate is ${req.body?.currentEmployerValue?.currentlyWorkSalary}. `,
+                  ])
+                : []),
+              ...(!validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkEmployerInjury
+              ) &&
+              validateBoolean(
+                req.body?.currentEmployerValue?.currentlyWorkLikeThisJob
+              )
+                ? createTextRuns([`${pronounPrefer} enjoys this job. `])
+                : createTextRuns([
+                    `${pronounPrefer} does not enjoy this job. `,
+                  ])),
+            ],
+          }),
+
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} is most bothered on this day by the following: ${req.body?.chiefComplaintValue?.mostBothered}`
-          ),
+
+          TitleStoryParagraph("Physical Injury"),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${
-              req.body?.demographicInformation?.lastName
-            } reported that ${pronounPrefer} has experienced a cluster of ${divideArray(
-              req.body?.chiefComplaintValue?.currentlyExperiencingSymptom
-            )} symptoms,`
-          ),
-          req.body?.chiefComplaintValue?.currentlyExperiencingSymptom !== "" &&
-          req.body?.chiefComplaintValue?.currentlyExperiencingSymptom !==
-            "none of the above"
-            ? storyLowCaseParagraph(
-                `that began ${req.body?.chiefComplaintValue?.currentEpisodeDate}.`
-              )
-            : undefined,
 
-          validateBoolean(
-            req.body?.chiefComplaintValue?.specificStressfulSymptom
-          )
-            ? storyParagraph(
-                `${pronounPrefer} has experienced these psychiatric symptoms in response to a specific stressful event.`
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} injury was in part or entirely physical. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} stated that the first symptoms that ${pronounPrefer} experienced were ${req.body?.physicalInjuryValue?.firstSymptoms}. `,
+              ]),
+              ...createTextRuns([
+                `Following this injury, the first treatment that ${pronounPrefer} received was ${req.body?.physicalInjuryValue?.firstTreatment}. `,
+              ]),
+              ...createTextRuns([
+                `The remainder of ${pronoun} treatment has consisted of the following: ${req.body?.physicalInjuryValue?.restYourTreatment}. `,
+              ]),
+              ...createTextRuns([
+                `The doctors ${pronounPrefer} has seen for this physical injury are ${req.body?.physicalInjuryValue?.doctorsList}. `,
+              ]),
+              ...(validateBoolean(
+                req.body?.physicalInjuryValue?.receivedSurgery
               )
-            : storyParagraph(
-                `${pronounPrefer} has not experienced these psychiatric symptoms in response to a specific stressful event.`
-              ),
-          validateBoolean(
-            req.body?.chiefComplaintValue?.specificStressfulSymptom
-          )
-            ? storyParagraph(
-                `${pronounPrefer} reported that this trigger consisted of ${req.body?.chiefComplaintValue?.specificStressfulEvent}`
+                ? createTextRuns([
+                    `${pronounPrefer} received surgery for this injury. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} did not receive surgery for this injury. `,
+                  ])),
+              ...createTextRuns([
+                `${pronoun} surgeries consisted of ${req.body?.physicalInjuryValue?.surgeryList}. `,
+              ]),
+              ...createTextRuns([
+                `The medications ${pronounPrefer} received for this physical injury include: ${req.body?.physicalInjuryValue?.medicationList}. `,
+              ]),
+              ...(validateBoolean(
+                req.body?.physicalInjuryValue?.treatmentsHelped
               )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} reported a history of psychosocial stressors consisting of ${divideArray(
-              req.body?.chiefComplaintValue?.stressFollowing
-            )}.`
-          ),
+                ? createTextRuns([
+                    `${pronounPrefer} reported that the above treatments have helped relieve ${pronoun} pain. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} reported that the above treatments have not helped relieve ${pronoun} pain. `,
+                  ])),
+              ...(validateBoolean(req.body?.physicalInjuryValue?.stillWorking)
+                ? createTextRuns([`${pronounPrefer} is currently working. `])
+                : createTextRuns([
+                    `${pronounPrefer} is not currently working. `,
+                  ]),
+              createTextRuns([
+                `${pronounPrefer} explained that ${pronounPrefer} is not working due to ${req.body?.physicalInjuryValue?.leavingReason}. `,
+              ])),
+            ],
+          }),
 
-          TitleParagraph("Longitudinal History"),
+          storyParagraph(""),
+
+          TitleStoryParagraph("Emotional Symptoms and Injuries"),
           storyParagraph(""),
           storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that this episode of depression, anxiety, or post-trauma emotions started on ${req.body?.longitudinalHistoryValue?.emotionEpisodeBegan}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} described ${pronoun} symptoms as follows: ${req.body?.longitudinalHistoryValue?.emotionSymptom}`
-          ),
-          storyParagraph(
-            `During this current or most recent symptom episode, ${pronoun} symptoms were the worst in ${req.body?.longitudinalHistoryValue?.mostWorstSymptom}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} rated ${pronoun} depressive symptoms as a ${req.body?.longitudinalHistoryValue?.depressiveSymptom} out of 10  when they were most severe, on a scale of 1 to 10, with 0-1 equalling minimal or no symptoms and 10 equalling the most severe symptoms imaginable.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} rated ${pronoun} anxiety symptoms as a ${req.body?.longitudinalHistoryValue?.anxietySymptom} out of 10  when they were most severe, on a scale of 1 to 10, with 0-1 equalling minimal or no symptoms and 10 equalling the most severe symptoms imaginable.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} rated ${pronoun} postTrauma symptoms as a ${req.body?.longitudinalHistoryValue?.postTraumaSymptom} out of 10  when they were most severe, on a scale of 1 to 10, with 0-1 equalling minimal or no symptoms and 10 equalling the most severe symptoms imaginable.`
+            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} is most bothered on this day by the following: ${req.body?.chiefComplaintValue?.mostBothered}. `
           ),
 
-          storyParagraph(
-            `Currently, ${pronounPrefer} rates ${pronoun} depressive, anxiety, or post trauma symptoms as a ${req.body?.longitudinalHistoryValue?.compareEmotionalSymptom} out of 10.`
-          ),
-          validateBoolean(
-            req.body?.longitudinalHistoryValue?.symptomsAffectedJob
-          )
-            ? storyParagraph(
-                `${pronounPrefer} reported that ${pronoun} emotional symptoms have affected ${pronoun} ability to do ${pronoun} job.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} reported that ${pronoun} emotional symptoms have never affected ${pronoun} ability to do ${pronoun} job.`
-              ),
-          validateBoolean(
-            req.body?.longitudinalHistoryValue?.symptomsAffectedJob
-          )
-            ? storyParagraph(
-                `${pronounPrefer} explained this affect as: ${req.body?.longitudinalHistoryValue?.describeSymptomsAffectedJob}`
-              )
-            : undefined,
-
-          TitleParagraph("Current Symptoms"),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} current depressive symptoms consist of the following:`
-          ),
-          req.body?.PHQValue?.interestThing === "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} has retained the ability to enjoy activities that were previously enjoyable`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has lost the ability to enjoy activities that were previously enjoyable`
-              ),
-          req.body?.PHQValue?.interestThing !== "not at all"
-            ? storyLowCaseParagraph(
-                `such as ${req.body?.PHQValue?.previouslyEnjoyable}.`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} has experienced depressed mood occurring ${req.body?.PHQValue?.feelingDepressed} per week`
-          ),
 
-          req.body?.PHQValue?.interestThing !== "not at all"
-            ? storyParagraph(
-                `${pronoun} depressive symptoms have ${req.body?.PHQValue?.depressiveSymptomsImproved} since they started.`
-              )
-            : undefined,
-          req.body?.PHQValue?.interestThing !== "not at all"
-            ? storyParagraph(
-                `${pronoun} depressive symptoms occur ${req.body?.PHQValue?.oftenFeelDepressed}`
-              )
-            : undefined,
-          req.body?.PHQValue?.feelingDepressed !== "not at all"
-            ? storyLowCaseParagraph(`for a majority of the time each day.`)
-            : storyLowCaseParagraph(`for a minority of the time each day.`),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${
+                  req.body?.demographicInformation?.lastName
+                } reported that ${pronounPrefer} has experienced a cluster of ${divideArray(
+                  req.body?.chiefComplaintValue?.currentlyExperiencingSymptom
+                )} symptoms,`,
+              ]),
+              ...(req.body?.chiefComplaintValue
+                ?.currentlyExperiencingSymptom !== "" &&
+              req.body?.chiefComplaintValue?.currentlyExperiencingSymptom !==
+                "none of the above"
+                ? createTextLowerRuns([
+                    `that began ${req.body?.chiefComplaintValue?.currentEpisodeDate}. `,
+                  ])
+                : []),
 
-          req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} has trouble falling asleep, staying asleep or sleeping too much ${req.body?.PHQValue?.troubleFallingAsleep} per week.`
+              ...(validateBoolean(
+                req.body?.chiefComplaintValue?.specificStressfulSymptom
               )
-            : storyParagraph(
-                `${pronounPrefer} does not have trouble falling asleep, staying asleep or sleeping too much ${req.body?.PHQValue?.troubleFallingAsleep} per week.`
-              ),
-          req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} wakes up ${req.body?.PHQValue?.wakeUpTimes} times per night`
+                ? createTextRuns([
+                    `${pronounPrefer} has experienced these psychiatric symptoms in response to a specific stressful event. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not experienced these psychiatric symptoms in response to a specific stressful event. `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.chiefComplaintValue?.specificStressfulSymptom
               )
-            : undefined,
-          req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `When ${pronounPrefer} wakes up during the night, ${pronounPrefer} stays awake for ${req.body?.PHQValue?.stayAwakeLong}.`
-              )
-            : undefined,
-          req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} is awoken by ${req.body?.PHQValue?.awakeSleepReason}`
-              )
-            : undefined,
-          req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} sleeps ${req.body?.PHQValue?.totalSleepTimes} per 24 hours.`
-              )
-            : undefined,
+                ? createTextRuns([
+                    `${pronounPrefer} reported that this trigger consisted of ${req.body?.chiefComplaintValue?.specificStressfulEvent}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} reported a history of psychosocial stressors consisting of ${divideArray(
+                  req.body?.chiefComplaintValue?.stressFollowing
+                )}. `,
+              ]),
+            ],
+          }),
 
-          req.body?.PHQValue?.feelingEnergy !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} feels tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} does not feel tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week.`
-              ),
-          req.body?.PHQValue?.poorAppetite !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} has experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week`
-              ),
-          req.body?.PHQValue?.poorAppetite !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} has ${req.body?.PHQValue?.recentlyWeightPounds} pounds`
-              )
-            : undefined,
-          req.body?.PHQValue?.poorAppetite !== "not at all"
-            ? storyLowCaseParagraph(
-                `in the last ${req.body?.PHQValue?.weightGainLostLong}`
-              )
-            : undefined,
+          storyParagraph(""),
 
-          req.body?.PHQValue?.yourselfFeelingBad !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}.`
-              ),
-          req.body?.PHQValue?.troubleConCentratingThing !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks.`
-              ),
-          req.body?.PHQValue?.fidgetyMoving !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported moving or speaking so slowly that other people could have noticed,or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied moving or speaking so slowly that other people could have noticed,or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}.`
-              ),
-          req.body?.PHQValue?.betterOffDeadYourself !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}.`
-              ),
-          storyParagraph(
-            `${pronoun} PHQ-9 score was in the ${ScoreCalculate(
-              req.body?.PHQValue?.phqScore
-            )} range: ${req.body.PHQValue?.phqScore}.`
-          ),
-          req.body?.PHQValue?.deadWishWakeUp !== "not at all"
-            ? storyParagraph(
-                `In the past month, ${pronounPrefer} has wished ${pronounPrefer} was dead or wished ${pronounPrefer} could go to sleep and not wake up ${req.body?.PHQValue?.deadWishWakeUp}.`
-              )
-            : storyParagraph(
-                `In the past month, ${pronounPrefer} has not wished ${pronounPrefer} was dead or wished ${pronounPrefer} could go to sleep and not wake up ${req.body?.PHQValue?.deadWishWakeUp}.`
-              ),
-          req.body?.PHQValue?.killingYourself === "Yes"
-            ? storyParagraph(
-                `In the past month, ${pronounPrefer} has had actual thoughts of killing ${manPronoun}.`
-              )
-            : req.body?.PHQValue?.killingYourself === "No"
-            ? storyParagraph(
-                `In the past month, ${pronounPrefer} has not had any actual thoughts of killing ${manPronoun}.`
-              )
-            : storyParagraph(
-                `In the past month, ${pronounPrefer} is not sure if ${pronounPrefer} had any actual thoughts of killing ${manPronoun}.`
-              ),
+          TitleStoryParagraph("Longitudinal History"),
+          storyParagraph(""),
 
-          req.body?.PHQValue?.killingYourself !== "No" &&
-          req.body?.PHQValue?.killMethod === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}.`
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that this episode of depression, anxiety, or post-trauma emotions started on ${req.body?.longitudinalHistoryValue?.emotionEpisodeBegan}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} symptoms as follows: ${req.body?.longitudinalHistoryValue?.emotionSymptom}. `,
+              ]),
+              ...createTextRuns([
+                `During this current or most recent symptom episode, ${pronoun} symptoms were the worst in ${req.body?.longitudinalHistoryValue?.mostWorstSymptom}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} rated ${pronoun} depressive symptoms as a ${req.body?.longitudinalHistoryValue?.depressiveSymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} rated ${pronoun} anxiety symptoms as a ${req.body?.longitudinalHistoryValue?.anxietySymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} rated ${pronoun} post-trauma symptoms as a ${req.body?.longitudinalHistoryValue?.postTraumaSymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
+              ]),
+              ...createTextRuns([
+                `Currently, ${pronounPrefer} rates ${pronoun} depressive, anxiety, or post-trauma symptoms as a ${req.body?.longitudinalHistoryValue?.compareEmotionalSymptom} out of 10. `,
+              ]),
+              ...(validateBoolean(
+                req.body?.longitudinalHistoryValue?.symptomsAffectedJob
               )
-            : req.body?.PHQValue?.killingYourself !== "No" &&
-              req.body?.PHQValue?.killMethod === "No"
-            ? storyParagraph(
-                `${pronounPrefer} has not been thinking about how ${pronounPrefer} might kill ${manPronoun}.`
+                ? createTextRuns([
+                    `${pronounPrefer} reported that ${pronoun} emotional symptoms have affected ${pronoun} ability to do ${pronoun} job. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} reported that ${pronoun} emotional symptoms have never affected ${pronoun} ability to do ${pronoun} job. `,
+                  ])),
+              ...(validateBoolean(
+                req.body?.longitudinalHistoryValue?.symptomsAffectedJob
               )
-            : storyParagraph(
-                `${pronounPrefer} is not sure if ${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}.`
-              ),
+                ? createTextRuns([
+                    `${pronounPrefer} explained this affect as: ${req.body?.longitudinalHistoryValue?.describeSymptomsAffectedJob}. `,
+                  ])
+                : []),
+            ],
+          }),
 
-          req.body?.PHQValue?.killingYourself !== "No" &&
-          req.body?.PHQValue?.killMethod !== "No" &&
-          req.body?.PHQValue?.actingIntention === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has had these thoughts, and had some intention of acting on them.`
-              )
-            : req.body?.PHQValue?.killingYourself !== "No" &&
+          storyParagraph(""),
+
+          TitleStoryParagraph("Current Symptoms"),
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} current depressive symptoms over the last 2 weeks consist of the following: `,
+              ]),
+              ...(req.body?.PHQValue?.interestThing === "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} has retained the ability to enjoy activities that were previously enjoyable for ${req.body.PHQValue?.interestThing}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has lost the ability to enjoy activities that were previously enjoyable. `,
+                  ])),
+              ...(req.body?.PHQValue?.interestThing !== "not at all"
+                ? createTextLowerRuns([
+                    `such as ${req.body?.PHQValue?.previouslyEnjoyable}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} has experienced depressed mood occurring ${req.body?.PHQValue?.feelingDepressed} per week. `,
+              ]),
+              ...(req.body?.PHQValue?.feelingDepressed !== "not at all"
+                ? createTextRuns([
+                    `${pronoun} depressive symptoms have ${req.body?.PHQValue?.depressiveSymptomsImproved} since they started. `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.feelingDepressed !== "not at all"
+                ? createTextRuns([
+                    `${pronoun} depressive symptoms occur ${req.body?.PHQValue?.oftenFeelDepressed} `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.feelingDepressed !== "not at all"
+                ? createTextLowerRuns([`for a majority of the time each day. `])
+                : createTextLowerRuns([
+                    `for a minority of the time each day. `,
+                  ])),
+
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} has trouble falling asleep, staying asleep or sleeping too much ${req.body?.PHQValue?.troubleFallingAsleep} per week. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} does not have trouble falling asleep, staying asleep or sleeping too much ${req.body?.PHQValue?.troubleFallingAsleep} per week. `,
+                  ])),
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} wakes up ${req.body?.PHQValue?.wakeUpTimes} times per night. `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `When ${pronounPrefer} wakes up during the night, ${pronounPrefer} stays awake for ${req.body?.PHQValue?.stayAwakeLong}. `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} is awoken by ${req.body?.PHQValue?.awakeSleepReason}. `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} sleeps ${req.body?.PHQValue?.totalSleepTimes} per 24 hours. `,
+                  ])
+                : []),
+            ],
+          }),
+
+          storyParagraph(""),
+
+
+          new Paragraph({
+            children: [
+              ...(req.body?.PHQValue?.feelingEnergy !== "not at all"
+              ? createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} feels tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
+                ])
+              : createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} does not feel tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
+                ])),
+            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} has experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} has not experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
+                ])),
+            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} has ${req.body?.PHQValue?.recentlyWeightPounds} pounds. `,
+                ])
+              : []),
+            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+              ? createTextLowerRuns([
+                  `in the last ${req.body?.PHQValue?.weightGainLostLong}. `,
+                ])
+              : []),
+
+            ...(req.body?.PHQValue?.yourselfFeelingBad !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} reported feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
+                ])),
+            ...(req.body?.PHQValue?.troubleConCentratingThing !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} reported trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
+                ])),
+            ...(req.body?.PHQValue?.fidgetyMoving !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} reported moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
+                ])),
+            ...(req.body?.PHQValue?.betterOffDeadYourself !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} reported thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
+                ])),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName}'s PHQ-9 score was in the ${ScoreCalculate(
+                  req.body?.PHQValue?.phqScore
+                )} range: ${req.body.PHQValue?.phqScore}. `,
+              ]),
+              ...(req.body?.PHQValue?.deadWishWakeUp !== "not at all"
+                ? createTextRuns([
+                    `In the past month, ${pronounPrefer} has wished ${pronounPrefer} was dead or wished ${pronounPrefer} could go to sleep and not wake up ${req.body?.PHQValue?.deadWishWakeUp}. `,
+                  ])
+                : createTextRuns([
+                    `In the past month, ${pronounPrefer} has not wished ${pronounPrefer} was dead or wished ${pronounPrefer} could go to sleep and not wake up ${req.body?.PHQValue?.deadWishWakeUp}. `,
+                  ])),
+              ...(req.body?.PHQValue?.killingYourself === "Yes"
+                ? createTextRuns([
+                    `In the past month, ${pronounPrefer} has had actual thoughts of killing ${manPronoun}. `,
+                  ])
+                : req.body?.PHQValue?.killingYourself === "No"
+                ? createTextRuns([
+                    `In the past month, ${pronounPrefer} has not had any actual thoughts of killing ${manPronoun}. `,
+                  ])
+                : createTextRuns([
+                    `In the past month, ${pronounPrefer} is not sure if ${pronounPrefer} had any actual thoughts of killing ${manPronoun}. `,
+                  ])),
+
+              req.body?.PHQValue?.killingYourself !== "No" &&
+              req.body?.PHQValue?.killMethod === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}. `,
+                  ])
+                : req.body?.PHQValue?.killingYourself !== "No" &&
+                  req.body?.PHQValue?.killMethod === "No"
+                ? createTextRuns([
+                    `${pronounPrefer} has not been thinking about how ${pronounPrefer} might kill ${manPronoun}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not sure if ${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}. `,
+                  ]),
+
+              req.body?.PHQValue?.killingYourself !== "No" &&
               req.body?.PHQValue?.killMethod !== "No" &&
-              req.body?.PHQValue?.actingIntention === "No"
-            ? storyParagraph(
-                `${pronounPrefer} has not had these thoughts, and had some intention of acting on them.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} is not sure if ${pronounPrefer} had these thoughts, and had some intention of acting on them.`
-              ),
+              req.body?.PHQValue?.actingIntention === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has had these thoughts, and had some intention of acting on them. `,
+                  ])
+                : req.body?.PHQValue?.killingYourself !== "No" &&
+                  req.body?.PHQValue?.killMethod !== "No" &&
+                  req.body?.PHQValue?.actingIntention === "No"
+                ? createTextRuns([
+                    `${pronounPrefer} has not had these thoughts, and had some intention of acting on them. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not sure if ${pronounPrefer} had these thoughts, and had some intention of acting on them. `,
+                  ]),
 
-          req.body?.PHQValue?.killingYourself !== "No"
-            ? req.body?.PHQValue?.killMethod !== "No"
-              ? req.body?.PHQValue?.actingIntention !== "No"
-                ? req.body?.PHQValue?.killIntentionCarryout === "Yes"
-                  ? storyParagraph(
-                      `${pronounPrefer} has started to work out the details of how to kill ${manPronoun}.`
-                    )
-                  : req.body?.PHQValue?.killingYourself !== "No"
-                  ? req.body?.PHQValue?.killMethod !== "No"
-                    ? req.body?.PHQValue?.actingIntention !== "No"
-                      ? req.body?.PHQValue?.killIntentionCarryout === "No"
-                        ? storyParagraph(
-                            `${pronounPrefer} has not started to work out the details of how to kill ${manPronoun}.`
-                          )
-                        : storyParagraph(
-                            `${pronounPrefer} is not sure if ${pronounPrefer} started to work out the details of how to kill ${manPronoun}.`
-                          )
-                      : undefined
-                    : undefined
-                  : undefined
-                : undefined
-              : undefined
-            : undefined,
+              req.body?.PHQValue?.killingYourself !== "No"
+                ? req.body?.PHQValue?.killMethod !== "No"
+                  ? req.body?.PHQValue?.actingIntention !== "No"
+                    ? req.body?.PHQValue?.killIntentionCarryout === "Yes"
+                      ? createTextRuns([
+                          `${pronounPrefer} has started to work out the details of how to kill ${manPronoun}. `,
+                        ])
+                      : req.body?.PHQValue?.killingYourself !== "No"
+                      ? req.body?.PHQValue?.killMethod !== "No"
+                        ? req.body?.PHQValue?.actingIntention !== "No"
+                          ? req.body?.PHQValue?.killIntentionCarryout === "No"
+                            ? createTextRuns([
+                                `${pronounPrefer} has not started to work out the details of how to kill ${manPronoun}. `,
+                              ])
+                            : createTextRuns([
+                                `${pronounPrefer} is not sure if ${pronounPrefer} started to work out the details of how to kill ${manPronoun}. `,
+                              ])
+                          : []
+                        : []
+                      : []
+                    : []
+                  : []
+                : [],
+                
+              ...(req.body?.PHQValue?.preparedAnythingEndYourlife === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} answered yes (or no) when asked if ${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life `,
+                  ])
+                : req.body?.PHQValue?.preparedAnythingEndYourlife === "No"
+                ? createTextRuns([
+                    `${pronounPrefer} answered no when asked if ${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life`,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not sure if ${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life. `,
+                  ])),
 
-          req.body?.PHQValue?.preparedAnythingEndYourlife === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life.`
-              )
-            : req.body?.PHQValue?.preparedAnythingEndYourlife === "No"
-            ? storyParagraph(
-                `${pronounPrefer} has not ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} is not sure if ${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life.`
-              ),
+              ...(req.body?.PHQValue?.hurtingAnyone === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has had thoughts of hurting someone else. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not had thoughts of hurting someone else. `,
+                  ])),
+              ...createTextRuns([
+                `${pronounPrefer} rated his current depressive symptoms as a ${req.body?.PHQValue?.currentDepressiveSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no depression and 10 equaling the most severe depressive symptoms imaginable. `,
+              ]),
+            ]
+          }),
 
-          req.body?.PHQValue?.hurtingAnyone === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has had thoughts of hurting someone else.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not had thoughts of hurting someone else.`
-              ),
-          storyParagraph(
-            `${pronounPrefer} rated his current depressive symptoms as a ${req.body?.PHQValue?.currentDepressiveSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equalling minimal or no depression and 10 equalling the most severe depressive symptoms imaginable.`
-          ),
-
-          storyParagraph(`Over the last two weeks,`),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported experiencing anxiety symptoms for ${req.body?.GADValue?.feelingNervous}`
-          ),
-          req.body?.GADValue?.feelingNervous !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} has felt anxious during this most recent episode for ${req.body?.GADValue?.feltAnxiousLong},`
-              )
-            : undefined,
-          req.body?.GADValue?.feelingNervous !== "not at all"
-            ? storyLowCaseParagraph(
-                `that occurs on ${req.body?.GADValue?.feelAnxiousOften}.`
-              )
-            : undefined,
 
-          req.body?.GADValue?.stopControlWorring !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported being unable to stop or control worrying for ${req.body?.GADValue?.stopControlWorring} in the last two weeks,`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies being unable to stop or control worrying ${req.body?.GADValue?.stopControlWorring},`
-              ),
-          req.body?.GADValue?.worringDifferentThing !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported worrying too much about different things ${req.body?.GADValue?.worringDifferentThing},`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies worrying too much about different things ${req.body?.GADValue?.worringDifferentThing},`
-              ),
-          req.body?.GADValue?.worringDifferentThing !== "not at all"
-            ? storyLowCaseParagraph(
-                `regarding ${pronoun} ${divideArray(
-                  req.body?.GADValue?.worringThing
-                )}`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `Over the last 2 weeks, ${surname}${req.body?.demographicInformation?.lastName} reported experiencing anxiety symptoms for ${req.body?.GADValue?.feelingNervous} `,
+              ]),
+              ...(req.body?.GADValue?.feelingNervous !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} has felt anxious during this most recent episode for ${req.body?.GADValue?.feltAnxiousLong}, `,
+                  ])
+                : []),
+              ...(req.body?.GADValue?.feelingNervous !== "not at all"
+                ? createTextLowerRuns([
+                    `with anxious mood on ${req.body?.GADValue?.feelAnxiousOften}. `,
+                  ])
+                : []),
 
-          req.body?.GADValue?.troubleRelaxing !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported trouble relaxing ${req.body?.GADValue?.troubleRelaxing}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies trouble relaxing ${req.body?.GADValue?.troubleRelaxing}.`
-              ),
-          req.body?.GADValue?.restlessSitHard !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported being so restless that it's hard to sit still on ${req.body?.GADValue?.restlessSitHard}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies being so restless that it's hard to sit still on ${req.body?.GADValue?.restlessSitHard}.`
-              ),
-          req.body?.GADValue?.easilyAnnoyed !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported feeling afraid as if something awful might happen ${req.body?.GADValue?.easilyAnnoyed}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies feeling afraid as if something awful might happen ${req.body?.GADValue?.easilyAnnoyed}.`
-              ),
+              ...(req.body?.GADValue?.stopControlWorring !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported being unable to stop or control worrying for ${req.body?.GADValue?.stopControlWorring} in the last two weeks. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies being unable to stop or control worrying ${req.body?.GADValue?.stopControlWorring}. `,
+                  ])),
+              ...(req.body?.GADValue?.worringDifferentThing !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported worrying too much about different things. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies worrying too much about different things. `,
+                  ])),
+              ...(req.body?.GADValue?.worringDifferentThing !== "not at all"
+                ? createTextLowerRuns([
+                    `regarding ${pronoun} ${divideArray(
+                      req.body?.GADValue?.worringThing
+                    )}. `,
+                  ])
+                : []),
 
-          storyParagraph(
-            `${pronoun} GAD-7 score was in the ${ScoreCalculate(
-              req.body?.GADValue?.gadScore
-            )} range: ${req.body.GADValue?.gadScore}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} rated his current anxiety symptoms as a ${req.body?.GADValue?.currentAnxietySymptoms} out of 10, on a scale of 1 to 10, with 0-1 equalling minimal or no anxiety and 10 equalling the most severe anxiety symptoms imaginable.`
-          ),
-          req.body?.GADValue?.panicAttacks === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} also has experienced panic attacks consisting of`
-              )
-            : storyParagraph(
-                `${pronounPrefer} also has not experienced panic attacks`
-              ),
-          req.body?.GADValue?.panicAttacks === "Yes"
-            ? storyParagraph(`${req.body?.GADValue?.panicPhysicalSymptoms}`)
-            : undefined,
-          req.body?.GADValue?.panicAttacks === "Yes"
-            ? storyParagraph(
-                `lasting ${req.body?.GADValue?.panicAttacksLastLong}.`
-              )
-            : undefined,
-          req.body?.GADValue?.panicAttacks === "Yes"
-            ? req.body?.GADValue?.panicAttacksSpontaneous === "Yes"
-              ? storyParagraph(
-                  `${pronoun} panic attacks are spontaneous and are unrelated to any events.`
-                )
-              : storyParagraph(
-                  `${pronoun} panic attacks are not spontaneous and are unrelated to any events.`
-                )
-            : undefined,
+              ...(req.body?.GADValue?.troubleRelaxing !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported trouble relaxing ${req.body?.GADValue?.troubleRelaxing}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies trouble relaxing ${req.body?.GADValue?.troubleRelaxing}. `,
+                  ])),
+              ...(req.body?.GADValue?.restlessSitHard !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported being so restless that it's hard to sit still on ${req.body?.GADValue?.restlessSitHard}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies being so restless that it's hard to sit still `,
+                  ])),
+              ...(req.body?.GADValue?.easilyAnnoyed !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported feeling afraid as if something awful might happen ${req.body?.GADValue?.easilyAnnoyed}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies feeling afraid as if something awful might happen ${req.body?.GADValue?.easilyAnnoyed}. `,
+                  ])),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new  Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName}'s GAD-7 score was in the ${ScoreCalculate(
+                  req.body?.GADValue?.gadScore
+                )} range: ${req.body.GADValue?.gadScore}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} rated his current anxiety symptoms as a ${req.body?.GADValue?.currentAnxietySymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no anxiety and 10 equaling the most severe anxiety symptoms imaginable. `,
+              ]),
+              ...(req.body?.GADValue?.panicAttacks === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} also has experienced panic attacks consisting of `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} also has not experienced panic attacks`,
+                  ])),
+              ...(req.body?.GADValue?.panicAttacks === "Yes"
+                ? createTextLowerRuns([
+                    `${divideArray(req.body?.GADValue?.panicPhysicalSymptoms)} `,
+                  ])
+                : []),
+              ...(req.body?.GADValue?.panicAttacks === "Yes"
+                ? createTextRuns([
+                    `lasting ${req.body?.GADValue?.panicAttacksLastLong}. `,
+                  ])
+                : []),
+              ...(req.body?.GADValue?.panicAttacks === "Yes"
+                ? req.body?.GADValue?.panicAttacksSpontaneous === "Yes"
+                  ? createTextRuns([
+                      `${pronoun} panic attacks are spontaneous and are unrelated to any events. `,
+                    ])
+                  : createTextRuns([
+                      `${pronoun} panic attacks are not spontaneous and are unrelated to any events. `,
+                    ])
+                : []),
+            ]
+          }),
+
           req.body?.GADValue?.pastTraumaticEvents === "Yes"
             ? storyParagraph("")
             : undefined,
-          req.body?.GADValue?.pastTraumaticEvents === "Yes"
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } reported experiencing traumatic events consisting of ${divideArray(
-                  req.body?.GADValue?.traumaticEventExperience
-                )}`
-              )
-            : undefined,
+         
+
           storyParagraph(""),
-          req.body?.GADValue?.pastTraumaticEvents === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} experienced past traumatic event(s) consisting of ${req.body?.GADValue?.describeTraumaticExperience}.`
-              )
-            : undefined,
 
-          storyParagraph(
-            `${pronounPrefer} has experienced the following post related symptoms`
-          ),
-          req.body?.PCLValue?.stressfulExperienceMemories !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reports repeated, disturbing, and unwanted memories of the stressful experience ${req.body?.PCLValue?.stressfulExperienceMemories}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies repeated, disturbing, and unwanted memories of the stressful experience.`
-              ),
-          req.body?.PCLValue?.stressfulExperience !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed experiencing repeated, disturbing dreams of the stressful experience ${req.body?.PCLValue?.stressfulExperience},`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied experiencing repeated, disturbing dreams of the stressful experience,`
-              ),
-          req.body?.PCLValue?.stressfulExperience !== "not at all"
-            ? storyLowCaseParagraph(
-                `${req.body?.PCLValue?.disturbingDreamsOccur}`
-              )
-            : undefined,
-
-          req.body?.PCLValue?.suddenlyStressfulExperience !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it) ${req.body?.PCLValue?.suddenlyStressfulExperience}. `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)`
-              ),
-          req.body?.PCLValue?.veryUpsetStressfulExperience !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed experiencing repeated, disturbing dreams of the stressful experience ${req.body?.PCLValue?.veryUpsetStressfulExperience} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied experiencing repeated, disturbing dreams of the stressful experience.`
-              ),
-          req.body?.PCLValue?.strongPhysicalReactionStressfulExperience !==
-          "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating)`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating).`
-              ),
-          req.body?.PCLValue?.avoidingMemories !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed avoiding memories, thoughts, or feelings related to the stressful experience as ${req.body?.PCLValue?.avoidingMemories} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied avoiding memories, thoughts, or feelings related to the stressful experience as.`
-              ),
-          req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations) ${req.body?.PCLValue?.avoidingExternalReminders}`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations).`
-              ),
-          req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} reported avoiding the following: ${req.body?.PCLValue?.describeSituations}`
-              )
-            : undefined,
-          req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-            ? storyParagraph(
-                `The activities ${pronounPrefer} avoids in relation to the trauma include ${req.body?.PCLValue?.avoidActivities}`
-              )
-            : undefined,
-
-          req.body?.PCLValue?.troubleStressfulExperience !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} described trouble remembering important parts of the stressful experience ${req.body?.PCLValue?.troubleStressfulExperience} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} described trouble remembering important parts of the stressful experience.`
-              ),
-          req.body?.PCLValue?.strongNegativeBeliefs !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me), as ${req.body?.PCLValue?.strongNegativeBeliefs} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me).`
-              ),
-          req.body?.PCLValue?.stressfulExperienceBlaming !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed blaming ${manPronoun} or someone else for the stressful experience or what happened after it ${req.body?.PCLValue?.stressfulExperienceBlaming} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied blaming ${manPronoun} or someone else for the stressful experience or what happened after it`
-              ),
-          req.body?.PCLValue?.strongNegativefeelings !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed having strong negative feelings such as fear, horror, anger, guilt, or shame as ${req.body?.PCLValue?.strongNegativefeelings} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied having strong negative feelings such as fear, horror, anger, guilt, or shame as.`
-              ),
-          req.body?.PCLValue?.lossInterestActivity !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed loss of interest in activities that ${pronounPrefer} used to enjoy as ${req.body?.PCLValue?.lossInterestActivity} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied loss of interest in activities that ${pronounPrefer} used to enjoy.`
-              ),
-          req.body?.PCLValue?.feelingDistantPeople !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed experiencing feeling distant or cut off from other people ${req.body?.PCLValue?.feelingDistantPeople} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied experiencing feeling distant or cut off from other people.`
-              ),
-          req.body?.PCLValue?.troubleExperiencePositiveFeeling !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}) ${req.body?.PCLValue?.troubleExperiencePositiveFeeling} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}).`
-              ),
-          req.body?.PCLValue?.irritableBehavior !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed irritable behavior, angry outbursts, or acting aggressively as ${req.body?.PCLValue?.irritableBehavior} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied irritable behavior, angry outbursts, or acting aggressively.`
-              ),
-          req.body?.PCLValue?.manyRisksThing !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed taking too many risks or doing things that could cause you harm ${req.body?.PCLValue?.manyRisksThing} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied taking too many risks or doing things that could cause you harm.`
-              ),
-          req.body?.PCLValue?.beingWatchful !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed being “superalert” or watchful or on guard ${req.body?.PCLValue?.beingWatchful} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied being “superalert” or watchful or on guard.`
-              ),
-          req.body?.PCLValue?.easilyStartled !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed feeling jumpy or beaing easily startled ${req.body?.PCLValue?.easilyStartled} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied feeling jumpy or beaing easily startled.`
-              ),
-          req.body?.PCLValue?.difficultyConcentrating !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed having difficulty concentrating ${req.body?.PCLValue?.difficultyConcentrating} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied having difficulty concentrating.`
-              ),
-          req.body?.PCLValue?.troubleFallingAsleep !== "not at all"
-            ? storyParagraph(
-                `${pronounPrefer} endorsed trouble falling or staying asleep ${req.body?.PCLValue?.troubleFallingAsleep} `
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied trouble falling or staying asleep.`
-              ),
-
-          req.body?.PCLValue?.PCLScore >= 31 &&
-          req.body?.PCLValue?.PCLScore <= 33
-            ? storyParagraph(
-                `${pronoun} PCL-5 score is indicative of probable PTSD. ${req.body.PCLValue.PCLScore}`
-              )
-            : storyParagraph(
-                `${pronoun} PCL-5 score is not indicative of probable PTSD. ${req.body.PCLValue.PCLScore}`
-              ),
-          storyParagraph(
-            `${pronounPrefer} rated ${pronoun} current post trauma symptoms as an ${req.body?.PCLValue?.currentRelatedSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equalling minimal or no post trauma symptoms and 10 equalling the most severe post traumatic symptoms imaginable.`
-          ),
-
-          TitleParagraph("Current Treatment"),
-          storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} currently takes the following psychiatric medications: ${req.body?.currentTreatmentValue?.currentlyPsychiatricMedications}.`
-          ),
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has taken these medications since ${req.body?.currentTreatmentValue?.medicationLong}.`
-              )
-            : undefined,
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} stated he takes these medications for ${divideArray(
-                  req.body?.currentTreatmentValue?.medicationReason
-                )}.`
-              )
-            : undefined,
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} stated that these medications have produced ${cardFieldType(
-                  req.body?.currentTreatmentValue
-                    ?.medicationsEffectYourCondition
-                )}.`
-              )
-            : undefined,
-
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? req.body?.currentTreatmentValue?.medicationAsPrescribed === "Yes"
-              ? storyParagraph(
-                  `${pronounPrefer} is currently compliant with taking ${pronoun} psychiatric medications.`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} is currently non compliant with taking ${pronoun} psychiatric medications.`
-                )
-            : undefined,
-
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? req.body?.currentTreatmentValue?.experiencedSideEffects !==
-              "other"
-              ? storyParagraph(
-                  `${pronounPrefer} has experienced side effects consisting of ${divideArray(
-                    req.body?.currentTreatmentValue?.experiencedSideEffects
+          new Paragraph({
+            children: [
+              ...(req.body?.GADValue?.pastTraumaticEvents === "Yes"
+              ? createTextRuns([
+                  `${surname}${
+                    req.body?.demographicInformation?.lastName
+                  } reported experiencing traumatic events consisting of ${divideArray(
+                    req.body?.GADValue?.traumaticEventExperience
                   )}`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} has not experienced side effects.`
-                )
-            : undefined,
+                ])
+              : []),
+              ...(req.body?.GADValue?.pastTraumaticEvents === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} experienced past traumatic event(s) consisting of ${req.body?.GADValue?.describeTraumaticExperience}. `,
+                  ])
+                : []),
 
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? req.body?.currentTreatmentValue?.experiencedSideEffects ===
-              "other"
-              ? storyParagraph(
-                  `and ${req.body?.currentTreatmentValue?.describeSideEffect}`
-                )
-              : undefined
-            : undefined,
+              ...createTextRuns([
+                `${pronounPrefer} has experienced the following post trauma related symptoms. `,
+              ]),
+              ...(req.body?.PCLValue?.stressfulExperienceMemories !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reports repeated, disturbing, and unwanted memories of the stressful experience ${req.body?.PCLValue?.stressfulExperienceMemories}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies repeated, disturbing, and unwanted memories of the stressful experience. `,
+                  ])),
+              ...(req.body?.PCLValue?.stressfulExperience !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed experiencing repeated, disturbing dreams of the stressful experience ${req.body?.PCLValue?.stressfulExperience}, `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied experiencing repeated, disturbing dreams of the stressful experience, `,
+                  ])),
+              ...(req.body?.PCLValue?.stressfulExperience !== "not at all"
+                ? createTextLowerRuns([
+                    `${req.body?.PCLValue?.disturbingDreamsOccur}. `,
+                  ])
+                : []),
 
-          req.body?.currentTreatmentValue?.currentlyPsychiatricMedications ===
-          "Yes"
-            ? storyParagraph(
-                `${pronoun} most recent psychiatric medication treatment provider was ${req.body?.currentTreatmentValue?.recentTreatmentProvider}`
-              )
-            : undefined,
-
-          storyParagraph(""),
-          req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} attends psychotherapy treatment.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied that ${pronounPrefer} attends psychotherapy treatment.`
-              ),
-          req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          "Yes"
-            ? storyParagraph(
-                `${pronoun} most recent psychotherapy began on ${req.body?.currentTreatmentValue?.recentPsychotherapyBegin}`
-              )
-            : undefined,
-          req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          "Yes"
-            ? storyLowCaseParagraph(
-                `and the most recent psychotherapy session occurred on ${req.body?.currentTreatmentValue?.recentPsychotherapySession}`
-              )
-            : undefined,
-          req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} attends therapy ${req.body?.currentTreatmentValue?.psychotherapySessionsDate}.`
-              )
-            : undefined,
-          req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment ===
-          "Yes"
-            ? storyParagraph(
-                `${pronoun} current or most recent psychotherapist is ${req.body?.currentTreatmentValue?.psychotherapistTreatmentProvider}`
-              )
-            : undefined,
-
-          TitleParagraph("Past Psychiatric History"),
-          storyParagraph(""),
-          req.body?.pastHistoryValue?.describeSymptoms !== ""
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported a history of prior ${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied a history of prior ${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}`
-              ),
-
-          req.body?.pastHistoryValue?.describeSymptoms !== ""
-            ? storyParagraph(
-                `${pronounPrefer} described ${pronoun} symptoms at that time as ${req.body?.pastHistoryValue?.describeSymptoms}.`
-              )
-            : undefined,
-
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported that ${pronounPrefer} has had so much energy that ${pronounPrefer} does not need to sleep for`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied that ${pronounPrefer} has ever had so much energy that ${pronounPrefer} does not need to sleep for several days or a week at a time.`
-              ),
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? storyParagraph(
-                `${req.body?.pastHistoryValue?.sleptFewer4Hours} nights and ${pronoun}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? storyLowCaseParagraph(
-                `energy is ${req.body?.pastHistoryValue?.lackSleepEnergy} during that time.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
-          req.body?.pastHistoryValue?.sleepFewer === "Yes"
-            ? storyParagraph(
-                `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired`
-              )
-            : storyParagraph(
-                `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired`
-              ),
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? storyParagraph(
-                `When ${pronounPrefer} experienced these episodes of decreased need for sleep, ${pronoun} mood was ${req.body?.pastHistoryValue?.mood}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? req.body?.pastHistoryValue?.mood === "other"
-              ? storyParagraph(`${req.body?.pastHistoryValue?.describeMood}`)
-              : undefined
-            : undefined,
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? req.body?.pastHistoryValue?.highEnergyTime === "Yes"
-              ? storyParagraph(
-                  `During this decreased sleep episode, [${pronounPrefer} remained clean and sober throughout that time was using substances] during that time.`
-                )
-              : undefined
-            : undefined,
-          req.body?.pastHistoryValue?.highEnergyTime === "Yes"
-            ? storyParagraph(
-                `During this high energy time ${pronounPrefer} did engage in any high-risk behaviors.`
-              )
-            : storyParagraph(
-                `During this high energy time ${pronounPrefer} did not engage in any high-risk behaviors.`
-              ),
+              ...(req.body?.PCLValue?.suddenlyStressfulExperience !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it) ${req.body?.PCLValue?.suddenlyStressfulExperience}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it). `,
+                  ])),
+              ...(req.body?.PCLValue?.veryUpsetStressfulExperience !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed experiencing repeated, disturbing dreams of the stressful experience ${req.body?.PCLValue?.veryUpsetStressfulExperience}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied experiencing repeated, disturbing dreams of the stressful experience. `,
+                  ])),
+              ...(req.body?.PCLValue
+                ?.strongPhysicalReactionStressfulExperience !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating): ${req.body.PCLValue.strongPhysicalReactionStressfulExperience}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating). `,
+                  ])),
+            ],
+          }),
 
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${
-              req.body?.demographicInformation?.lastName
-            } reported that ${formatExperienceFollowing(
-              prepositionPronoun,
-              pronounPrefer,
-              req.body?.pastHistoryValue?.experienceFollowing
-            )}`
-          ),
-          req.body?.pastHistoryValue?.experienceFollowing !== ""
-            ? storyParagraph(
-                `The thoughts, behaviors, or rituals ${pronounPrefer} reported experiencing are ${req.body?.pastHistoryValue?.recurrentRituals}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.experienceFollowing.length > 0 &&
-          req.body?.pastHistoryValue?.pastHistoryValue
-            ?.symptomsDrinkingAlcohol === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} was clean and sober throughout that time.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} was not clean and sober throughout that time.`
-              ),
+          new Paragraph({
+            children: [
+              ...(req.body?.PCLValue?.avoidingMemories !== "not at all"
+              ? createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} endorsed avoiding memories, thoughts, or feelings related to the stressful experience as ${req.body?.PCLValue?.avoidingMemories}. `,
+                ])
+              : createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName}} denied avoiding memories, thoughts, or feelings related to the stressful experience as. `,
+                ])),
+            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations) ${req.body?.PCLValue?.avoidingExternalReminders}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations). `,
+                ])),
+            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} reported avoiding the following: ${req.body?.PCLValue?.describeSituations}. `,
+                ])
+              : []),
+            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+              ? createTextRuns([
+                  `The activities ${pronounPrefer} avoids in relation to the trauma include ${req.body?.PCLValue?.avoidActivities}`,
+                ])
+              : []),
 
-          req.body?.pastHistoryValue?.harmKillYourSelf === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been recently thinking about how ${pronounPrefer} might harm or kill ${manPronoun}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not been recently thinking about how ${pronounPrefer} might harm or kill ${manPronoun}.`
-              ),
-          req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reports ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time.`
-              ),
+            ...(req.body?.PCLValue?.troubleStressfulExperience !==
+            "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} described trouble remembering important parts of the stressful experience ${req.body?.PCLValue?.troubleStressfulExperience}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} described trouble remembering important parts of the stressful experience. `,
+                ])),
+            ...(req.body?.PCLValue?.strongNegativeBeliefs !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me), as ${req.body?.PCLValue?.strongNegativeBeliefs}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me). `,
+                ])),
+            ...(req.body?.PCLValue?.stressfulExperienceBlaming !==
+            "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed blaming ${manPronoun} or someone else for the stressful experience or what happened after it ${req.body?.PCLValue?.stressfulExperienceBlaming}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied blaming ${manPronoun} or someone else for the stressful experience or what happened after it. `,
+                ])),
+            ]
+          }),
 
           storyParagraph(""),
-          req.body?.pastHistoryValue?.emotionalSymptomsRelationShip === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} emotional symptoms have had a negative effect upon ${pronoun} work, school, or relationships.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied that ${pronoun} emotional symptoms have had a negative effect upon ${pronoun} work, school, or relationships.`
-              ),
+          new Paragraph({
+            children: [
+              ...(req.body?.PCLValue?.strongNegativefeelings !== "not at all"
+              ? createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} endorsed having strong negative feelings such as fear, horror, anger, guilt, or shame as ${req.body?.PCLValue?.strongNegativefeelings}. `,
+                ])
+              : createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} denied having strong negative feelings such as fear, horror, anger, guilt, or shame as. `,
+                ])),
+            ...(req.body?.PCLValue?.lossInterestActivity !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed loss of interest in activities that ${pronounPrefer} used to enjoy as ${req.body?.PCLValue?.lossInterestActivity}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied loss of interest in activities that ${pronounPrefer} used to enjoy. `,
+                ])),
+            ...(req.body?.PCLValue?.feelingDistantPeople !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed experiencing feeling distant or cut off from other people ${req.body?.PCLValue?.feelingDistantPeople}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied experiencing feeling distant or cut off from other people. `,
+                ])),
+            ...(req.body?.PCLValue?.troubleExperiencePositiveFeeling !==
+            "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}) ${req.body?.PCLValue?.troubleExperiencePositiveFeeling}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}). `,
+                ])),
+            ...(req.body?.PCLValue?.irritableBehavior !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed irritable behavior, angry outbursts, or acting aggressively as ${req.body?.PCLValue?.irritableBehavior}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied irritable behavior, angry outbursts, or acting aggressively. `,
+                ])),
+            ...(req.body?.PCLValue?.manyRisksThing !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed taking too many risks or doing things that could cause you harm ${req.body?.PCLValue?.manyRisksThing}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied taking too many risks or doing things that could cause you harm. `,
+                ])),
+            ...(req.body?.PCLValue?.beingWatchful !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed being “superalert” or watchful or on guard ${req.body?.PCLValue?.beingWatchful}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied being “superalert” or watchful or on guard. `,
+                ])),
+            ...(req.body?.PCLValue?.easilyStartled !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed feeling jumpy or being easily startled ${req.body?.PCLValue?.easilyStartled}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied feeling jumpy or being easily startled. `,
+                ])),
+            ...(req.body?.PCLValue?.difficultyConcentrating !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed having difficulty concentrating ${req.body?.PCLValue?.difficultyConcentrating}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied having difficulty concentrating. `,
+                ])),
+            ...(req.body?.PCLValue?.troubleFallingAsleep !== "not at all"
+              ? createTextRuns([
+                  `${pronounPrefer} endorsed trouble falling or staying asleep ${req.body?.PCLValue?.troubleFallingAsleep}. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied trouble falling or staying asleep. `,
+                ])),
+            ]
+          }),
 
-          storyParagraph(
-            `${pronounPrefer} reported that ${pronoun} first symptoms of depression occurred ${req.body?.pastHistoryValue?.firstFeelDepressed}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} reported first experiencing high levels of anxiety ${req.body?.pastHistoryValue?.feelHighLevelAnxiety}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} has been diagnosed by a healthcare provider with the following mental health conditions: ${divideArray(
-              req.body?.pastHistoryValue?.diagnosedMentalHealth
-            )}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} reported that ${pronounPrefer} has received past medication treatment.`
-          ),
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `previous psychiatric medication regimen consisted of: ${req.body?.pastHistoryValue?.pastMedicationName}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported starting these psychiatric medications in the following timeframe: ${req.body?.pastHistoryValue?.startedMedicationDate}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronoun} past psychiatric medications were stopped on: ${req.body?.pastHistoryValue?.stopedMedicationDate}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronoun} stated that the past psychiatric medication produced ${formatPastPsychiatricMedication(
-                  req.body?.pastHistoryValue?.pastPsychiatricMedication
-                )}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronoun} past psychiatric medications were stopped on due to ${stopedMedicationReason(
-                  pronoun,
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...(req.body?.PCLValue?.PCLScore >= 31 &&
+                req.body?.PCLValue?.PCLScore <= 33
+                  ? createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                    ])
+                  : createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is not indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                    ])),
+                ...createTextRuns([
+                  `${pronounPrefer} rated ${pronoun} current post-trauma symptoms as an ${req.body?.PCLValue?.currentRelatedSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no post-trauma symptoms and 10 equaling the most severe post-traumatic symptoms imaginable. `,
+                ]),
+            ]
+          }),
+
+          storyParagraph(""),
+
+          TitleStoryParagraph("Current Treatment"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} currently takes the following psychiatric medications: ${req.body?.currentTreatmentValue?.currentlyPsychiatricMedications}. `,
+              ]),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has taken these medications since ${req.body?.currentTreatmentValue?.medicationLong}. `,
+                  ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} stated he takes these medications for ${divideArray(
+                      req.body?.currentTreatmentValue?.medicationReason
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} stated that these medications have produced ${cardFieldType(
+                      req.body?.currentTreatmentValue
+                        ?.medicationsEffectYourCondition
+                    )}. `,
+                  ])
+                : []),
+
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? req.body?.currentTreatmentValue?.medicationAsPrescribed ===
+                  "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} is currently compliant with taking ${pronoun} psychiatric medications. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} is currently non compliant with taking ${pronoun} psychiatric medications. `,
+                    ])
+                : []),
+
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? req.body?.currentTreatmentValue?.experiencedSideEffects !==
+                  "other"
+                  ? createTextRuns([
+                      `${pronounPrefer} has experienced side effects consisting of ${divideArray(
+                        req.body?.currentTreatmentValue?.experiencedSideEffects
+                      )}. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} has not experienced side effects. `,
+                    ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? req.body?.currentTreatmentValue?.experiencedSideEffects ===
+                  "other"
+                  ? createTextRuns([
+                      `and ${req.body?.currentTreatmentValue?.describeSideEffect}. `,
+                    ])
+                  : []
+                : []),
+
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} most recent psychiatric medication treatment provider was ${req.body?.currentTreatmentValue?.recentTreatmentProvider}. `,
+                  ])
+                : []),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychotherapyTreatment === "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} attends psychotherapy treatment. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied that ${pronounPrefer} attends psychotherapy treatment. `,
+                  ])),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychotherapyTreatment === "Yes"
+                ? createTextRuns([
+                    `${pronoun} most recent psychotherapy began on ${req.body?.currentTreatmentValue?.recentPsychotherapyBegin} `,
+                  ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychotherapyTreatment === "Yes"
+                ? createTextLowerRuns([
+                    `and ${pronoun} most recent psychotherapy session occurred on ${req.body?.currentTreatmentValue?.recentPsychotherapySession}. `,
+                  ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychotherapyTreatment === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} attends therapy ${req.body?.currentTreatmentValue?.psychotherapySessionsDate}. `,
+                  ])
+                : []),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychotherapyTreatment === "Yes"
+                ? createTextRuns([
+                    `${pronoun} current or most recent psychotherapist is ${req.body?.currentTreatmentValue?.psychotherapistTreatmentProvider}. `,
+                  ])
+                : []),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          TitleStoryParagraph("Past Psychiatric History"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.pastHistoryValue?.describeSymptoms !== ""
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported a history of prior ${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied a history of prior ${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}. `,
+                  ])),
+
+              ...(req.body?.pastHistoryValue?.describeSymptoms !== ""
+                ? createTextRuns([
+                    `${pronounPrefer} described ${pronoun} symptoms at that time as ${req.body?.pastHistoryValue?.describeSymptoms}. `,
+                  ])
+                : []),
+
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported that ${pronounPrefer} has had so much energy that ${pronounPrefer} does not need to sleep for `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied that ${pronounPrefer} has ever had so much energy that ${pronounPrefer} does not need to sleep for several days or a week at a time. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? createTextRuns([
+                    `${req.body?.pastHistoryValue?.sleptFewer4Hours} and ${pronoun} `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? createTextLowerRuns([
+                    `energy is ${req.body?.pastHistoryValue?.lackSleepEnergy} during that time. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
+              req.body?.pastHistoryValue?.sleepFewer === "Yes"
+                ? createTextRuns([
+                    `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired. `,
+                  ])
+                : createTextRuns([
+                    `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? createTextRuns([
+                    `When ${pronounPrefer} experienced these episodes of decreased need for sleep, ${pronoun} mood was ${req.body?.pastHistoryValue?.mood}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? req.body?.pastHistoryValue?.mood === "other"
+                  ? createTextRuns([
+                      `${req.body?.pastHistoryValue?.describeMood}`,
+                    ])
+                  : []
+                : []),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? req.body?.pastHistoryValue?.highEnergyTime === "Yes"
+                  ? createTextRuns([
+                      `During this decreased sleep episode, [${pronounPrefer} remained clean and sober throughout that time was using substances] during that time. `,
+                    ])
+                  : []
+                : []),
+              ...(req.body?.pastHistoryValue?.highEnergyTime === "Yes"
+                ? createTextRuns([
+                    `During this high energy time ${pronounPrefer} did engage in high-risk behaviors. `,
+                  ])
+                : createTextRuns([
+                    `During this high energy time ${pronounPrefer} did not engage in any high-risk behaviors. `,
+                  ])),
+            ],
+          }),
+
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${
+                  req.body?.demographicInformation?.lastName
+                } reported that ${formatExperienceFollowing(
+                  prepositionPronoun,
                   pronounPrefer,
-                  req.body?.pastHistoryValue?.stopedPsychiatricMedicationsReason
-                )}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `This medication was prescribed by a ${req.body?.pastHistoryValue?.prescribeThisMedication}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronoun} prescribing clinician was ${req.body?.pastHistoryValue?.prescribeThisMedicationNameDate}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `This prescribing clinician worked at ${req.body?.pastHistoryValue?.whatClinicWorked}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} also received past psychiatric treatment from ${req.body?.pastHistoryValue?.otherPsychiatrists} `
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `This psychiatric treatment lasted ${req.body?.pastHistoryValue?.thisPsychiatristSeeDate}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.otherMedications === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} attended these psychiatric appointments ${req.body?.pastHistoryValue?.attendedSessionsPsychiatrist}.`
-              )
-            : undefined,
+                  req.body?.pastHistoryValue?.experienceFollowing
+                )}. `,
+              ]),
+              ...(req.body?.pastHistoryValue?.experienceFollowing !== ""
+                ? createTextRuns([
+                    `The thoughts, behaviors, or rituals ${pronounPrefer} reported experiencing are ${req.body?.pastHistoryValue?.recurrentRituals}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.experienceFollowing.length > 0 &&
+              req.body?.pastHistoryValue?.pastHistoryValue
+                ?.symptomsDrinkingAlcohol === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} was clean and sober throughout that time. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} was not clean and sober throughout that time. `,
+                  ])),
 
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has previously received psychotherapy.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not previously received psychotherapy.`
-              ),
+              ...(req.body?.pastHistoryValue?.harmKillYourSelf === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been recently thinking about how ${pronounPrefer} might harm or kill ${manPronoun}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not been recently thinking about how ${pronounPrefer} might harm or kill ${manPronoun}. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reports ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time. `,
+                  ])),
+            ],
+          }),
+
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...(req.body?.pastHistoryValue?.emotionalSymptomsRelationShip ===
+              "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} emotional symptoms have had a negative effect upon ${pronoun} work, school, or relationships. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied that ${pronoun} emotional symptoms have had a negative effect upon ${pronoun} work, school, or relationships. `,
+                  ])),
+
+              ...createTextRuns([
+                `${pronounPrefer} reported that ${pronoun} first symptoms of depression occurred ${req.body?.pastHistoryValue?.firstFeelDepressed}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} reported first experiencing high levels of anxiety ${req.body?.pastHistoryValue?.feelHighLevelAnxiety}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} has been diagnosed by a healthcare provider with the following mental health conditions: ${divideArray(
+                  req.body?.pastHistoryValue?.diagnosedMentalHealth
+                )}. `,
+              ]),
+             
+            ],
+          }),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} has received past medication treatment. `,
+              ]),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} previous psychiatric medication regimen consisted of: ${req.body?.pastHistoryValue?.pastMedicationName}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported starting these psychiatric medications in the following timeframe: ${req.body?.pastHistoryValue?.startedMedicationDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} past psychiatric medications were stopped on: ${req.body?.pastHistoryValue?.stopedMedicationDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} stated that ${pronoun} past psychiatric medication produced ${formatPastPsychiatricMedication(
+                      req.body?.pastHistoryValue?.pastPsychiatricMedication
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} past psychiatric medications were stopped on due to ${stopedMedicationReason(
+                      pronoun,
+                      pronounPrefer,
+                      req.body?.pastHistoryValue
+                        ?.stopedPsychiatricMedicationsReason
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `This medication was prescribed by a ${req.body?.pastHistoryValue?.prescribeThisMedication}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronoun} prescribing clinician was ${req.body?.pastHistoryValue?.prescribeThisMedicationNameDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `This prescribing clinician worked at ${req.body?.pastHistoryValue?.whatClinicWorked}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} also received past psychiatric treatment from ${req.body?.pastHistoryValue?.otherPsychiatrists}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `This psychiatric treatment lasted ${req.body?.pastHistoryValue?.thisPsychiatristSeeDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} attended these psychiatric appointments ${req.body?.pastHistoryValue?.attendedSessionsPsychiatrist}. `,
+                  ])
+                : []),
+
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has previously received psychotherapy. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not previously received psychotherapy. `,
+                  ])),
+            ]
+          }),
 
           req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
             ? storyParagraph("")
             : undefined,
 
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `When ${surname}${req.body?.demographicInformation?.lastName} was asked when ${pronounPrefer} began psychotherapy treatment, ${pronounPrefer} responded, ${req.body.pastHistoryValue?.receivedPsychotherapyBegin}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported attending psychotherapy for ${req.body?.pastHistoryValue?.receivedPsychotherapyLong}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} attended therapy ${req.body?.pastHistoryValue?.attendedSessionsPsychotherapy}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} received psychotherapy treatment with ${req.body?.pastHistoryValue?.pastPsychotherapistsDate}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph(
-                `Additional therapy consisted of: ${req.body?.pastHistoryValue?.otherPsychotherapyTreatmentList}`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `When ${surname}${req.body?.demographicInformation?.lastName} was asked when ${pronounPrefer} began psychotherapy treatment, ${pronounPrefer} responded, ${req.body.pastHistoryValue?.receivedPsychotherapyBegin}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported attending psychotherapy for approximately ${req.body?.pastHistoryValue?.receivedPsychotherapyLong}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} attended therapy ${req.body?.pastHistoryValue?.attendedSessionsPsychotherapy}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} received psychotherapy treatment with ${req.body?.pastHistoryValue?.pastPsychotherapistsDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.previouslyReceivedPsychotherapy === "Yes"
+                ? createTextRuns([
+                    `Additional therapy consisted of: ${req.body?.pastHistoryValue?.otherPsychotherapyTreatmentList}. `,
+                  ])
+                : []),
+            ],
+          }),
+
           storyParagraph(""),
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} has previously been admitted to a psychiatric hospital.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} has never previously been admitted to a psychiatric hospital.`
-              ),
+          new Paragraph({
+            children: [
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} has previously been admitted to a psychiatric hospital. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} has never previously been admitted to a psychiatric hospital. `,
+                  ])),
 
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} was admitted to these hospitals for ${divideArray(
-                  req.body?.pastHistoryValue?.psychiatricHospitalizationReason
-                )}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `The treatment ${pronounPrefer} received during these hospitalizations consisted of ${req.body?.pastHistoryValue?.receivedTreatment}`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been admitted to the following psychiatric hospitals: ${req.body?.pastHistoryValue?.admittedHospitalName}`
-              )
-            : storyParagraph(
-                `has never been admitted to a psychiatric hospital.`
-              ),
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `The date of hospitalizations is ${req.body?.pastHistoryValue?.hospitalizedDate}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.admittedPsychiatricHospital === "Yes"
-            ? storyParagraph(
-                `These hospitalizations ${req.body?.pastHistoryValue?.hospitalizedLong}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.suicidalIdeation === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} had experienced suicidal ideation.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} had never experienced suicidal ideation.`
-              ),
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} was admitted to these hospitals for ${divideArray(
+                      req.body?.pastHistoryValue
+                        ?.psychiatricHospitalizationReason
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `The treatment ${pronounPrefer} received during these hospitalizations consisted of ${req.body?.pastHistoryValue?.receivedTreatment}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been admitted to the following psychiatric hospitals: ${req.body?.pastHistoryValue?.admittedHospitalName}. `,
+                  ])
+                : createTextRuns([
+                    `has never been admitted to a psychiatric hospital. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `The date of hospitalizations is ${req.body?.pastHistoryValue?.hospitalizedDate}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.admittedPsychiatricHospital ===
+              "Yes"
+                ? createTextRuns([
+                    `These hospitalizations lasted ${req.body?.pastHistoryValue?.hospitalizedLong}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.suicidalIdeation === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} had experienced suicidal ideation. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} had never experienced suicidal ideation. `,
+                  ])),
 
-          req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-            ? storyParagraph(`${pronounPrefer} had made a suicide attempt.`)
-            : storyParagraph(
-                `${pronounPrefer} had never made a suicide attempt.`
-              ),
+             
+            ],
+          }),
 
-          req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has attempted suicide ${req.body?.pastHistoryValue?.attemptedSuicideTimes} times.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has attempted suicide by ${req.body?.pastHistoryValue?.suicideAllMethods}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-            ? storyParagraph(
-                `${pronoun} most recent attempt was ${req.body?.pastHistoryValue?.attemptedSuicideDate}.`
-              )
-            : undefined,
-
-          req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has experienced additional psychiatric symptoms besides those described above.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has denied experienced additional psychiatric symptoms besides those described above.`
-              ),
-          req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported experiencing additional psychiatric symptoms consisting of ${req.body?.pastHistoryValue?.describeOtherPsychiatricSymptoms}`
-              )
-            : undefined,
-
-          req.body?.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} reported denied receiving additional psychotherapy or psychiatric medication treatment.`
-              ),
-
-          req.body?.pastHistoryValue?.otherPsychotherapyTreatment === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body?.pastHistoryValue?.describeOtherPsychotherapyTreatment}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above.`
-              ),
-          req.body?.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body?.pastHistoryValue?.evaluationReason}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-            ? storyParagraph(
-                `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed}.`
-              )
-            : undefined,
-          req.body?.pastHistoryValue?.evaluatedOtherwisePsychiatrists === "Yes"
-            ? storyLowCaseParagraph(
-                `and occurred ${req.body?.pastHistoryValue?.evaluationOccur}.`
-              )
-            : undefined,
-
-          req.body?.pastHistoryValue?.physicalAltercations === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been involved in physical altercations or violence `
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not been involved in physical altercations or violence.`
-              ),
-          req.body?.pastHistoryValue?.physicalAltercations === "Yes"
-            ? storyParagraph(
-                `${req.body?.pastHistoryValue?.physicialAltercationsMany} times.`
-              )
-            : undefined,
-
-          TitleParagraph("Substance Use"),
           storyParagraph(""),
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } endorsed using ${divideArray(
-                  req.body?.substanceUseValue?.followingSubstances
-                )}.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied ever uding.`
-              ),
 
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${pronounPrefer} currently uses ${formatCurrentlySubstance(
-                  req.body?.substanceUseValue?.currentlySubstance
-                )}.`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyLowCaseParagraph(
-                `${pronounPrefer} used ${formatEachSubstance(
-                  req.body?.substanceUseValue?.eachSubstanceList
-                )}`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+              ? createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} had made a suicide attempt. `,
+                ])
+              : createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} had never made a suicide attempt. `,
+                ])),
 
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? req.body?.substanceUseValue?.eachSubstanceListStartedOld.map(
-                (item) =>
-                  storyParagraph(
-                    `${pronounPrefer} was ${item.effect} when ${pronounPrefer} started using ${item.condition}.`
+            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} has attempted suicide ${req.body?.pastHistoryValue?.attemptedSuicideTimes} times. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} has attempted suicide by ${req.body?.pastHistoryValue?.suicideAllMethods}. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+              ? createTextRuns([
+                  `${pronoun} most recent attempt was ${req.body?.pastHistoryValue?.attemptedSuicideDate}. `,
+                ])
+              : []),
+
+            ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} has experienced additional psychiatric symptoms besides those described above. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} has denied experienced additional psychiatric symptoms besides those described above. `,
+                ])),
+            ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} reported experiencing additional psychiatric symptoms consisting of ${req.body?.pastHistoryValue?.describeOtherPsychiatricSymptoms}. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
+            "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} reported denied receiving additional psychotherapy or psychiatric medication treatment. `,
+                ])),
+
+            ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
+            "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body?.pastHistoryValue?.describeOtherPsychotherapyTreatment}. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue
+              ?.evaluatedOtherwisePsychiatrists === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} denied being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
+                ])),
+            ...(req.body?.pastHistoryValue
+              ?.evaluatedOtherwisePsychiatrists === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body?.pastHistoryValue?.evaluationReason}. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue
+              ?.evaluatedOtherwisePsychiatrists === "Yes"
+              ? createTextRuns([
+                  `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed}. `,
+                ])
+              : []),
+            ...(req.body?.pastHistoryValue
+              ?.evaluatedOtherwisePsychiatrists === "Yes"
+              ? createTextLowerRuns([
+                  `and occurred ${req.body?.pastHistoryValue?.evaluationOccur}. `,
+                ])
+              : []),
+
+            ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
+              ? createTextRuns([
+                  `${pronounPrefer} has been involved in physical altercations or violence `,
+                ])
+              : createTextRuns([
+                  `${pronounPrefer} has not been involved in physical altercations or violence. `,
+                ])),
+            ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
+              ? createTextRuns([
+                  `${req.body?.pastHistoryValue?.physicialAltercationsMany} times. `,
+                ])
+              : []),
+            ]
+          }),
+
+          storyParagraph(""),
+
+          TitleStoryParagraph("Substance Use"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } endorsed using ${divideArray(
+                      req.body?.substanceUseValue?.followingSubstances
+                    )}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied ever uding. `,
+                  ])),
+
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? createTextRuns([
+                    `${pronounPrefer} currently uses ${formatCurrentlySubstance(
+                      req.body?.substanceUseValue?.currentlySubstance
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? createTextRuns([
+                    `${pronounPrefer} used ${formatEachSubstance(
+                      req.body?.substanceUseValue?.eachSubstanceList
+                    )}. `,
+                  ])
+                : []),
+
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? req.body?.substanceUseValue?.eachSubstanceListStartedOld.map(
+                    (item) =>
+                      createTextRuns([
+                        `${pronounPrefer} was ${item.effect} when ${pronounPrefer} started using ${item.condition}. `,
+                      ])
                   )
-              )
-            : undefined,
+                : []),
 
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${pronounPrefer} last used ${cardField(
-                  req.body?.substanceUseValue?.eachSubstanceLast
-                )}.`
-              )
-            : undefined,
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? createTextRuns([
+                    `${pronoun} last used of ${cardField(
+                      req.body?.substanceUseValue?.eachSubstanceLast
+                    )}. `,
+                  ])
+                : []),
 
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${pronounPrefer} reported ${pronounPrefer} ${formatToleranceFollowingSubstances(
-                  req.body?.substanceUseValue?.toleranceFollowingSubstances
-                )}.`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${pronounPrefer} reported ${pronounPrefer} ${formatWithdrawalFollowingSubstances(
-                  req.body?.substanceUseValue?.withdrawalFollowingSubstances
-                )}.`
-              )
-            : undefined,
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 && req.body?.substanceUseValue?.toleranceFollowingSubstances.length > 0
+                ? createTextRuns([
+                    `${pronounPrefer} reported ${pronounPrefer} ${formatToleranceFollowingSubstances(
+                      req.body?.substanceUseValue?.toleranceFollowingSubstances
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 && req.body?.substanceUseValue?.withdrawalFollowingSubstances.length > 0
+                ? createTextRuns([
+                    `${pronounPrefer} reported ${pronounPrefer} ${formatWithdrawalFollowingSubstances(
+                      req.body?.substanceUseValue?.withdrawalFollowingSubstances
+                    )}. `,
+                  ])
+                : []),
+            ],
+          }),
 
           req.body?.substanceUseValue?.followingSubstances.length > 0
             ? storyParagraph("")
             : undefined,
 
-          req.body?.substanceUseValue?.followingSubstances.length > 0
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } endorsed the following substance related symptoms: ${formatRegardingAlcoholAnyFollowing(
-                  req.body?.substanceUseValue?.regardingAlcoholAnyFollowing
-                )}.`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } endorsed the following substance related symptoms: ${formatRegardingAlcoholAnyFollowing(
+                      req.body?.substanceUseValue?.regardingAlcoholAnyFollowing
+                    )}. `,
+                  ])
+                : []),
 
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has sought substance recovery treatment`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has never sought substance recovery treatment.`
-              ),
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has sought substance recovery treatment. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has never sought substance recovery treatment. `,
+                  ])),
+            ],
+          }),
+
           storyParagraph(""),
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} completed this treatment program that lasted`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} did not complete$ this treatment program that lasted`
-              ),
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyLowCaseParagraph(
-                `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}.`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph("")
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph(
-                `Following this treatment program, ${surname}${
-                  req.body?.demographicInformation?.lastName
-                } remained clean and sober for ${
-                  req.body?.substanceUseValue?.remainedTreatmentClean
-                }, from ${formatDate(
-                  req.body?.substanceUseValue?.cleanSoberLastedFrom
-                )} to ${formatDate(
-                  req.body?.substanceUseValue?.cleanSoberLastedTo
-                )}.`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph(
-                `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was for ${req.body?.substanceUseValue?.remainedTreatmentCleanLongest}.`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? req.body?.substanceUseValue
-                ?.previouslyDescribedPsychiatricClean === "Yes"
-              ? storyParagraph(
-                  `While ${pronounPrefer} was clean and sober, ${pronounPrefer} did continue to experience his psychiatric symptoms described above.`
-                )
-              : storyParagraph(
-                  `While ${pronounPrefer} was clean and sober, ${pronounPrefer} did not continue to experience his psychiatric symptoms described above.`
-                )
-            : undefined,
 
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? storyParagraph(
-                `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was ${req.body?.substanceUseValue?.cleanSoberLongest}.`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+                "Yes"
+                  ? createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName} completed this treatment program that lasted `,
+                    ])
+                  : createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName} did not complete this treatment program that lasted. `,
+                    ])),
+                ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+                "Yes"
+                  ? createTextLowerRuns([
+                      `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
+                    ])
+                  : []),
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? createTextRuns([
+                    `Following this treatment program, ${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } remained clean and sober for ${
+                      req.body?.substanceUseValue?.remainedTreatmentClean
+                    }, from ${formatDate(
+                      req.body?.substanceUseValue?.cleanSoberLastedFrom
+                    )}, to ${formatDate(
+                      req.body?.substanceUseValue?.cleanSoberLastedTo
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? createTextRuns([
+                    `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was for ${req.body?.substanceUseValue?.remainedTreatmentCleanLongest}. `,
+                  ])
+                : []),
 
-          TitleParagraph("Medical History"),
+                ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+                  "Yes"
+                    ? createTextRuns([
+                        `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was ${req.body?.substanceUseValue?.cleanSoberLongest}. `,
+                      ])
+                    : []),
+
+                    
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? req.body?.substanceUseValue
+                    ?.previouslyDescribedPsychiatricClean === "Yes"
+                  ? createTextRuns([
+                      `While ${pronounPrefer} was clean and sober, ${pronounPrefer} did continue to experience his psychiatric symptoms described above. `,
+                    ])
+                  : createTextRuns([
+                      `While ${pronounPrefer} was clean and sober, ${pronounPrefer} did not continue to experience his psychiatric symptoms described above. `,
+                    ])
+                : []),
+
+
+            ],
+          }),
+
           storyParagraph(""),
-          req.body?.medicalHistoryValue?.diagnosedHealthcareProvider.length > 0
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } reported having medical conditions consisting of ${divideArray(
-                  req.body?.medicalHistoryValue?.diagnosedHealthcareProvider
-                )}.`
-              )
-            : storyParagraph(`${surname}${req.body?.demographicInformation?.lastName} denied suffering from any general medical conditions.
-        `),
-          req.body?.demographicInformation?.radioSexItem === "Female"
-            ? req.body?.medicalHistoryValue?.pregnantPlanning === "Yes"
-              ? storyParagraph(`${pronounPrefer} reports ${pronounPrefer} is currently pregnant.
-        `)
-              : req.body?.medicalHistoryValue?.pregnantPlanning === "No"
-              ? storyParagraph(
-                  `${pronounPrefer} reports ${pronounPrefer} is not currently pregnant.`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} reports ${pronounPrefer} does not know if ${pronounPrefer} is currently pregnant.`
-                )
-            : undefined,
-          req.body?.demographicInformation?.radioSexItem === "Female" &&
-          req.body?.medicalHistoryValue?.pregnantPlanning === "Yes"
-            ? req.body?.medicalHistoryValue?.plannedPregnancyProvider === "Yes"
-              ? storyParagraph(
-                  `${pronounPrefer} reports ${pronounPrefer} is currently engaged with a healthcare provider regarding ${pronounPrefer} pregnancy`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} reports ${pronounPrefer} is not currently engaged with a healthcare provider regarding ${pronounPrefer} pregnancy`
-                )
-            : undefined,
+          TitleStoryParagraph("Medical History"),
+          storyParagraph(""),
 
-          storyParagraph(
-            `${pronounPrefer} currently takes the following general medical medications: ${req.body?.medicalHistoryValue?.physicalHealthMedicationsLists}.`
-          ),
-          storyParagraph(
-            `${pronoun} current general medical medications produce the following side effects ${req.body?.medicalHistoryValue?.medicationsSideEffect}.`
-          ),
-          req.body?.medicalHistoryValue?.surgeries === "Yes"
-            ? storyParagraph(`${pronounPrefer} has undergone surgery`)
-            : storyParagraph(`${pronounPrefer} has not undergone surgery`),
-          req.body?.medicalHistoryValue?.surgeries === "Yes"
-            ? storyLowCaseParagraph(
-                `consisting of ${req.body?.medicalHistoryValue?.surgeriesDateList}`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...(req.body?.medicalHistoryValue?.diagnosedHealthcareProvider
+                .length > 0
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } reported having medical conditions consisting of ${divideArray(
+                      req.body?.medicalHistoryValue?.diagnosedHealthcareProvider
+                    )}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied suffering from any general medical conditions.
+          `,
+                  ])),
+              ...(req.body?.demographicInformation?.radioSexItem === "Female"
+                ? req.body?.medicalHistoryValue?.pregnantPlanning === "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} reports ${pronounPrefer} is currently pregnant.
+          `,
+                    ])
+                  : req.body?.medicalHistoryValue?.pregnantPlanning === "No"
+                  ? createTextRuns([
+                      `${pronounPrefer} reports ${pronounPrefer} is not currently pregnant. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} reports ${pronounPrefer} does not know if ${pronounPrefer} is currently pregnant. `,
+                    ])
+                : []),
+              ...(req.body?.demographicInformation?.radioSexItem === "Female" &&
+              req.body?.medicalHistoryValue?.pregnantPlanning === "Yes"
+                ? req.body?.medicalHistoryValue?.plannedPregnancyProvider ===
+                  "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} reports ${pronounPrefer} is currently engaged with a healthcare provider regarding ${pronounPrefer} pregnancy. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} reports ${pronounPrefer} is not currently engaged with a healthcare provider regarding ${pronounPrefer} pregnancy. `,
+                    ])
+                : []),
+
+              ...createTextRuns([
+                `${pronounPrefer} currently takes the following general medical medications: ${req.body?.medicalHistoryValue?.physicalHealthMedicationsLists}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} current general medical medications produce the following side effects ${req.body?.medicalHistoryValue?.medicationsSideEffect}. `,
+              ]),
+              ...(req.body?.medicalHistoryValue?.surgeries === "Yes"
+                ? createTextRuns([`${pronounPrefer} has undergone surgery `])
+                : createTextRuns([
+                    `${pronounPrefer} has not undergone surgery. `,
+                  ])),
+              ...(req.body?.medicalHistoryValue?.surgeries === "Yes"
+                ? createTextLowerRuns([
+                    `consisting of ${req.body?.medicalHistoryValue?.surgeriesDateList}. `,
+                  ])
+                : []),
+              
+            ],
+          }),
+
           req.body?.medicalHistoryValue?.futureMedicalPlan === "Yes"
-            ? storyParagraph(
-                `${pronoun} treatment providers have plans for ${pronoun} future medical care.`
-              )
-            : storyParagraph(
-                `${pronoun} treatment providers do not have plans for ${pronoun} future medical care.`
-              ),
-          req.body?.medicalHistoryValue?.futureMedicalPlan === "Yes"
-            ? storyParagraph("")
-            : undefined,
-          req.body?.medicalHistoryValue?.futureMedicalPlan === "Yes"
-            ? storyParagraph(
-                `Future medical care planning for ${surname}${req.body?.demographicInformation?.lastName} consists of ${req.body?.medicalHistoryValue?.futureMedicalPlanList}`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronoun} current primary care provider is ${req.body?.medicalHistoryValue?.currentPrimarycarePractitioner}.`
-          ),
-          storyParagraph(
-            `${pronoun} past primary care provider was  ${req.body?.medicalHistoryValue?.pastprimarycarePractitioner}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} received this care as follows: ${req.body?.medicalHistoryValue?.periodReceiveProvider}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} described his hospitalization history as follows: ${req.body?.medicalHistoryValue?.hospitalListEverBeen}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} described his current medication treatment as follows: ${req.body?.medicalHistoryValue?.medicationsListTaking}.`
-          ),
-
-          req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} suffers from allergies or intolerances to medication or food`
-              )
-            : storyParagraph(
-                `${pronounPrefer} does not suffer from allergies or intolerances to medication or food`
-              ),
-
-          req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
-            ? storyLowCaseParagraph(
-                `consisting of ${req.body?.medicalHistoryValue?.allergiesList}.`
-              )
-            : undefined,
-
-          TitleParagraph("Family History"),
-          storyParagraph(""),
-          req.body?.familyHistoryValue?.familyPsychiatricConditions !== ""
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } reported a family history of psychiatric conditions consisting of ${divideArray(
-                  req.body?.familyHistoryValue?.familyPsychiatricConditions
-                )}.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied any family history of psychiatric diagnoses.`
-              ),
-          req.body?.familyHistoryValue?.familyPsychiatricConditions.filter(
-            (item) => item === "other"
-          ).length > 0
-            ? storyParagraph(
-                `Additional psychiatric conditions ${pronoun} family members have been diagnosed with include ${req.body?.familyHistoryValue?.psychiatricConditionsList}.`
-              )
-            : undefined,
-          req.body?.familyHistoryValue?.familyPsychiatricConditions.filter(
-            (item) => item === "other"
-          ).length > 0
-            ? storyParagraph(
-                `with treatment consisting of ${req.body?.familyHistoryValue?.psychiatricConditionsTreatment}.`
-              )
-            : undefined,
-          req.body?.familyHistoryValue?.psychiatricConditionsTreatment === "Yes"
-            ? storyParagraph(
-                `${pronoun} family members have attempted or committed suicide.`
-              )
-            : storyParagraph(
-                `${pronoun} family members have not attempted or committed suicide.`
-              ),
-
-          TitleParagraph("Relationship History"),
-          storyParagraph(""),
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} is currently involved in an intimate relationship.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} is not currently involved in an intimate relationship.`
-              ),
-
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-            "Yes" &&
-          req.body?.relationshipHistoryValue?.currentlyMarried === "Yes"
-            ? storyParagraph(`${pronoun} current marriage`)
-            : storyParagraph(
-                `${pronoun} current significant intimate relationship`
-              ),
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? storyLowCaseParagraph(
-                `has lasted ${req.body?.relationshipHistoryValue?.currentRelationshipInvolve} ${req.body?.relationshipHistoryValue?.currentlyUnit}.`
-              )
-            : undefined,
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported that ${pronoun} current relationship is ${divideArray(
-                  req.body?.relationshipHistoryValue
-                    ?.describeIntimateRelationship
-                )}.`
-              )
-            : undefined,
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? req.body?.relationshipHistoryValue
-                ?.sufferPsychiatricConditions === "Yes"
-              ? storyParagraph(
-                  `${pronoun} spouse or partner suffers from any general medical or psychiatric condition(s).`
-                )
-              : storyParagraph(
-                  `${pronoun} spouse or partner doesn't suffer from any general medical or psychiatric condition(s).`
-                )
-            : undefined,
-
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? req.body?.relationshipHistoryValue
-                ?.stressfulPsychiatricConditions === "Yes"
-              ? storyParagraph(
-                  `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is stressful for them.`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is not stressful for them.`
-                )
-            : undefined,
-
-          req.body?.relationshipHistoryValue?.currentlyIntimateRelationship ===
-          "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} described the occupation of ${pronoun} significant other as follows: ${req.body?.relationshipHistoryValue?.PartnerOccupation}.`
-              )
-            : undefined,
-
-          storyParagraph(
-            `${pronounPrefer} has been married ${req.body?.relationshipHistoryValue?.marriedNumber} times.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} reported a history of ${formatNumber(
-              req.body?.relationshipHistoryValue?.intimateRelationshipTimes
-            )} long term intimate relationships.`
-          ),
-          storyParagraph(
-            `These relationship lasted ${req.body?.relationshipHistoryValue?.longTermRelationshipsLast}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} stated that ${pronoun} past relationships ended due to ${req.body?.relationshipHistoryValue?.reasonPreviousRelationships}.`
-          ),
-          req.body?.relationshipHistoryValue?.domesticViolence === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported a history of domestic violence.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied a history of domestic violence.`
-              ),
-
-          storyParagraph(""),
-          req.body?.relationshipHistoryValue?.haveChildren === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} has children.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} does not have children.`
-              ),
-
-          req.body?.relationshipHistoryValue?.haveChildren === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has ${req.body?.relationshipHistoryValue?.childrenNumberAndAge}`
-              )
-            : undefined,
-          req.body?.relationshipHistoryValue?.haveChildren === "Yes"
-            ? storyParagraph(
-                `${pronoun} children are doing ${req.body?.relationshipHistoryValue?.childrenDoingSchool} in school or work.`
-              )
-            : undefined,
-          req.body?.relationshipHistoryValue?.haveChildren === "Yes"
-            ? storyParagraph(
-                `${pronoun} relationship with ${pronoun} children is ${req.body?.relationshipHistoryValue?.relationshipChildren}.`
-              )
-            : undefined,
-          req.body?.relationshipHistoryValue?.haveChildren === "Yes" &&
-          req.body?.relationshipHistoryValue?.childrenHealthIssues === "Yes"
-            ? storyParagraph(
-                `${pronoun} children have general or mental health issues.`
-              )
-            : storyParagraph(
-                `${pronoun} children do not have general or mental health issues.`
-              ),
-
-          TitleParagraph("Employment History"),
-          storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} current employment status is ${req.body?.employmentHistoryValue?.currentEmploymentStatus}.`
-          ),
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at less than 20 hours per week" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at more than 20 hours per week, but not full time" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed full time"
-            ? storyLowCaseParagraph(
-                `at ${req.body?.employmentHistoryValue?.employerName}.`
-              )
-            : undefined,
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at less than 20 hours per week" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at more than 20 hours per week, but not full time" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed full time"
-            ? storyLowCaseParagraph(
-                `as a ${req.body?.employmentHistoryValue?.employmentTitle}`
-              )
-            : undefined,
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at less than 20 hours per week" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at more than 20 hours per week, but not full time" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed full time"
-            ? storyParagraph(
-                `${pronoun} employment duties include ${req.body?.employmentHistoryValue?.jobDuties}.`
-              )
-            : undefined,
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at less than 20 hours per week" ||
-          req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed at more than 20 hours per week, but not full time" ||
-          (req.body?.employmentHistoryValue?.currentEmploymentStatus ===
-            "employed full time" &&
-            req.body?.employmentHistoryValue?.difficultyJobDuties === "Yes")
-            ? storyParagraph(
-                `${pronounPrefer} has difficulty performing ${pronoun} job duties.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not difficulty performing ${pronoun} job duties.`
-              ),
-
-          storyParagraph(
-            `${pronoun} Employer History: ${employerList(
-              req.body?.employmentHistoryValue?.employerList
-            )}.`
-          ),
-
-          req.body?.employmentHistoryValue?.pastWorkplaceInjuries === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported a history of workplace injury`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied any history of workplace injury`
-              ),
-          req.body?.employmentHistoryValue?.pastWorkplaceInjuries === "Yes"
-            ? storyLowCaseParagraph(
-                `in ${req.body?.employmentHistoryValue?.injuriesOccurTime}`
-              )
-            : undefined,
-          req.body?.employmentHistoryValue?.pastWorkplaceInjuries === "Yes"
-            ? storyParagraph(
-                `${pronoun} injury consisted of the following:${req.body?.employmentHistoryValue?.injuryNature}.`
-              )
-            : undefined,
-
-          storyParagraph(""),
-          req.body?.employmentHistoryValue?.workerCompensationClaim === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported a history of submitting (a) Workers’ Compensation claim(s).`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied ever submitting a Workers’ Compensation claim.`
-              ),
-          req.body?.employmentHistoryValue?.placedDisability === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} reported a history of being placed on disability.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denied ever being placed on disability.`
-              ),
-
-          req.body?.employmentHistoryValue?.receivedNegativeWork === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has received negative work evaluations, terminations, or disciplinary action for ${req.body?.employmentHistoryValue?.receivedNegativeWork}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has never received negative work evaluations, terminations, or disciplinary action.`
-              ),
-
-          storyParagraph(
-            `${pronounPrefer} receives financial income through ${divideArray(
-              req.body?.employmentHistoryValue?.currentSourcesIncome
-            )}.`
-          ),
-
-          TitleParagraph("Education History"),
-          storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName}'s highest education level is ${req.body?.educationHistoryValue?.highestLevelEducation}.`
-          ),
-          req.body?.educationHistoryValue?.highestLevelEducation ===
-          "currently a student"
-            ? storyParagraph(
-                `${pronounPrefer} described ${pronoun} current education program as consisting of the following: ${req.body?.educationHistoryValue?.currentlyEnrolledEducation}`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} reported that ${pronounPrefer} received mostly ${divideArray(
-              req.body?.educationHistoryValue?.mostlyReceiveGrade
-            )} throughout ${pronoun} education.`
-          ),
-
-          storyParagraph(""),
-          req.body?.educationHistoryValue?.learningDisability === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported a history of having learning disabilities or being placed in special education classes `
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied any history of having learning disabilities or being placed in special education classes `
-              ),
-          req.body?.educationHistoryValue?.learningDisability === "Yes"
-            ? storyLowCaseParagraph(
-                `consisting of ${req.body?.educationHistoryValue?.describeLearningDifficulties}.`
-              )
-            : undefined,
-          req.body?.educationHistoryValue?.graduateHighSchool === "Yes"
-            ? storyParagraph(`${pronounPrefer} graduated high school.`)
-            : storyParagraph(`${pronounPrefer} did not graduate high school.`),
-          req.body?.educationHistoryValue?.graduateHighSchool === "Yes"
-            ? req.body?.educationHistoryValue?.graduateOnTime === "Yes"
-              ? storyParagraph(`${pronounPrefer} graduated on time.`)
-              : storyParagraph(`${pronounPrefer} did not graduate on time.`)
-            : undefined,
-          req.body?.educationHistoryValue?.goToCollege === "Yes"
-            ? storyParagraph(`${pronounPrefer} attended college.`)
-            : storyParagraph(`${pronounPrefer} did not attend college.`),
-
-          req.body?.educationHistoryValue?.goToCollege === "Yes"
-            ? req.body?.educationHistoryValue?.completeYourDegree === "Yes"
-              ? storyParagraph(`${pronounPrefer} completed a degree at.`)
-              : storyParagraph(`${pronounPrefer} did not complete a degree at.`)
-            : undefined,
-
-          req.body?.educationHistoryValue?.goToCollege === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} attended ${req.body?.educationHistoryValue?.collegeName}`
-              )
-            : undefined,
-          req.body?.educationHistoryValue?.goToCollege === "Yes"
-            ? storyLowCaseParagraph(
-                `and studied ${req.body?.educationHistoryValue?.collegeMajor}.`
-              )
-            : undefined,
-
-          TitleParagraph("Social History"),
-          storyParagraph(""),
-          req.body?.socialHistoryValue?.barriersReceivingHealthcare === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} is experiencing barriers to receiving healthcare`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} is not experiencing barriers to receiving healthcare`
-              ),
-          req.body?.socialHistoryValue?.barriersReceivingHealthcare === "Yes"
-            ? storyLowCaseParagraph(
-                `consisting of ${divideArray(
-                  req.body?.socialHistoryValue?.selectbarriersHealthcare
-                )}.`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronoun} current living situation consists of ${formatCurrentLivingSituation(
-              pronoun,
-              req.body?.socialHistoryValue?.describeCurrentLivingSituation
-            )}.`
-          ),
-          req.body?.socialHistoryValue?.describeCurrentLivingSituation
-            .length !== 0 &&
-          !(
-            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "homeless"
-            ).length > 0
-          ) &&
-          !(
-            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "living alone"
-            ).length > 0
-          )
             ? storyParagraph("")
             : undefined,
 
-          req.body?.socialHistoryValue?.describeCurrentLivingSituation
-            .length !== 0 &&
-          !(
-            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "homeless"
-            ).length > 0
-          ) &&
-          !(
-            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
-              (item) => item === "living alone"
-            ).length > 0
-          )
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} is ${
+          new Paragraph({
+            children: [
+              ...(req.body?.medicalHistoryValue?.futureMedicalPlan === "Yes"
+                ? createTextRuns([
+                    `${surname} ${req.body?.demographicInformation?.lastName}'s treatment providers have plans for ${pronoun} future medical care. `,
+                  ])
+                : createTextRuns([
+                    `${surname} ${req.body?.demographicInformation?.lastName}'s treatment providers do not have plans for ${pronoun} future medical care. `,
+                  ])),
+              ...(req.body?.medicalHistoryValue?.futureMedicalPlan === "Yes"
+                ? createTextRuns([
+                    `The future medical care planning for ${surname}${req.body?.demographicInformation?.lastName} consists of ${req.body?.medicalHistoryValue?.futureMedicalPlanList}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronoun} current primary care provider is ${req.body?.medicalHistoryValue?.currentPrimarycarePractitioner}. `,
+              ]),
+              ...createTextRuns([
+                `${pronoun} past primary care provider was  ${req.body?.medicalHistoryValue?.pastprimarycarePractitioner}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} received this care as follows: ${req.body?.medicalHistoryValue?.periodReceiveProvider}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} hospitalization history as follows: ${req.body?.medicalHistoryValue?.hospitalListEverBeen}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} current medication treatment as follows: ${req.body?.medicalHistoryValue?.medicationsListTaking}. `,
+              ]),
+
+              ...(req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} suffers from allergies or intolerances to medication or food. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} does not suffer from allergies or intolerances to medication or food. `,
+                  ])),
+
+              ...(req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
+                ? createTextLowerRuns([
+                    `consisting of ${req.body?.medicalHistoryValue?.allergiesList}. `,
+                  ])
+                : []),
+            ],
+          }),
+
+          TitleStoryParagraph("Family History"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.familyHistoryValue?.familyPsychiatricConditions !==
+              ""
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } reported a family history of psychiatric conditions consisting of ${divideArray(
+                      req.body?.familyHistoryValue?.familyPsychiatricConditions
+                    )}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied any family history of psychiatric diagnoses. `,
+                  ])),
+              ...(req.body?.familyHistoryValue?.familyPsychiatricConditions.filter(
+                (item) => item === "other"
+              ).length > 0
+                ? createTextRuns([
+                    `Additional psychiatric conditions ${pronoun} family members have been diagnosed with include ${req.body?.familyHistoryValue?.psychiatricConditionsList}. `,
+                  ])
+                : []),
+              ...(req.body?.familyHistoryValue?.familyPsychiatricConditions.filter(
+                (item) => item === "other"
+              ).length > 0
+                ? createTextRuns([
+                    `with treatment consisting of ${req.body?.familyHistoryValue?.psychiatricConditionsTreatment}. `,
+                  ])
+                : []),
+              ...(req.body?.familyHistoryValue
+                ?.familyAttemptedSuicide === "Yes"
+                ? createTextRuns([
+                    `${pronoun} family members have attempted or committed suicide. `,
+                  ])
+                : createTextRuns([
+                    `${pronoun} family members have not attempted or committed suicide. `,
+                  ])),
+            ],
+          }),
+
+          storyParagraph(""),
+          TitleStoryParagraph("Relationship History"),
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} is currently involved in an intimate relationship. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} is not currently involved in an intimate relationship. `,
+                  ])),
+
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes" &&
+              req.body?.relationshipHistoryValue?.currentlyMarried === "Yes"
+                ? createTextRuns([`${pronoun} current marriage. `])
+                : createTextRuns([
+                    `${pronoun} current significant intimate relationship. `,
+                  ])),
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? createTextLowerRuns([
+                    `has lasted ${req.body?.relationshipHistoryValue?.currentRelationshipInvolve} ${req.body?.relationshipHistoryValue?.currentlyUnit}. `,
+                  ])
+                : []),
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported that ${pronoun} current relationship is ${divideArray(
+                      req.body?.relationshipHistoryValue
+                        ?.describeIntimateRelationship
+                    )}. `,
+                  ])
+                : []),
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? req.body?.relationshipHistoryValue
+                    ?.sufferPsychiatricConditions === "Yes"
+                  ? createTextRuns([
+                      `${pronoun} spouse or partner suffers from any general medical or psychiatric condition(s). `,
+                    ])
+                  : createTextRuns([
+                      `${pronoun} spouse or partner doesn't suffer from any general medical or psychiatric condition(s). `,
+                    ])
+                : []),
+
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? req.body?.relationshipHistoryValue
+                    ?.stressfulPsychiatricConditions === "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is stressful for them. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is not stressful for them. `,
+                    ])
+                : []),
+
+              ...(req.body?.relationshipHistoryValue
+                ?.currentlyIntimateRelationship === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} described the occupation of ${pronoun} significant other as follows: ${req.body?.relationshipHistoryValue?.PartnerOccupation}. `,
+                  ])
+                : []),
+
+              ...createTextRuns([
+                `${pronounPrefer} has been married ${req.body?.relationshipHistoryValue?.marriedNumber} times. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} reported a history of ${formatNumber(
+                  req.body?.relationshipHistoryValue?.intimateRelationshipTimes
+                )} long term intimate relationships. `,
+              ]),
+              ...createTextRuns([
+                `These relationship lasted ${req.body?.relationshipHistoryValue?.longTermRelationshipsLast}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} stated that ${pronoun} past relationships ended due to ${req.body?.relationshipHistoryValue?.reasonPreviousRelationships}. `,
+              ]),
+              ...(req.body?.relationshipHistoryValue?.domesticViolence === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported a history of domestic violence. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied a history of domestic violence. `,
+                  ])),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} has children. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} does not have children. `,
+                  ])),
+
+              ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has ${req.body?.relationshipHistoryValue?.childrenNumberAndAge}`,
+                  ])
+                : []),
+              ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
+                ? createTextRuns([
+                    `${pronoun} children are doing ${req.body?.relationshipHistoryValue?.childrenDoingSchool} in school or work. `,
+                  ])
+                : []),
+              ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
+                ? createTextRuns([
+                    `${pronoun} relationship with ${pronoun} children is ${req.body?.relationshipHistoryValue?.relationshipChildren}. `,
+                  ])
+                : []),
+              ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes" &&
+              req.body?.relationshipHistoryValue?.childrenHealthIssues === "Yes"
+                ? createTextRuns([
+                    `${pronoun} children have general or mental health issues. `,
+                  ])
+                : createTextRuns([])),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          TitleStoryParagraph("Employment History"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} current employment status is ${req.body?.employmentHistoryValue?.currentEmploymentStatus}. `,
+              ]),
+              ...(req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at less than 20 hours per week" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at more than 20 hours per week, but not full time" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed full time"
+                ? createTextLowerRuns([
+                    `at ${req.body?.employmentHistoryValue?.employerName}. `,
+                  ])
+                : []),
+              ...(req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at less than 20 hours per week" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at more than 20 hours per week, but not full time" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed full time"
+                ? createTextLowerRuns([
+                    `as a ${req.body?.employmentHistoryValue?.employmentTitle}. `,
+                  ])
+                : []),
+              ...(req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at less than 20 hours per week" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at more than 20 hours per week, but not full time" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed full time"
+                ? createTextRuns([
+                    `${pronoun} employment duties include ${req.body?.employmentHistoryValue?.jobDuties}. `,
+                  ])
+                : []),
+              ...(req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at less than 20 hours per week" ||
+              req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed at more than 20 hours per week, but not full time" ||
+              (req.body?.employmentHistoryValue?.currentEmploymentStatus ===
+                "employed full time" &&
+                req.body?.employmentHistoryValue?.difficultyJobDuties === "Yes")
+                ? createTextRuns([
+                    `${pronounPrefer} has difficulty performing ${pronoun} job duties. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not difficulty performing ${pronoun} job duties. `,
+                  ])),
+
+              ...createTextRuns([
+                `${pronoun} Employer History: ${employerList(
+                  req.body?.employmentHistoryValue?.employerList
+                )}. `,
+              ]),
+
+              
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
+                "Yes"
+                  ? createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName} reported a history of workplace injury `,
+                    ])
+                  : createTextRuns([
+                      `${surname}${req.body?.demographicInformation?.lastName} denied any history of workplace injury. `,
+                    ])),
+                ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
+                "Yes"
+                  ? createTextLowerRuns([
+                      `in ${req.body?.employmentHistoryValue?.injuriesOccurTime}. `,
+                    ])
+                  : []),
+                ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
+                "Yes"
+                  ? createTextRuns([
+                      `${pronoun} injury consisted of the following:${req.body?.employmentHistoryValue?.injuryNature}. `,
+                    ])
+                  : []),
+              ...(req.body?.employmentHistoryValue?.workerCompensationClaim ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported a history of submitting (a) Workers’ Compensation claim(s). `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied ever submitting a Workers’ Compensation claim. `,
+                  ])),
+              ...(req.body?.employmentHistoryValue?.placedDisability === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported a history of being placed on disability. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied ever being placed on disability. `,
+                  ])),
+
+              ...(req.body?.employmentHistoryValue?.receivedNegativeWork ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has received negative work evaluations, terminations, or disciplinary action for ${req.body?.employmentHistoryValue?.workEvaluationsExplain}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has never received negative work evaluations, terminations, or disciplinary action. `,
+                  ])),
+
+              ...createTextRuns([
+                `${pronounPrefer} receives financial income through ${divideArray(
+                  req.body?.employmentHistoryValue?.currentSourcesIncome
+                )}. `,
+              ]),
+            ],
+          }),
+
+          storyParagraph(""),
+          TitleStoryParagraph("Education History"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName}'s highest education level is ${req.body?.educationHistoryValue?.highestLevelEducation}. `,
+              ]),
+              ...(req.body?.educationHistoryValue?.highestLevelEducation ===
+              "currently a student"
+                ? createTextRuns([
+                    `${pronounPrefer} described ${pronoun} current education program as consisting of the following: ${req.body?.educationHistoryValue?.currentlyEnrolledEducation}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} reported that ${pronounPrefer} received mostly ${divideArray(
+                  req.body?.educationHistoryValue?.mostlyReceiveGrade
+                )} throughout ${pronoun} education. `,
+              ]),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.educationHistoryValue?.learningDisability === "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported a history of having learning disabilities or being placed in special education classes `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied any history of having learning disabilities or being placed in special education classes. `,
+                  ])),
+              ...(req.body?.educationHistoryValue?.learningDisability === "Yes"
+                ? createTextLowerRuns([
+                    `consisting of ${req.body?.educationHistoryValue?.describeLearningDifficulties}. `,
+                  ])
+                : []),
+              ...(req.body?.educationHistoryValue?.graduateHighSchool === "Yes"
+                ? createTextRuns([`${pronounPrefer} graduated high school. `])
+                : createTextRuns([
+                    `${pronounPrefer} did not graduate high school. `,
+                  ])),
+              ...(req.body?.educationHistoryValue?.graduateHighSchool === "Yes"
+                ? req.body?.educationHistoryValue?.graduateOnTime === "Yes"
+                  ? createTextRuns([`${pronounPrefer} graduated on time. `])
+                  : createTextRuns([
+                      `${pronounPrefer} did not graduate on time. `,
+                    ])
+                : []),
+              ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
+                ? createTextRuns([`${pronounPrefer} attended college. `])
+                : createTextRuns([
+                    `${pronounPrefer} did not attend college. `,
+                  ])),
+
+              ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
+                ? req.body?.educationHistoryValue?.completeYourDegree === "Yes"
+                  ? createTextRuns([`${pronounPrefer} completed a degree at. `])
+                  : createTextRuns([
+                      `${pronounPrefer} did not complete a degree at. `,
+                    ])
+                : []),
+
+              ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} attended ${req.body?.educationHistoryValue?.collegeName}. `,
+                  ])
+                : []),
+              ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
+                ? createTextLowerRuns([
+                    `and studied ${req.body?.educationHistoryValue?.collegeMajor}. `,
+                  ])
+                : []),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          TitleStoryParagraph("Social History"),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.socialHistoryValue?.barriersReceivingHealthcare ===
+              "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} is experiencing barriers to receiving healthcare `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} is not experiencing barriers to receiving healthcare. `,
+                  ])),
+              ...(req.body?.socialHistoryValue?.barriersReceivingHealthcare ===
+              "Yes"
+                ? createTextLowerRuns([
+                    `consisting of ${divideArray(
+                      req.body?.socialHistoryValue?.selectbarriersHealthcare
+                    )}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronoun} current living situation consists of ${formatCurrentLivingSituation(
+                  pronoun,
                   req.body?.socialHistoryValue?.describeCurrentLivingSituation
-                } with ${pronoun} ${divideArray(
-                  req.body?.socialHistoryValue?.livesYourHome
-                )}.`
-              )
-            : undefined,
+                )}. `,
+              ]),
+            ],
+          }),
 
           req.body?.socialHistoryValue?.describeCurrentLivingSituation
             .length !== 0 &&
-          req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
-            (item) => item !== "homeless" && item !== "other"
-          ).length > 0
-            ? req.body?.socialHistoryValue?.ownYourHome === "Yes"
-              ? storyParagraph(`${pronounPrefer} owns ${pronoun} home.`)
-              : storyParagraph(`${pronounPrefer} does not own ${pronoun} home.`)
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "homeless"
+            ).length > 0
+          ) &&
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "living alone"
+            ).length > 0
+          )
+            ? storyParagraph("")
             : undefined,
+
+          new Paragraph({
+            children: [
+              ...(req.body?.socialHistoryValue?.describeCurrentLivingSituation
+                .length !== 0 &&
+              !(
+                req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+                  (item) => item === "homeless"
+                ).length > 0
+              ) &&
+              !(
+                req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+                  (item) => item === "living alone"
+                ).length > 0
+              )
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } is ${
+                      req.body?.socialHistoryValue
+                        ?.describeCurrentLivingSituation
+                    } with ${pronoun} ${divideArray(
+                      req.body?.socialHistoryValue?.livesYourHome
+                    )}. `,
+                  ])
+                : []),
+
+              ...(req.body?.socialHistoryValue?.describeCurrentLivingSituation
+                .length !== 0 &&
+              req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+                (item) => item !== "homeless" && item !== "other"
+              ).length > 0
+                ? req.body?.socialHistoryValue?.ownYourHome === "Yes"
+                  ? createTextRuns([`${pronounPrefer} owns ${pronoun} home. `])
+                  : createTextRuns([
+                      `${pronounPrefer} does not own ${pronoun} home. `,
+                    ])
+                : []),
+              ...(req.body?.socialHistoryValue?.presentTimeDanger === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} feels in danger at the present time due to ${req.body?.socialHistoryValue?.describeFeelDanger}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} does not feel in danger at the present time. `,
+                  ])),
+              ...createTextRuns([
+                `${pronounPrefer} described the stressors that are not related to work that occurred in the past year as follows: ${req.body?.socialHistoryValue?.allStressorsPastYear}. `,
+              ]),
+              ...(req.body?.socialHistoryValue?.stressorsAffect === "Yes"
+                ? createTextRuns([
+                    `These stressors contributed to ${pronoun} emotional symptoms `,
+                  ])
+                : createTextRuns([
+                    `These stressors did not contribute to ${pronoun} emotional symptoms. `,
+                  ])),
+              ...createTextLowerRuns([
+                `in the following ways: ${req.body?.socialHistoryValue?.eachStressorsAffect}. `,
+              ]),
+
+              ...(req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported additional stressors. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied additional stressors. `,
+                  ])),
+
+              ...(req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
+                ? createTextRuns([
+                    `The additional stressors he has experienced consisted of ${req.body?.socialHistoryValue?.explainAllStressors}. `,
+                  ])
+                : []),
+              ...(req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
+                ? req.body?.socialHistoryValue?.affectEmotionalSymptoms ===
+                  "Yes"
+                  ? createTextRuns([
+                      `These stressors contributed to ${pronoun} emotional symptoms `,
+                    ])
+                  : createTextRuns([
+                      `These stressors did not contribute to ${pronoun} emotional symptoms. `,
+                    ])
+                : []),
+              ...(req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
+                ? createTextLowerRuns([
+                    `in the following ways: ${req.body?.socialHistoryValue?.eachAffectEmotionalSymptoms}. `,
+                  ])
+                : []),
+
+              ...(req.body?.socialHistoryValue?.otherStressorsExperience ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} is experiencing other stressors consisting of ${req.body?.socialHistoryValue?.explainStressorsExperience}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not experiencing other stressors. `,
+                  ])),
+
+             
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+              ? createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} reported a history of arrests. `,
+                ])
+              : createTextRuns([
+                  `${surname}${req.body?.demographicInformation?.lastName} denied any history of criminal behavior or arrests. `,
+                ])),
+            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+              ? createTextLowerRuns([
+                  `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate} `,
+                ])
+              : []),
+
+            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+              ? createTextLowerRuns([
+                  `for the charges of ${req.body?.criminalHistoryValue?.charges}. `,
+                ])
+              : []),
+            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+              ? createTextRuns([
+                  `${pronoun} past sentences lasted ${req.body?.criminalHistoryValue?.everIncarcerated}. `,
+                ])
+              : []),
+
+            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+              ? req.body?.criminalHistoryValue?.currentlyParole === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} is currently on parole or probation. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} is not currently on parole or probation. `,
+                  ])
+              : []),
+            ]
+          }),
+
           // req.body?.socialHistoryValue?.describeCurrentLivingSituation
           //   .length !== 0 &&
           // req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
           //   (item) => item !== "homeless" && item !== "other"
           // ).length > 0
           //   ? storyParagraph(
-          //       `${pronounPrefer} is experiencing additional stressors in ${pronoun} life consisting of ${req.body?.socialHistoryValue?.describeAdditionalStressors}.`
+          //       `${pronounPrefer} is experiencing additional stressors in ${pronoun} life consisting of ${req.body?.socialHistoryValue?.describeAdditionalStressors}. `
           //     )
           //   : undefined,
-          req.body?.socialHistoryValue?.presentTimeDanger === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} feels in danger at the present time: ${req.body?.socialHistoryValue?.describeFeelDanger}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} does not feel in danger at the present time.`
-              ),
-          storyParagraph(
-            `${pronounPrefer} described the stressors that are related to work that occurred in the past year as follows: ${req.body?.socialHistoryValue?.allStressorsPastYear}.`
-          ),
-          req.body?.socialHistoryValue?.stressorsAffect === "Yes"
-            ? storyParagraph(
-                `These stressors contributed to ${pronoun} emotional symptoms.`
-              )
-            : storyParagraph(
-                `These stressors did not contribute to ${pronoun} emotional symptoms.`
-              ),
-          storyLowCaseParagraph(
-            `in the following ways: ${req.body?.socialHistoryValue?.eachStressorsAffect} `
-          ),
-
-          req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
-            ? storyParagraph(`${pronounPrefer} reported additional stressors.`)
-            : storyParagraph(`${pronounPrefer} denied additional stressors.`),
-
-          req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
-            ? storyParagraph(
-                `The additional stressors he has experienced consisted of ${req.body?.socialHistoryValue?.explainAllStressors}`
-              )
-            : undefined,
-          req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
-            ? req.body?.socialHistoryValue?.affectEmotionalSymptoms === "Yes"
-              ? storyParagraph(
-                  `These stressors contributed to ${pronoun} emotional symptoms `
-                )
-              : storyParagraph(
-                  `These stressors did not contribute to ${pronoun} emotional symptoms`
-                )
-            : undefined,
-          req.body?.socialHistoryValue?.otherStressorsBesides === "Yes"
-            ? storyLowCaseParagraph(
-                `in the following ways: ${req.body?.socialHistoryValue?.eachAffectEmotionalSymptoms}.`
-              )
-            : undefined,
-
-          req.body?.socialHistoryValue?.otherStressorsExperience === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} is experiencing other stressors: ${req.body?.socialHistoryValue?.explainStressorsExperience}.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} is not experiencing other stressors.`
-              ),
-
-          req.body?.criminalHistoryValue?.arrested === "Yes"
-            ? storyParagraph(`${pronounPrefer} reported a history of arrests`)
-            : storyParagraph(
-                `${pronounPrefer} denied any history of criminal behavior or arrests`
-              ),
-          req.body?.criminalHistoryValue?.arrested === "Yes"
-            ? storyLowCaseParagraph(
-                `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate}`
-              )
-            : undefined,
-
-          req.body?.criminalHistoryValue?.arrested === "Yes"
-            ? storyLowCaseParagraph(
-                `for the charges of ${req.body?.criminalHistoryValue?.charges}`
-              )
-            : undefined,
-          req.body?.criminalHistoryValue?.arrested === "Yes"
-            ? storyParagraph(
-                `${pronoun} past sentences lasted ${req.body?.criminalHistoryValue?.everIncarcerated}.`
-              )
-            : undefined,
-
-          req.body?.criminalHistoryValue?.arrested === "Yes"
-            ? req.body?.criminalHistoryValue?.currentlyParole === "Yes"
-              ? storyParagraph(
-                  `${pronounPrefer} is currently on parole or probation.`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} is not currently on parole or probation.`
-                )
-            : undefined,
 
           storyParagraph(""),
-          req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
-            ? storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} reported a history of physical violence.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied any history of physical altercations or violence.`
-              ),
 
-          req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been involved in ${formatNumber(
-                  req.body?.violenceHistoryValue?.altercationsTimes
-                )}.`
-              )
-            : undefined,
-          req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
-            ? storyLowCaseParagraph(
-                `physical altercations in ${pronoun} lifetime. These altercations were due to ${req.body?.violenceHistoryValue?.circumstancesSurrounding}.`
-              )
-            : undefined,
-          req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} endorses having thoughts of wanting to hurt anyone.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} denies having thoughts of wanting to hurt anyone.`
-              ),
+          new Paragraph({
+            children: [
+              ...(req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported a history of physical violence. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied any history of physical altercations or violence. `,
+                  ])),
 
-          req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} described ${pronoun} thoughts of violence towards others as follows: ${req.body?.violenceHistoryValue?.explainAccomplishingHurt}`
-              )
-            : undefined,
+              ...(req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been involved in ${formatNumber(
+                      req.body?.violenceHistoryValue?.altercationsTimes
+                    )} `,
+                  ])
+                : []),
+              ...(req.body?.violenceHistoryValue?.physicalAltercations === "Yes"
+                ? createTextLowerRuns([
+                    `physical altercations in ${pronoun} lifetime. These altercations were due to ${req.body?.violenceHistoryValue?.circumstancesSurrounding}. `,
+                  ])
+                : []),
+              ...(req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} endorses having thoughts of wanting to hurt someone. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denies having thoughts of wanting to hurt anyone. `,
+                  ])),
 
-          req.body?.violenceHistoryValue?.victimViolence === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has been the victim of violence.`
-              )
-            : storyParagraph(
-                `${pronounPrefer} has not been the victim of violence.`
-              ),
+              ...(req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} described ${pronoun} thoughts of violence towards others as follows: ${req.body?.violenceHistoryValue?.explainAccomplishingHurt} `,
+                  ])
+                : []),
 
-          req.body?.violenceHistoryValue?.victimViolence === "Yes"
-            ? req.body?.violenceHistoryValue?.currentlyDangerViolence === "Yes"
-              ? storyParagraph(
-                  `${pronounPrefer} is currently in danger of violence.`
-                )
-              : storyParagraph(
-                  `${pronounPrefer} is not currently in danger of violence.`
-                )
-            : undefined,
+              ...(req.body?.violenceHistoryValue?.victimViolence === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been the victim of violence. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not been the victim of violence. `,
+                  ])),
+
+              ...(req.body?.violenceHistoryValue?.victimViolence === "Yes"
+                ? req.body?.violenceHistoryValue?.currentlyDangerViolence ===
+                  "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} is currently in danger of violence. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} is not currently in danger of violence. `,
+                    ])
+                : []),
+            ],
+          }),
 
           storyParagraph(""),
-          req.body?.militaryHistoryValue?.enrolledMilitary === "Yes"
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } reported a history of enlisting in the military consisting of ${
-                  req.body?.militaryHistoryValue?.branchMilitary
-                } from ${formatDate(
-                  req.body?.militaryHistoryValue?.militaryDatesFrom
-                )} to ${formatDate(
-                  req.body?.militaryHistoryValue?.militaryDatesTo
-                )} as a ${req.body?.militaryHistoryValue?.militaryJob}.`
-              )
-            : storyParagraph(
-                `${surname}${req.body?.demographicInformation?.lastName} denied a history of enlisting in the military.`
-              ),
+          new Paragraph({
+            children: [
+              ...(req.body?.militaryHistoryValue?.enrolledMilitary === "Yes"
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } reported a history of enlisting in the military consisting of ${
+                      req.body?.militaryHistoryValue?.branchMilitary
+                    } from ${formatDate(
+                      req.body?.militaryHistoryValue?.militaryDatesFrom
+                    )}, to ${formatDate(
+                      req.body?.militaryHistoryValue?.militaryDatesTo
+                    )}, as a ${req.body?.militaryHistoryValue?.militaryJob}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied a history of enlisting in the military. `,
+                  ])),
 
-          req.body?.militaryHistoryValue?.enrolledMilitary === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} was discharged as ${req.body?.militaryHistoryValue?.dischargeStatus}.`
-              )
-            : undefined,
+              ...(req.body?.militaryHistoryValue?.enrolledMilitary === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} was discharged as ${req.body?.militaryHistoryValue?.dischargeStatus}. `,
+                  ])
+                : []),
+            ],
+          }),
 
-          TitleParagraph("Current Daily Activities"),
+          storyParagraph(""),
+
+          TitleStoryParagraph("Current Daily Activities"),
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} awakens on work days at ${req.body?.currentDailyActivitiesValue?.awakenTimeWorkDays}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} awakens on non-work days at ${req.body?.currentDailyActivitiesValue?.awakenTimeNotWorkDays}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} typically goes to bed at ${req.body?.currentDailyActivitiesValue?.goToBed} `,
+              ]),
+              ...createTextLowerRuns([
+                `and falls asleep at ${req.body?.currentDailyActivitiesValue?.fallAsleepTime}. `,
+              ]),
+            ],
+          }),
+
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} described ${pronoun} activities from 6 a.m. to 8 a.m as ${req.body?.currentDailyActivitiesValue?.do6am}; `,
+              ]),
+              ...createTextRuns([
+                `from 8 a.m. to 10 a.m as ${req.body?.currentDailyActivitiesValue?.do8am}; `,
+              ]),
+              ...createTextRuns([
+                `from 10 a.m. to 12 p.m. as ${req.body?.currentDailyActivitiesValue?.do10am}; `,
+              ]),
+              ...createTextRuns([
+                `from 12 p.m. to 2 p.m as ${req.body?.currentDailyActivitiesValue?.do12pm}; `,
+              ]),
+              ...createTextRuns([
+                `from 2 p.m. to 4 p.m as ${req.body?.currentDailyActivitiesValue?.do2pm}; `,
+              ]),
+              ...createTextRuns([
+                `from 4 p.m. to 6 p.m. as ${req.body?.currentDailyActivitiesValue?.do4pm}; `,
+              ]),
+              ...createTextRuns([
+                `from 6 p.m. to 8 p.m as ${req.body?.currentDailyActivitiesValue?.do6pm}; `,
+              ]),
+              ...createTextRuns([
+                `from 8 p.m. to 10 p.m. as ${req.body?.currentDailyActivitiesValue?.do8pm}; `,
+              ]),
+              ...createTextRuns([
+                `from 10 p.m. to 12 a.m. or to bedtime as ${req.body?.currentDailyActivitiesValue?.do10pm}; `,
+              ]),
+              ...createTextLowerRuns([
+                `and from 12 p.m. to 6 a.m as ${req.body?.currentDailyActivitiesValue?.do12p6am}. `,
+              ]),
+            ],
+          }),
+
           storyParagraph(""),
           storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} awakens on work days at ${req.body?.currentDailyActivitiesValue?.awakenTimeWorkDays}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} awakens on non-work days at ${req.body?.currentDailyActivitiesValue?.awakenTimeNotWorkDays}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} typically goes to bed at ${req.body?.currentDailyActivitiesValue?.goToBed}.`
-          ),
-          storyLowCaseParagraph(
-            `and falls asleep at ${req.body?.currentDailyActivitiesValue?.fallAsleepTime}.`
+            `${surname}${req.body?.demographicInformation?.lastName} described his leisure activities or hobbies as ${req.body?.currentDailyActivitiesValue?.leisureActivities}. `
           ),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} described ${pronoun} activities from 6 a.m. to 8 a.m as ${req.body?.currentDailyActivitiesValue?.do6am};`
-          ),
-          storyParagraph(
-            `from 8 a.m. to 10 a.m as ${req.body?.currentDailyActivitiesValue?.do8am}`
-          ),
-          storyParagraph(
-            `from 10 a.m. to 12 p.m. as ${req.body?.currentDailyActivitiesValue?.do10am}`
-          ),
-          storyParagraph(
-            `from 12 p.m. to 2 p.m as ${req.body?.currentDailyActivitiesValue?.do12pm}`
-          ),
-          storyParagraph(
-            `from 2 p.m. to 4 p.m as ${req.body?.currentDailyActivitiesValue?.do2pm}`
-          ),
-          storyParagraph(
-            `from 4 p.m. to 6 p.m. as ${req.body?.currentDailyActivitiesValue?.do4pm}`
-          ),
-          storyParagraph(
-            `from 6 p.m. to 8 p.m as ${req.body?.currentDailyActivitiesValue?.do6pm}`
-          ),
-          storyParagraph(
-            `from 8 p.m. to 10 p.m. as ${req.body?.currentDailyActivitiesValue?.do8pm}`
-          ),
-          storyParagraph(
-            `from 10 p.m. to 12 a.m. or to bedtime as ${req.body?.currentDailyActivitiesValue?.do10pm}`
-          ),
-          storyLowCaseParagraph(
-            `and from 12 p.m. to 6 a.m as ${req.body?.currentDailyActivitiesValue?.do12p6am}`
-          ),
-          storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} described his leisure activities or hobbies as ${req.body?.currentDailyActivitiesValue?.leisureActivities}.`
-          ),
-          storyParagraph(""),
+
           formatTroubleFollowing(
             req.body?.currentDailyActivitiesValue?.troubleFollowing
           )
@@ -6010,7 +6462,7 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 } denied any history of difficulty in performing simple and repetitive tasks, ${formatTroubleFollowing(
                   req.body?.currentDailyActivitiesValue?.troubleFollowing
-                )}`
+                )}. `
               )
             : undefined,
 
@@ -6022,240 +6474,268 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 } reported impairment in ${formatTroubleFollowingNo(
                   req.body?.currentDailyActivitiesValue?.troubleFollowing
-                )}`
+                )}. `
               )
             : undefined,
 
           storyParagraph(""),
-          formatDailyLivingFollowing(
-            req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-          ).resultIndepently
-            ? storyParagraph(
-                `${surname}${
-                  req.body?.demographicInformation?.lastName
-                } reported that ${pronounPrefer} is able to perform all of the following activities independently and without assistance: ${
-                  formatDailyLivingFollowing(
-                    req.body?.currentDailyActivitiesValue?.dailyLivingFollowing
-                  ).resultIndepently
-                }`
-              )
-            : undefined,
-          formatDailyLivingFollowing(
-            req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-          ).resultNeedHelp
-            ? storyParagraph(
-                `${pronounPrefer} reported that ${pronounPrefer} needs help when ${
-                  formatDailyLivingFollowing(
-                    req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-                  ).resultNeedHelp
-                } `
-              )
-            : undefined,
-
-          formatDailyLivingFollowing(
-            req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-          ).resultDon
-            ? storyParagraph(
-                `${pronounPrefer} does not do ${
-                  formatDailyLivingFollowing(
-                    req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-                  ).resultDon
-                } `
-              )
-            : undefined,
-
-          formatDailyLivingFollowing(
-            req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-          ).resultCan
-            ? storyParagraph(
-                `${pronounPrefer} can't perform ${
-                  formatDailyLivingFollowing(
-                    req.body?.currentDailyActivitiesValue.dailyLivingFollowing
-                  ).resultCan
-                } `
-              )
-            : undefined,
+         
+          new Paragraph({
+            children: [
+              ...(formatDailyLivingFollowing(
+                req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+              ).resultIndepently
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } reported that ${pronounPrefer} is able to perform all of the following activities independently and without assistance: ${
+                      formatDailyLivingFollowing(
+                        req.body?.currentDailyActivitiesValue?.dailyLivingFollowing
+                      ).resultIndepently
+                    }`
+                  ])
+                : []),
+              ...(formatDailyLivingFollowing(
+                req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+              ).resultNeedHelp
+                ? createTextRuns(
+                    `${pronounPrefer} reported that ${pronounPrefer} needs help when ${
+                      formatDailyLivingFollowing(
+                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                      ).resultNeedHelp
+                    } `
+                  )
+                : []),
+    
+              ...(formatDailyLivingFollowing(
+                req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+              ).resultDon
+                ? createTextRuns([
+                    `${pronounPrefer} does not do ${
+                      formatDailyLivingFollowing(
+                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                      ).resultDon
+                    } `
+                  ])
+                : []),
+    
+              ...(formatDailyLivingFollowing(
+                req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+              ).resultCan
+                ? createTextRuns([
+                    `${pronounPrefer} can't perform ${
+                      formatDailyLivingFollowing(
+                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                      ).resultCan
+                    } `
+                  ])
+                : []),
+    
+            ]
+          }),
 
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} was asked to rate the following tasks as producing no difficulty, some difficulty, much difficulty, or that ${pronounPrefer} is unable to perform.`
-          ),
-          formatDifficultAmount(
-            req.body?.currentDailyActivitiesValue?.difficultAmount
-          ).resultNoDifficult
-            ? storyParagraph(
-                `${pronounPrefer} responded that ${pronounPrefer} has no difficulty in ${
-                  formatDifficultAmount(
-                    req.body?.currentDailyActivitiesValue?.difficultAmount
-                  ).resultNoDifficult
-                }.`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} was asked to rate the following tasks as producing no difficulty, some difficulty, much difficulty, or that ${pronounPrefer} is unable to perform. `,
+              ]),
+              ...(formatDifficultAmount(
+                req.body?.currentDailyActivitiesValue?.difficultAmount
+              ).resultNoDifficult
+                ? createTextRuns([
+                    `${pronounPrefer} responded that ${pronounPrefer} has no difficulty in ${
+                      formatDifficultAmount(
+                        req.body?.currentDailyActivitiesValue?.difficultAmount
+                      ).resultNoDifficult
+                    }. `,
+                  ])
+                : []),
 
-          formatDifficultAmount(
-            req.body?.currentDailyActivitiesValue?.difficultAmount
-          ).resultSomeDifficult
-            ? storyParagraph(
-                `${pronounPrefer} responded that ${pronounPrefer} has some difficulty in ${
-                  formatDifficultAmount(
-                    req.body?.currentDailyActivitiesValue?.difficultAmount
-                  ).resultSomeDifficult
-                }.`
-              )
-            : undefined,
+              ...(formatDifficultAmount(
+                req.body?.currentDailyActivitiesValue?.difficultAmount
+              ).resultSomeDifficult
+                ? createTextRuns([
+                    `${pronounPrefer} responded that ${pronounPrefer} has some difficulty in ${
+                      formatDifficultAmount(
+                        req.body?.currentDailyActivitiesValue?.difficultAmount
+                      ).resultSomeDifficult
+                    }. `,
+                  ])
+                : []),
 
-          formatDifficultAmount(
-            req.body?.currentDailyActivitiesValue?.difficultAmount
-          ).resultMuchDifficult
-            ? storyParagraph(
-                `${pronounPrefer} responded having much difficulty with ${
-                  formatDifficultAmount(
-                    req.body?.currentDailyActivitiesValue?.difficultAmount
-                  ).resultMuchDifficult
-                }.`
-              )
-            : undefined,
+              ...(formatDifficultAmount(
+                req.body?.currentDailyActivitiesValue?.difficultAmount
+              ).resultMuchDifficult
+                ? createTextRuns([
+                    `${pronounPrefer} responded having much difficulty with ${
+                      formatDifficultAmount(
+                        req.body?.currentDailyActivitiesValue?.difficultAmount
+                      ).resultMuchDifficult
+                    }. `,
+                  ])
+                : []),
 
-          formatDifficultAmount(
-            req.body?.currentDailyActivitiesValue?.difficultAmount
-          ).resultUnableDo
-            ? storyParagraph(
-                `${pronounPrefer} responded that ${pronounPrefer} is unable to perform in ${
-                  formatDifficultAmount(
-                    req.body?.currentDailyActivitiesValue?.difficultAmount
-                  ).resultUnableDo
-                }.`
-              )
-            : undefined,
+              ...(formatDifficultAmount(
+                req.body?.currentDailyActivitiesValue?.difficultAmount
+              ).resultUnableDo
+                ? createTextRuns([
+                    `${pronounPrefer} responded that ${pronounPrefer} is unable to perform in ${
+                      formatDifficultAmount(
+                        req.body?.currentDailyActivitiesValue?.difficultAmount
+                      ).resultUnableDo
+                    }. `,
+                  ])
+                : []),
+            ],
+          }),
 
-          TitleParagraph("Developmental History"),
           storyParagraph(""),
-          storyParagraph(
-            `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} was born in ${req.body?.developmentalValue?.bornPlace}`
-          ),
-          storyLowCaseParagraph(
-            `and raised in ${req.body?.developmentalValue?.primarilyRaised}.`
-          ),
-          storyParagraph(
-            `${pronounPrefer} was raised by ${pronoun} ${req.body?.developmentalValue?.raisedChilhood}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} was raised by ${req.body?.developmentalValue?.describeRelationshipPerson}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} described ${pronoun} relationship with the primary adults who raised ${prepositionPronoun} when ${pronounPrefer} was a child as ${divideArray(
-              req.body?.developmentalValue?.relationshipPrimaryAdults
-            )}.`
-          ),
-          req.body?.developmentalValue?.haveSiblings === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} has ${formatNumber(
-                  req.body?.developmentalValue?.siblingsMany
-                )} siblings.`
-              )
-            : undefined,
-          req.body?.developmentalValue?.haveSiblings === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} was raised with all ${formatNumber(
-                  req.body?.developmentalValue?.siblingsRaised
-                )} of them.`
-              )
-            : undefined,
-          req.body?.developmentalValue?.haveSiblings === "Yes"
-            ? storyParagraph(
-                `${pronounPrefer} describes ${pronoun} relationship with ${pronoun} siblings as ${req.body?.developmentalValue?.relationshipSiblings}.`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} reported a history of ${divideArray(
-              req.body?.developmentalValue?.experienceAbuseChildhood
-            )}.`
-          ),
 
-          req.body?.developmentalValue?.parentsMarried === "Yes"
-            ? storyParagraph(`${pronoun} parents were married.`)
-            : storyParagraph(`${pronoun} parents never married`),
-          req.body?.developmentalValue?.parentsMarried === "Yes"
-            ? req.body?.developmentalValue?.parentsRemainMarried === "Yes"
-              ? storyParagraph(`${pronoun} parents remained married`)
-              : undefined
-            : undefined,
-          req.body?.developmentalValue?.parentsMarried === "Yes"
-            ? storyParagraph(`${req.body?.developmentalValue?.parentsDivorce}`)
-            : undefined,
-          req.body?.developmentalValue?.parentsMarried === "No"
-            ? storyParagraph(
-                `${pronounPrefer} was ${formatNumber(
-                  req.body?.developmentalValue?.yourOldParentsDivorced
-                )} year old when ${pronoun} parents divorced or separated.`
-              )
-            : undefined,
+          TitleStoryParagraph("Developmental History"),
+          storyParagraph(""),
 
-          req.body?.developmentalValue?.motherWork === "Yes"
-            ? storyParagraph(
-                `${pronoun} mother was employed as a ${req.body?.developmentalValue?.motherJob}.`
-              )
-            : undefined,
-          req.body?.developmentalValue?.motherWork === "Yes"
-            ? storyParagraph(
-                `${pronoun} mother's current job is ${req.body?.developmentalValue?.motherStillWork}`
-              )
-            : undefined,
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} was born in ${req.body?.developmentalValue?.bornPlace}. `,
+              ]),
+              ...createTextLowerRuns([
+                `and raised in ${req.body?.developmentalValue?.primarilyRaised}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} was raised by ${pronoun} ${req.body?.developmentalValue?.raisedChilhood}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} was raised by ${req.body?.developmentalValue?.describeRelationshipPerson}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} described ${pronoun} relationship with the primary adults who raised ${prepositionPronoun} when ${pronounPrefer} was a child as ${divideArray(
+                  req.body?.developmentalValue?.relationshipPrimaryAdults
+                )}. `,
+              ]),
+              ...(req.body?.developmentalValue?.haveSiblings === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has ${formatNumber(
+                      req.body?.developmentalValue?.siblingsMany
+                    )} siblings. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.haveSiblings === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} was raised with all ${formatNumber(
+                      req.body?.developmentalValue?.siblingsRaised
+                    )} of them. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.haveSiblings === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} described ${pronoun} relationship with ${pronoun} siblings as ${divideArray(req.body?.developmentalValue?.relationshipSiblings)}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} reported a history of experiencing ${divideArray(
+                  req.body?.developmentalValue?.experienceAbuseChildhood
+                )}. `,
+              ]),
 
-          req.body?.developmentalValue?.motherCurrentLiving === "Yes"
-            ? storyParagraph(`${pronoun} mother is currently living.`)
-            : storyParagraph(`${pronoun} mother is currently deceased.`),
-          req.body?.developmentalValue?.motherCurrentLiving === "No"
-            ? storyParagraph(
-                `She died when she was ${req.body?.developmentalValue?.diedMotherOld}.`
-              )
-            : undefined,
-          req.body?.developmentalValue?.motherCurrentLiving === "No"
-            ? storyLowCaseParagraph(
-                `from ${req.body?.developmentalValue?.whatDiedMother}`
-              )
-            : undefined,
+              ...(req.body?.developmentalValue?.parentsMarried === "Yes"
+                ? createTextRuns([`${pronoun} parents were married. `])
+                : createTextRuns([`${pronoun} parents were ${req.body.developmentalValue.parentsDivorce}. `])),
+              ...(req.body?.developmentalValue?.parentsMarried === "Yes"
+                ? req.body?.developmentalValue?.parentsRemainMarried === "Yes"
+                  ? createTextRuns([`${pronoun} parents remained married. `])
+                  : []
+                : []),
+              ...(req.body?.developmentalValue?.parentsMarried === "Yes"
+                ? createTextRuns([
+                    `${req.body?.developmentalValue?.parentsDivorce}. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.parentsMarried === "No"
+                ? createTextRuns([
+                    `${pronounPrefer} was ${formatNumber(
+                      req.body?.developmentalValue?.yourOldParentsDivorced
+                    )} year old when ${pronoun} parents divorced or separated. `,
+                  ])
+                : []),
 
-          req.body?.developmentalValue?.fatherWork === "Yes"
-            ? storyParagraph(
-                `${pronoun} father was employed as a ${req.body?.developmentalValue?.fatherJob}.`
-              )
-            : undefined,
-          req.body?.developmentalValue?.fatherWork === "Yes"
-            ? storyParagraph(
-                `${pronoun} father's current job is ${req.body?.developmentalValue?.fatherStillWork}`
-              )
-            : undefined,
+              ...(req.body?.developmentalValue?.motherWork === "Yes"
+                ? createTextRuns([
+                    `${pronoun} mother was employed as a ${req.body?.developmentalValue?.motherJob}. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.motherWork === "Yes"
+                ? createTextRuns([
+                    `${pronoun} mother's current job is ${req.body?.developmentalValue?.motherStillWork}. `,
+                  ])
+                : []),
 
-          req.body?.developmentalValue?.fatherCurrentLiving === "Yes"
-            ? storyParagraph(`${pronoun} father is currently living.`)
-            : storyParagraph(`${pronoun} father is currently deceased.`),
-          req.body?.developmentalValue?.fatherCurrentLiving === "No"
-            ? storyParagraph(
-                `he died when he was ${req.body?.developmentalValue?.diedFatherOld}`
-              )
-            : undefined,
-          req.body?.developmentalValue?.fatherCurrentLiving === "No"
-            ? storyLowCaseParagraph(
-                `from ${req.body?.developmentalValue?.whatDiedFather}`
-              )
-            : undefined,
-          storyParagraph(
-            `${pronounPrefer} ${socialLife(
-              req.body?.developmentalValue?.bestDescribesSocialLifeChild
-            )}`
-          ),
-          storyParagraph(
-            `As a child, ${pronounPrefer} preferred ${req.body?.developmentalValue?.enjoyActivitiesChild}.`
-          ),
+              ...(req.body?.developmentalValue?.motherCurrentLiving === "Yes"
+                ? createTextRuns([`${pronoun} mother is currently living. `])
+                : createTextRuns([
+                    `${pronoun} mother is currently deceased. `,
+                  ])),
+              ...(req.body?.developmentalValue?.motherCurrentLiving === "No"
+                ? createTextRuns([
+                    `She died when she was ${req.body?.developmentalValue?.diedMotherOld}. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.motherCurrentLiving === "No"
+                ? createTextLowerRuns([
+                    `from ${req.body?.developmentalValue?.whatDiedMother}. `,
+                  ])
+                : []),
 
-          TitleParagraph("Additional Information"),
-          storyParagraph(
-            `${pronounPrefer} also states ${req.body?.additionalValue?.evaluatingClinician}`
-          ),
-          storyParagraph(
-            `${pronounPrefer} also states ${req.body?.additionalValue?.yourAdditionalInformation}`
-          ),
+              ...(req.body?.developmentalValue?.fatherWork === "Yes"
+                ? createTextRuns([
+                    `${pronoun} father was employed as a ${req.body?.developmentalValue?.fatherJob}. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.fatherWork === "Yes"
+                ? createTextRuns([
+                    `${pronoun} father's current job is ${req.body?.developmentalValue?.fatherStillWork}. `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.fatherCurrentLiving === "Yes"
+                ? createTextRuns([`${pronoun} father is currently living. `])
+                : createTextRuns([
+                    `${pronoun} father is currently deceased. `,
+                  ])),
+              ...(req.body?.developmentalValue?.fatherCurrentLiving === "No"
+                ? createTextRuns([
+                    `he died when he was ${req.body?.developmentalValue?.diedFatherOld} `,
+                  ])
+                : []),
+              ...(req.body?.developmentalValue?.fatherCurrentLiving === "No"
+                ? createTextLowerRuns([
+                    `from ${req.body?.developmentalValue?.whatDiedFather}. `,
+                  ])
+                : []),
+              ...createTextRuns([
+                `${pronounPrefer} ${socialLife(
+                  req.body?.developmentalValue?.bestDescribesSocialLifeChild
+                )}. `,
+              ]),
+              ...createTextRuns([
+                `As a child, ${pronounPrefer} enjoyed ${req.body?.developmentalValue?.enjoyActivitiesChild}. `,
+              ]),
+            ],
+          }),
+
+          storyParagraph(""),
+          TitleStoryParagraph("Additional Information"),
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
+                `${pronounPrefer} also states ${req.body?.additionalValue?.evaluatingClinician}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} also states ${req.body?.additionalValue?.yourAdditionalInformation}. `,
+              ]),
+            ],
+          }),
         ],
       },
     ],
