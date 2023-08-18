@@ -9,6 +9,9 @@ const {
   Paragraph,
   TextRun,
   AlignmentType,
+  Table,
+  TableCell,
+  TableRow,
   TextUnderlineType,
 } = require("docx");
 const fs = require("fs");
@@ -80,8 +83,8 @@ router.post("/", async (req, res) => {
       return value[0];
     }
 
-    if(value.length === 2) {
-      return value[0] + " and " + value[1]
+    if (value.length === 2) {
+      return value[0] + " and " + value[1];
     }
 
     const lastElement = ", and " + value[value.length - 1];
@@ -131,8 +134,58 @@ router.post("/", async (req, res) => {
     });
   };
 
+  const employerHeader = [
+    "Employer (begin with your first job)",
+    "Your Job Title",
+    "Dates you started/left this Employment",
+    "Reason You Left This Job",
+  ];
+
+  const tableHeaderRow = new TableRow({
+    children: employerHeader.map(
+      (header) => new TableCell({ children: [new Paragraph(header)] })
+    ),
+  });
+
+  const bodyRows = (value) => {
+    return value.map((row) => {
+      const { employer, jobTitle, datesOfEmployment, reasonForLeaving } = row;
+      return new TableRow({
+        children: [
+          new TableCell({ children: [new Paragraph(employer)] }),
+          new TableCell({ children: [new Paragraph(jobTitle)] }),
+          new TableCell({ children: [new Paragraph(datesOfEmployment)] }),
+          new TableCell({ children: [new Paragraph(reasonForLeaving)] }),
+        ],
+      });
+    });
+  };
+  const table = (value) => {
+    return new Table({
+      rows: [tableHeaderRow, ...bodyRows(value)],
+    });
+  };
+
   const cardFieldType = (value) => {
     return value.map((item) => `${item.condition}:${item.effect}`).join(", ");
+  };
+
+  const formatMedication = (value) => {
+    const outPut = value.map(
+      ({ condition, effect }) =>
+        `${effect.slice(0, effect?.length - 8)}${condition} symptoms`
+    );
+    if (outPut.length === 1) {
+      return outPut;
+    } else if (outPut.length === 2) {
+      return outPut[0] + " and " + outPut[1];
+    } else {
+      const lastItemIndex = outPut.length - 1;
+      if (lastItemIndex >= 0) {
+        outPut[lastItemIndex] = "and " + outPut[lastItemIndex];
+      }
+      return outPut.join(", ");
+    }
   };
 
   const formatCurrentlySubstance = (value) => {
@@ -415,7 +468,6 @@ router.post("/", async (req, res) => {
       outPut = outPutNo;
     }
 
-  
     return outPut;
   };
 
@@ -428,7 +480,6 @@ router.post("/", async (req, res) => {
 
     value.map(({ condition, effect }) => {
       if (effect === "Yes") {
-        console.log('here')
         WithdrawalFollwingYes.push(condition);
       } else {
         WithdrawalFollwingNo.push(condition);
@@ -513,7 +564,6 @@ router.post("/", async (req, res) => {
     req.body?.demographicInformation?.radioPreferPronounItem === "Ze" ||
     req.body?.demographicInformation?.radioPreferPronounItem === "Hir";
   const validateBoolean = (value) => {
-    console.log(value)
     let isValid = false;
     if (value === "Yes") {
       isValid = true;
@@ -1053,7 +1103,7 @@ router.post("/", async (req, res) => {
           ),
           questionParagraph("31. Are you currently working"),
           answerParagraph(
-            `${req.body?.employmentInjuryPhysicalValue?.radioConflictsItem}`
+            `${req.body?.employmentInjuryPhysicalValue?.radioCurrentlyWorkingItem}`
           ),
 
           questionParagraph(
@@ -1168,14 +1218,12 @@ router.post("/", async (req, res) => {
           answerParagraph(
             `${req.body?.employmentInjuryPhysicalValue?.lastStraw}`
           ),
-          req.body?.employmentInjuryPhysicalValue?.lastStraw ===
-          "Yes"
+          req.body?.employmentInjuryPhysicalValue?.lastStraw === "Yes"
             ? questionParagraph(
                 "Please describe your 'last straw' event near the last day of your work"
               )
             : undefined,
-          req.body?.employmentInjuryPhysicalValue?.lastStraw ===
-          "Yes"
+          req.body?.employmentInjuryPhysicalValue?.lastStraw === "Yes"
             ? answerParagraph(
                 `${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}`
               )
@@ -1359,7 +1407,13 @@ router.post("/", async (req, res) => {
           answerParagraph(
             `${req.body?.longitudinalHistoryValue?.emotionalSymptomBecome}`
           ),
-          questionParagraph("59. How often do you feel the above emotions?"),
+          questionParagraph(
+            "59. On what date did your emotional symptoms become worse or better?"
+          ),
+          answerParagraph(
+            `${req.body?.longitudinalHistoryValue?.emotionalSymptomDate}`
+          ),
+          questionParagraph("60. How often do you feel the above emotions?"),
           answerParagraph(`${req.body?.longitudinalHistoryValue?.feelEmotion}`),
           req.body?.longitudinalHistoryValue?.feelEmotion === "other"
             ? questionParagraph(
@@ -1372,7 +1426,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
           questionParagraph(
-            "60. How would you rate your depressive, anxiety, or post-trauma symptoms when they were most severe, with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms imaginable?"
+            "61. How would you rate your depressive, anxiety, or post-trauma symptoms when they were most severe, with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms imaginable?"
           ),
           answerParagraph(
             `Depressive: ${req.body?.longitudinalHistoryValue?.depressiveSymptom}`
@@ -1384,13 +1438,13 @@ router.post("/", async (req, res) => {
             `PostTrauma: ${req.body?.longitudinalHistoryValue?.postTraumaSymptom}`
           ),
           questionParagraph(
-            "61. Currently, how do you rate your depressive, anxiety, or post-trauma symptoms on the same 1-10 scale?"
+            "62. Currently, how do you rate your depressive, anxiety, or post-trauma symptoms on the same 1-10 scale?"
           ),
           answerParagraph(
             `${req.body?.longitudinalHistoryValue?.compareEmotionalSymptom}`
           ),
           questionParagraph(
-            "62. Have Your Emotional Symptoms Affected Your Ability to Do Your Job?"
+            "63. Have Your Emotional Symptoms Affected Your Ability to Do Your Job?"
           ),
           answerParagraph(
             `${req.body?.longitudinalHistoryValue?.symptomsAffectedJob}`
@@ -1408,7 +1462,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Current Symptoms"),
           TitleParagraph("PHQ-9"),
-          questionParagraph("63. Little interest or pleasure in doing things?"),
+          questionParagraph("64. Little interest or pleasure in doing things?"),
           answerParagraph(`${req.body?.PHQValue?.interestThing}`),
           req.body?.PHQValue?.interestThing !== "" &&
           req.body?.PHQValue?.interestThing !== "not at all"
@@ -1420,7 +1474,7 @@ router.post("/", async (req, res) => {
           req.body?.PHQValue?.interestThing !== "not at all"
             ? answerParagraph(`${req.body?.PHQValue?.previouslyEnjoyable}`)
             : undefined,
-          questionParagraph("64. Feeling down, depressed, or hopeless?"),
+          questionParagraph("65. Feeling down, depressed, or hopeless?"),
           answerParagraph(`${req.body?.PHQValue?.feelingDepressed}`),
 
           req.body?.PHQValue?.feelingDepressed !== "" &&
@@ -1457,7 +1511,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "65. Over the last 2 weeks, have you had trouble falling or staying asleep, or sleeping too much?"
+            "66. Over the last 2 weeks, have you had trouble falling or staying asleep, or sleeping too much?"
           ),
           answerParagraph(`${req.body?.PHQValue?.troubleFallingAsleep}`),
           req.body?.PHQValue?.troubleFallingAsleep !== "" &&
@@ -1502,11 +1556,11 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "66. Over the last 2 weeks, have you been feeling tired or having little energy?"
+            "67. Over the last 2 weeks, have you been feeling tired or having little energy?"
           ),
           answerParagraph(`${req.body?.PHQValue?.feelingEnergy}`),
           questionParagraph(
-            "67. Over the last 2 weeks, have you had poor appetite or been overeating?"
+            "68. Over the last 2 weeks, have you had poor appetite or been overeating?"
           ),
           answerParagraph(`${req.body?.PHQValue?.poorAppetite}`),
           req.body?.PHQValue?.poorAppetite !== "" &&
@@ -1531,27 +1585,27 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "68. Over the last 2 weeks, have you been feeling bad about yourself — or that you are a failure or have let yourself or your family down?"
+            "69. Over the last 2 weeks, have you been feeling bad about yourself — or that you are a failure or have let yourself or your family down?"
           ),
           answerParagraph(`${req.body?.PHQValue?.yourselfFeelingBad}`),
           questionParagraph(
-            "69. Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?"
+            "70. Over the last 2 weeks, have you had trouble concentrating on things, such as reading the newspaper or watching television?"
           ),
           answerParagraph(`${req.body?.PHQValue?.troubleConCentratingThing}`),
           questionParagraph(
-            "70. Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or so fidgety or restless that you have been moving a lot more than usual?"
+            "71. Over the last 2 weeks, have you been moving or speaking so slowly that other people could have noticed? Or so fidgety or restless that you have been moving a lot more than usual?"
           ),
           answerParagraph(`${req.body?.PHQValue?.fidgetyMoving}`),
           questionParagraph(
-            "71. Over the last 2 weeks, have you had thoughts that you would be better off dead, or thoughts of hurting yourself in some way?"
+            "72. Over the last 2 weeks, have you had thoughts that you would be better off dead, or thoughts of hurting yourself in some way?"
           ),
           answerParagraph(`${req.body?.PHQValue?.betterOffDeadYourself}`),
           questionParagraph(
-            "72. In the past month, have you wished you were dead or wished you could go to sleep and not wake up?"
+            "73. In the past month, have you wished you were dead or wished you could go to sleep and not wake up?"
           ),
           answerParagraph(`${req.body?.PHQValue?.deadWishWakeUp}`),
           questionParagraph(
-            "73. In the past month, have you had any actual thoughts of killing yourself?"
+            "74. In the past month, have you had any actual thoughts of killing yourself?"
           ),
           answerParagraph(`${req.body?.PHQValue?.killingYourself}`),
           req.body?.PHQValue?.killingYourself !== "" &&
@@ -1588,19 +1642,19 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "74. Have you ever done anything, started to do anything, or prepared to do anything to end your life?"
+            "75. Have you ever done anything, started to do anything, or prepared to do anything to end your life?"
           ),
           answerParagraph(`${req.body?.PHQValue?.preparedAnythingEndYourlife}`),
-          questionParagraph("75. Do you have thoughts of hurting anyone else?"),
+          questionParagraph("76. Do you have thoughts of hurting anyone else?"),
           answerParagraph(`${req.body?.PHQValue?.hurtingAnyone}`),
           questionParagraph(
-            "76. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current depressive symptoms?"
+            "77. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current depressive symptoms?"
           ),
           answerParagraph(`${req.body?.PHQValue?.currentDepressiveSymptoms}`),
 
           TitleParagraph("GAD-7"),
           questionParagraph(
-            "77. Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge"
+            "78. Over the last 2 weeks, how often have you been feeling nervous, anxious, or on edge"
           ),
           answerParagraph(`${req.body?.GADValue?.feelingNervous}`),
           req.body?.GADValue?.feelingNervous !== "" &&
@@ -1622,11 +1676,11 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body?.GADValue?.feelAnxiousOften}`)
             : undefined,
           questionParagraph(
-            "78. Over the last 2 weeks, how often have you been not being able to stop or control worrying"
+            "79. Over the last 2 weeks, how often have you been not being able to stop or control worrying"
           ),
           answerParagraph(`${req.body?.GADValue?.stopControlWorring}`),
           questionParagraph(
-            "79. Over the last 2 weeks, how often have you been worrying too much about different things"
+            "80. Over the last 2 weeks, how often have you been worrying too much about different things"
           ),
           answerParagraph(`${req.body?.GADValue?.worringDifferentThing}`),
           req.body?.GADValue?.worringDifferentThing !== "" &&
@@ -1661,27 +1715,27 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "80. Over the last 2 weeks, how often have you been trouble relaxing"
+            "81. Over the last 2 weeks, how often have you been trouble relaxing"
           ),
           answerParagraph(`${req.body?.GADValue?.troubleRelaxing}`),
           questionParagraph(
-            "81. Over the last 2 weeks, how often have you been being so restless that it's hard to sit still"
+            "82. Over the last 2 weeks, how often have you been being so restless that it's hard to sit still"
           ),
           answerParagraph(`${req.body?.GADValue?.restlessSitHard}`),
           questionParagraph(
-            "82. Over the last 2 weeks, how often have you been becoming easily annoyed or irritable"
+            "83. Over the last 2 weeks, how often have you been becoming easily annoyed or irritable"
           ),
           answerParagraph(`${req.body?.GADValue?.easilyAnnoyed}`),
           questionParagraph(
-            "83. Over the last 2 weeks, how often have you been feeling afraid as if something awful might happen"
+            "84. Over the last 2 weeks, how often have you been feeling afraid as if something awful might happen"
           ),
           answerParagraph(`${req.body?.GADValue?.feelingAfraidAwfulThing}`),
           questionParagraph(
-            "84. Over the last 2 weeks, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
+            "85. Over the last 2 weeks, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
           ),
           answerParagraph(`${req.body?.GADValue?.currentAnxietySymptoms}`),
           questionParagraph(
-            "85. Over the last 2 weeks, how often have you been experience panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
+            "86. Over the last 2 weeks, how often have you been experience panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
           ),
           answerParagraph(`${req.body?.GADValue?.panicAttacks}`),
           req.body?.GADValue?.panicAttacks === "Yes"
@@ -1732,7 +1786,7 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body?.GADValue?.panicAttacksSpontaneous}`)
             : undefined,
 
-          questionParagraph("86. Have you experienced past traumatic event(s)"),
+          questionParagraph("87. Have you experienced past traumatic event(s)"),
           answerParagraph(`${req.body?.GADValue?.pastTraumaticEvents}`),
           req.body?.GADValue?.pastTraumaticEvents == "Yes"
             ? questionParagraph("What traumatic event(s) did you experience?")
@@ -1753,11 +1807,11 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("PCL-5"),
           questionParagraph(
-            "87. Repeated, disturbing, and unwanted memories of the stressful experience?"
+            "88. Repeated, disturbing, and unwanted memories of the stressful experience?"
           ),
           answerParagraph(`${req.body?.PCLValue?.stressfulExperienceMemories}`),
           questionParagraph(
-            "88. Repeated, disturbing dreams of the stressful experience?"
+            "89. Repeated, disturbing dreams of the stressful experience?"
           ),
           answerParagraph(`${req.body?.PCLValue?.stressfulExperience}`),
           req.body?.PCLValue?.stressfulExperience !== "" &&
@@ -1769,27 +1823,27 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body?.PCLValue?.disturbingDreamsOccur}`)
             : undefined,
           questionParagraph(
-            "89. Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)?"
+            "90. Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.suddenlyStressfulExperience}`),
           questionParagraph(
-            "90. Feeling very upset when something reminded you of the stressful experience?"
+            "91. Feeling very upset when something reminded you of the stressful experience?"
           ),
           answerParagraph(
             `${req.body?.PCLValue?.veryUpsetStressfulExperience}`
           ),
           questionParagraph(
-            "91. Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating)?"
+            "92. Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating)?"
           ),
           answerParagraph(
             `${req.body?.PCLValue?.strongPhysicalReactionStressfulExperience}`
           ),
           questionParagraph(
-            "92. Avoiding memories, thoughts, or feelings related to the stressful experience?"
+            "93. Avoiding memories, thoughts, or feelings related to the stressful experience?"
           ),
           answerParagraph(`${req.body?.PCLValue?.avoidingMemories}`),
           questionParagraph(
-            "93. Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations)?"
+            "94. Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.avoidingExternalReminders}`),
           req.body?.PCLValue?.avoidingExternalReminders !== "" &&
@@ -1813,63 +1867,63 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body?.PCLValue?.avoidActivities}`)
             : undefined,
           questionParagraph(
-            "94. Trouble remembering important parts of the stressful experience?"
+            "95. Trouble remembering important parts of the stressful experience?"
           ),
           answerParagraph(`${req.body?.PCLValue?.troubleStressfulExperience}`),
           questionParagraph(
-            "95. Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous)?"
+            "96. Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.strongNegativeBeliefs}`),
           questionParagraph(
-            "96. Blaming yourself or someone else for the stressful experience or what happened after it?"
+            "97. Blaming yourself or someone else for the stressful experience or what happened after it?"
           ),
           answerParagraph(`${req.body?.PCLValue?.stressfulExperienceBlaming}`),
           questionParagraph(
-            "97. Having strong negative feelings such as fear, horror, anger, guilt, or shame?"
+            "98. Having strong negative feelings such as fear, horror, anger, guilt, or shame?"
           ),
           answerParagraph(`${req.body?.PCLValue?.strongNegativefeelings}`),
           questionParagraph(
-            "98. Loss of interest in activities that you used to enjoy (although this is a repeat question, please answer again)?"
+            "99. Loss of interest in activities that you used to enjoy (although this is a repeat question, please answer again)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.lossInterestActivity}`),
           questionParagraph(
-            "99. Feeling distant or cut off from other people?"
+            "100. Feeling distant or cut off from other people?"
           ),
           answerParagraph(`${req.body?.PCLValue?.feelingDistantPeople}`),
           questionParagraph(
-            "100. Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you)?"
+            "101. Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you)?"
           ),
           answerParagraph(
             `${req.body?.PCLValue?.troubleExperiencePositiveFeeling}`
           ),
           questionParagraph(
-            "101. Irritable behavior, angry outbursts, or acting aggressively?"
+            "102. Irritable behavior, angry outbursts, or acting aggressively?"
           ),
           answerParagraph(`${req.body?.PCLValue?.irritableBehavior}`),
           questionParagraph(
-            "102. Taking too many risks or doing things that could cause you harm?"
+            "103. Taking too many risks or doing things that could cause you harm?"
           ),
           answerParagraph(`${req.body?.PCLValue?.manyRisksThing}`),
-          questionParagraph("103. Being “superalert” or watchful or on guard?"),
+          questionParagraph("104. Being “superalert” or watchful or on guard?"),
           answerParagraph(`${req.body?.PCLValue?.beingWatchful}`),
-          questionParagraph("104. Feeling jumpy or easily startled?"),
+          questionParagraph("105. Feeling jumpy or easily startled?"),
           answerParagraph(`${req.body?.PCLValue?.easilyStartled}`),
           questionParagraph(
-            "105. Having difficulty concentrating (although this is a repeat question, please answer again)?"
+            "106. Having difficulty concentrating (although this is a repeat question, please answer again)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.difficultyConcentrating}`),
           questionParagraph(
-            "106. Trouble falling or staying asleep (although this is a repeat question, please answer again)?"
+            "107. Trouble falling or staying asleep (although this is a repeat question, please answer again)?"
           ),
           answerParagraph(`${req.body?.PCLValue?.troubleFallingAsleep}`),
           questionParagraph(
-            "107. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current post-trauma related symptoms?"
+            "108. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current post-trauma related symptoms?"
           ),
           answerParagraph(`${req.body?.PCLValue?.currentRelatedSymptoms}`),
 
           TitleParagraph("Current Treatment"),
           questionParagraph(
-            "108. Do you currently take any psychiatric medications."
+            "109. Do you currently take any psychiatric medications."
           ),
           answerParagraph(
             `${req.body?.currentTreatmentValue?.currentlyPsychiatricMedications}`
@@ -2003,7 +2057,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "109. Are you currently in psychotherapy treatment?"
+            "110. Are you currently in psychotherapy treatment?"
           ),
           answerParagraph(
             `${req.body?.currentTreatmentValue?.currentlyPsychotherapyTreatment}`
@@ -2057,15 +2111,17 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Past History"),
           questionParagraph(
-            "110. Have you ever previously experienced any of the following symptoms"
+            "111. Have you ever previously experienced any of the following symptoms"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}`
           ),
-          questionParagraph("Please describe your post traumatic stress symptoms at that time:"),
+          questionParagraph(
+            "Please describe your post traumatic stress symptoms at that time:"
+          ),
           answerParagraph(`${req.body?.pastHistoryValue?.describeSymptoms}`),
           questionParagraph(
-            "111. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
+            "112. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.experienceMuchEnergy}`
@@ -2088,7 +2144,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
             ? questionParagraph(
-                "During this time, did you sleep fewer than 4 hours per night for 4-7 or more consecutive nights, without feeling excessively tired?"
+                "During this time that you slept fewer than 4 hours per night for 4-7 or more consecutive nights, did you feel excessively tired during the day?"
               )
             : undefined,
           req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
@@ -2128,7 +2184,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "112. Have you ever experienced any of the following?"
+            "113. Have you ever experienced any of the following?"
           ),
           answerParagraph(`${req.body?.pastHistoryValue?.experienceFollowing}`),
           req.body?.pastHistoryValue?.experienceFollowing.filter(
@@ -2159,28 +2215,28 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "113. Recently, have you been thinking about how you might harm or kill yourself?"
+            "114. Recently, have you been thinking about how you might harm or kill yourself?"
           ),
           answerParagraph(`${req.body?.pastHistoryValue?.harmKillYourSelf}`),
           questionParagraph(
-            "114. Have any of your emotional symptoms (sadness, depression, anxiety) had a negative effect upon your work, school, or relationships?"
+            "115. Have any of your emotional symptoms (sadness, depression, anxiety) had a negative effect upon your work, school, or relationships?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.emotionalSymptomsRelationShip}`
           ),
           questionParagraph(
-            "115. If you have ever experienced symptoms of depression, when did you first feel depressed?"
+            "116. If you have ever experienced symptoms of depression, when did you first feel depressed?"
           ),
           answerParagraph(`${req.body?.pastHistoryValue?.firstFeelDepressed}`),
           questionParagraph(
-            "116. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
+            "117. If you have ever experienced symptoms of anxiety, when did you first feel high levels of anxiety?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.feelHighLevelAnxiety}`
           ),
 
           questionParagraph(
-            "117. Have you ever been diagnosed by a healthcare provider with any of the following mental health conditions?"
+            "118. Have you ever been diagnosed by a healthcare provider with any of the following mental health conditions?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.diagnosedMentalHealth}`
@@ -2203,7 +2259,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "118. Have you ever taken any other medications in the past for a psychiatric or mental health condition, not listed above? This may include medications that did not work well or that were stopped for other reasons."
+            "119. Have you ever taken any other medications in the past for a psychiatric or mental health condition, not listed above? This may include medications that did not work well or that were stopped for other reasons."
           ),
           answerParagraph(`${req.body?.pastHistoryValue?.otherMedications}`),
           req.body?.pastHistoryValue?.otherMedications === "Yes"
@@ -2315,7 +2371,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "119. Have you ever previously received psychotherapy (talk therapy/counseling)?"
+            "120. Have you ever previously received psychotherapy (talk therapy/counseling)?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy}`
@@ -2375,7 +2431,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "120. Have you ever been admitted to a psychiatric hospital?"
+            "121. Have you ever been admitted to a psychiatric hospital?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.admittedPsychiatricHospital}`
@@ -2433,10 +2489,10 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "121. Have you ever experienced suicidal ideation?"
+            "122. Have you ever experienced suicidal ideation?"
           ),
           answerParagraph(`${req.body?.pastHistoryValue?.suicidalIdeation}`),
-          questionParagraph("122. Have you ever made a suicide attempt?"),
+          questionParagraph("123. Have you ever made a suicide attempt?"),
           answerParagraph(`${req.body?.pastHistoryValue?.suicideAttempt}`),
           req.body?.pastHistoryValue?.suicideAttempt === "Yes"
             ? questionParagraph(
@@ -2470,7 +2526,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "123. Have you ever experienced any other psychiatric symptoms that are not described above"
+            "124. Have you ever experienced any other psychiatric symptoms that are not described above"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.otherPsychiatricSymptoms}`
@@ -2487,7 +2543,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "124. Have you received any other psychotherapy or psychiatric medication treatment besides that described above?"
+            "125. Have you received any other psychotherapy or psychiatric medication treatment besides that described above?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.otherPsychotherapyTreatment}`
@@ -2504,7 +2560,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "125. Have you ever been evaluated otherwise by psychiatrists or psychologists for any other purpose?"
+            "126. Have you ever been evaluated otherwise by psychiatrists or psychologists for any other purpose?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.evaluatedOtherwisePsychiatrists}`
@@ -2533,7 +2589,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "126. Have you ever been involved in physical altercations or violence?"
+            "127. Have you ever been involved in physical altercations or violence?"
           ),
           answerParagraph(
             `${req.body?.pastHistoryValue?.physicalAltercations}`
@@ -2551,7 +2607,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Substance Use"),
           questionParagraph(
-            "127. Have you ever used any of the following substances?"
+            "128. Have you ever used any of the following substances?"
           ),
           answerParagraph(
             `${req.body?.substanceUseValue?.followingSubstances}`
@@ -2638,7 +2694,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "128. Have you ever enrolled in a substance recovery treatment program?"
+            "129. Have you ever enrolled in a substance recovery treatment program?"
           ),
           answerParagraph(
             `${req.body?.substanceUseValue?.enrolledTreatmentProgram}`
@@ -2739,7 +2795,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Medical History"),
           questionParagraph(
-            "129. Have you been diagnosed by a healthcare provider with any of the following conditions?"
+            "130. Have you been diagnosed by a healthcare provider with any of the following conditions?"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.diagnosedHealthcareProvider}`
@@ -2768,20 +2824,20 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "130. Please list your general physical health medications, including your dosage for each medication:"
+            "131. Please list your general physical health medications, including your dosage for each medication:"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.physicalHealthMedicationsLists}`
           ),
 
           questionParagraph(
-            "131. Have your general medical medications produced any side effects?"
+            "132. Have your general medical medications produced any side effects?"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.medicationsSideEffect}`
           ),
 
-          questionParagraph("132. Have you ever had any surgeries?"),
+          questionParagraph("133. Have you ever had any surgeries?"),
           answerParagraph(`${req.body?.medicalHistoryValue?.surgeries}`),
           req.body?.medicalHistoryValue?.surgeries === "Yes"
             ? questionParagraph(
@@ -2795,7 +2851,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "133. Do your treatment providers have any plans for your future medical care?"
+            "134. Do your treatment providers have any plans for your future medical care?"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.futureMedicalPlan}`
@@ -2812,13 +2868,13 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "134. Your current primary care physician or nurse practitioner is (Name, Facility, City):"
+            "135. Your current primary care physician or nurse practitioner is (Name, Facility, City):"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.currentPrimarycarePractitioner}`
           ),
           questionParagraph(
-            "135. Past primary care physician or nurse practitioners (Name, Facility, City)?"
+            "136. Past primary care physician or nurse practitioners (Name, Facility, City)?"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.pastprimarycarePractitioner}`
@@ -2830,14 +2886,14 @@ router.post("/", async (req, res) => {
             `${req.body?.medicalHistoryValue?.periodReceiveProvider}`
           ),
           questionParagraph(
-            "136. List all of the hospitals you have ever been in for medical reasons (and when you were in this hospital):"
+            "137. List all of the hospitals you have ever been in for medical reasons (and when you were in this hospital):"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.hospitalListEverBeen}`
           ),
 
           questionParagraph(
-            "137. Do you have any allergies or intolerances to medication or food?"
+            "138. Do you have any allergies or intolerances to medication or food?"
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.allergiesMedication}`
@@ -2851,7 +2907,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Family History"),
           questionParagraph(
-            "138. Do any of your family members suffer from the following psychiatric conditions?"
+            "139. Do any of your family members suffer from the following psychiatric conditions?"
           ),
           answerParagraph(
             `${req.body?.familyHistoryValue?.familyPsychiatricConditions}`
@@ -2886,7 +2942,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "139. Have any of your family members attempted or committed suicide?"
+            "140. Have any of your family members attempted or committed suicide?"
           ),
           answerParagraph(
             `${req.body?.familyHistoryValue?.familyAttemptedSuicide}`
@@ -2894,7 +2950,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Relationship History"),
           questionParagraph(
-            "140. Are you currently involved in an intimate relationship?"
+            "141. Are you currently involved in an intimate relationship?"
           ),
           answerParagraph(
             `${req.body?.relationshipHistoryValue?.currentlyIntimateRelationship}`
@@ -2970,12 +3026,12 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("141. How many times have you been married?"),
+          questionParagraph("142. How many times have you been married?"),
           answerParagraph(
             `${req.body?.relationshipHistoryValue?.marriedNumber}`
           ),
           questionParagraph(
-            "142. How many total long term intimate relationships have you had?"
+            "143. How many total long term intimate relationships have you had?"
           ),
           answerParagraph(
             `${req.body?.relationshipHistoryValue?.intimateRelationshipTimes}`
@@ -2999,7 +3055,7 @@ router.post("/", async (req, res) => {
             `${req.body?.relationshipHistoryValue?.domesticViolence}`
           ),
 
-          questionParagraph("143. Do you have children?"),
+          questionParagraph("144. Do you have children?"),
           answerParagraph(
             `${req.body?.relationshipHistoryValue?.haveChildren}`
           ),
@@ -3045,7 +3101,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           TitleParagraph("Employment History"),
-          questionParagraph("144. What is your current employment status?"),
+          questionParagraph("145. What is your current employment status?"),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.currentEmploymentStatus}`
           ),
@@ -3125,13 +3181,11 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "145. What is the name of your past employer immediately prior to any current job you may have?"
+            "146. What is the name of your past employer immediately prior to any current job you may have?"
           ),
-          answerParagraph(
-            `${employerList(req.body?.employmentHistoryValue?.employerList)}`
-          ),
+          table(req.body?.employmentHistoryValue?.employerList),
 
-          questionParagraph("146. Have you had any past workplace injuries?"),
+          questionParagraph("147. Have you had any past workplace injuries?"),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.pastWorkplaceInjuries}`
           ),
@@ -3155,12 +3209,12 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "147. Have you ever submitted a Workers’ Compensation claim"
+            "148. Have you ever submitted a Workers’ Compensation claim"
           ),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.workerCompensationClaim}`
           ),
-          questionParagraph("148. Have you ever been placed on disability?"),
+          questionParagraph("149. Have you ever been placed on disability?"),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.placedDisability}`
           ),
@@ -3175,7 +3229,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "149. Have you ever received negative work evaluations, been terminated from a position, or received disciplinary action?"
+            "150. Have you ever received negative work evaluations, been terminated from a position, or received disciplinary action?"
           ),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.receivedNegativeWork}`
@@ -3190,13 +3244,13 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("150. List all of your current sources of income."),
+          questionParagraph("151. List all of your current sources of income."),
           answerParagraph(
             `${req.body?.employmentHistoryValue?.currentSourcesIncome}`
           ),
 
           TitleParagraph("Education History"),
-          questionParagraph("151. What is your highest level of education?"),
+          questionParagraph("152. What is your highest level of education?"),
           answerParagraph(
             `${req.body?.educationHistoryValue?.highestLevelEducation}`
           ),
@@ -3214,14 +3268,14 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "152. What grades did you mostly receive during your education (choose all that apply)?"
+            "153. What grades did you mostly receive during your education (choose all that apply)?"
           ),
           answerParagraph(
             `${req.body?.educationHistoryValue?.mostlyReceiveGrade}`
           ),
 
           questionParagraph(
-            "153. Were you ever identified as having a learning disability, or placed in any special education classes?"
+            "154. Were you ever identified as having a learning disability, or placed in any special education classes?"
           ),
           answerParagraph(
             `${req.body?.educationHistoryValue?.learningDisability}`
@@ -3235,7 +3289,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("154. Did you graduate high school?"),
+          questionParagraph("155. Did you graduate high school?"),
           answerParagraph(
             `${req.body?.educationHistoryValue?.graduateHighSchool}`
           ),
@@ -3248,7 +3302,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("155. Did you go to college"),
+          questionParagraph("156. Did you go to college"),
           answerParagraph(`${req.body?.educationHistoryValue?.goToCollege}`),
           req.body?.educationHistoryValue?.goToCollege === "Yes"
             ? questionParagraph("If so, did you complete your degree?")
@@ -3275,7 +3329,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Social History"),
           questionParagraph(
-            "156. Are you experiencing any barriers to receiving healthcare?"
+            "157. Are you experiencing any barriers to receiving healthcare?"
           ),
           answerParagraph(
             `${req.body?.socialHistoryValue?.barriersReceivingHealthcare}`
@@ -3293,7 +3347,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "157. Please describe your current living situation(select all that apply):"
+            "158. Please describe your current living situation(select all that apply):"
           ),
           answerParagraph(
             `${req.body?.socialHistoryValue?.describeCurrentLivingSituation}`
@@ -3375,7 +3429,7 @@ router.post("/", async (req, res) => {
           //   : undefined,
 
           questionParagraph(
-            "158. Do you feel that you are in any danger at the present time?"
+            "159. Do you feel that you are in any danger at the present time?"
           ),
           answerParagraph(`${req.body?.socialHistoryValue?.presentTimeDanger}`),
           req.body?.socialHistoryValue?.presentTimeDanger === "Yes"
@@ -3390,7 +3444,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "159. List ALL stressors NOT related to work which happened in the past year (i.e., separation/divorce, death in family, problems with children, financial, foreclosure, bankruptcy, repossessions, etc)."
+            "160. List ALL stressors NOT related to work which happened in the past year (i.e., separation/divorce, death in family, problems with children, financial, foreclosure, bankruptcy, repossessions, etc)."
           ),
           answerParagraph(
             `${req.body?.socialHistoryValue?.allStressorsPastYear}`
@@ -3407,7 +3461,7 @@ router.post("/", async (req, res) => {
           answerParagraph(`${req.body?.socialHistoryValue?.stressorsAffect}`),
 
           questionParagraph(
-            "160. Since Your Injury, Have You Experienced Any Other Stressors Besides Your Injury or Psychiatric Issue?"
+            "161. Since Your Injury, Have You Experienced Any Other Stressors Besides Your Injury or Psychiatric Issue?"
           ),
           answerParagraph(
             `${req.body?.socialHistoryValue?.otherStressorsBesides}`
@@ -3444,7 +3498,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "161. Are you experiencing any other stressors in your life not covered above?"
+            "162. Are you experiencing any other stressors in your life not covered above?"
           ),
           answerParagraph(
             `${req.body?.socialHistoryValue?.otherStressorsExperience}`
@@ -3459,7 +3513,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           TitleParagraph("Criminal History"),
-          questionParagraph("162. Have you ever been arrested?"),
+          questionParagraph("163. Have you ever been arrested?"),
           answerParagraph(`${req.body?.criminalHistoryValue?.arrested}`),
 
           req.body?.criminalHistoryValue?.arrested === "Yes"
@@ -3496,7 +3550,7 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Violence History"),
           questionParagraph(
-            "163. Have you ever been involved in physical altercations?"
+            "164. Have you ever been involved in physical altercations?"
           ),
           answerParagraph(
             `${req.body?.violenceHistoryValue?.physicalAltercations}`
@@ -3523,7 +3577,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "164. Do you currently or have you recently had thoughts of wanting to hurt anyone?"
+            "165. Do you currently or have you recently had thoughts of wanting to hurt anyone?"
           ),
           answerParagraph(
             `${req.body?.violenceHistoryValue?.thoughtsHurtAnyone}`
@@ -3539,7 +3593,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("165. Have you ever been the victim of violence?"),
+          questionParagraph("166. Have you ever been the victim of violence?"),
           answerParagraph(`${req.body?.violenceHistoryValue?.victimViolence}`),
           req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
             ? questionParagraph("Are you currently in danger of violence?")
@@ -3551,7 +3605,7 @@ router.post("/", async (req, res) => {
             : undefined,
 
           TitleParagraph("Military History"),
-          questionParagraph("166. Have you ever enrolled in the military"),
+          questionParagraph("167. Have you ever enrolled in the military"),
           answerParagraph(
             `${req.body?.militaryHistoryValue?.enrolledMilitary}`
           ),
@@ -3587,22 +3641,22 @@ router.post("/", async (req, res) => {
             : undefined,
 
           TitleParagraph("CURRENT DAILY ACTIVITIES"),
-          questionParagraph("167. What time do you wake up on work days?"),
+          questionParagraph("168. What time do you wake up on work days?"),
           answerParagraph(
             `${req.body?.currentDailyActivitiesValue?.awakenTimeWorkDays}`
           ),
-          questionParagraph("168. What time do you wake up on non work days?"),
+          questionParagraph("169. What time do you wake up on non work days?"),
           answerParagraph(
             `${req.body?.currentDailyActivitiesValue?.awakenTimeNotWorkDays}`
           ),
-          questionParagraph("169. What time do you usually go to bed?"),
+          questionParagraph("170. What time do you usually go to bed?"),
           answerParagraph(`${req.body?.currentDailyActivitiesValue?.goToBed}`),
-          questionParagraph("170. What time do you usually fall asleep?"),
+          questionParagraph("171. What time do you usually fall asleep?"),
           answerParagraph(
             `${req.body?.currentDailyActivitiesValue?.fallAsleepTime}`
           ),
           questionParagraph(
-            "171. Describe all of the activities you do from the time you wake up until you go to bed at night:"
+            "172. Describe all of the activities you do from the time you wake up until you go to bed at night:"
           ),
           questionParagraph("What you do from 6 a.m. to 8 a.m.:"),
           answerParagraph(`${req.body?.currentDailyActivitiesValue?.do6am}`),
@@ -3628,12 +3682,12 @@ router.post("/", async (req, res) => {
           answerParagraph(`${req.body?.currentDailyActivitiesValue?.do12p6am}`),
 
           questionParagraph(
-            "172. What are your leisure activities or hobbies?"
+            "173. What are your leisure activities or hobbies?"
           ),
           answerParagraph(
             `${req.body?.currentDailyActivitiesValue?.leisureActivities}`
           ),
-          questionParagraph("173. Do you have any trouble with the following?"),
+          questionParagraph("174. Do you have any trouble with the following?"),
           answerParagraph(
             objectCardType(
               req.body?.currentDailyActivitiesValue?.troubleFollowing
@@ -3641,7 +3695,7 @@ router.post("/", async (req, res) => {
           ),
 
           questionParagraph(
-            "174. Activities of daily living worksheet. please put a mark in the box that describes your ability to carry out the following:"
+            "175. Activities of daily living worksheet. please put a mark in the box that describes your ability to carry out the following:"
           ),
           answerParagraph(
             objectCardType(
@@ -3649,7 +3703,7 @@ router.post("/", async (req, res) => {
             )
           ),
           questionParagraph(
-            "175. Please rate the amount of difficulty you have with the following:"
+            "176. Please rate the amount of difficulty you have with the following:"
           ),
           answerParagraph(
             objectCardType(
@@ -3657,36 +3711,42 @@ router.post("/", async (req, res) => {
             )
           ),
           questionParagraph(
-            "176. Please list any activities not included above that you used to do but are unable to do or don't do because of your condition and explain why"
+            "177. Please list any activities not included above that you used to do but are unable to do or don't do because of your condition and explain why"
           ),
           answerParagraph(
             `${req.body?.currentDailyActivitiesValue?.anyActivitiesListBefore}`
           ),
 
           TitleParagraph("Developmental History"),
-          questionParagraph("177. Where were you born?"),
+          questionParagraph("178. Where were you born?"),
           answerParagraph(`${req.body?.developmentalValue?.bornPlace}`),
-          questionParagraph("178. Where were you primarily raised?"),
+          questionParagraph("179. Where were you primarily raised?"),
           answerParagraph(`${req.body?.developmentalValue?.primarilyRaised}`),
           questionParagraph(
-            "179. Who primarlily raised you during your childhood?"
+            "180. Who primarlily raised you during your childhood?"
           ),
           answerParagraph(`${req.body?.developmentalValue?.raisedChilhood}`),
-          
-          req.body.developmentalValue?.raisedChilhood !== "" ?
-          questionParagraph("Please describe your relationship with the person who primarily raised you during your childhood:") : undefined,
-          
-          req.body.developmentalValue?.raisedChildhood !== "" ?
-          answerParagraph(`${req.body.developmentalValue?.describeRelationshipPerson}`) : undefined,
+
+          req.body.developmentalValue?.raisedChilhood !== ""
+            ? questionParagraph(
+                "Please describe your relationship with the person who primarily raised you during your childhood:"
+              )
+            : undefined,
+
+          req.body.developmentalValue?.raisedChildhood !== ""
+            ? answerParagraph(
+                `${req.body.developmentalValue?.describeRelationshipPerson}`
+              )
+            : undefined,
 
           questionParagraph(
-            "180. How would you rate your relationship with the primary adults who raised you when you were a child?"
+            "181. How would you rate your relationship with the primary adults who raised you when you were a child?"
           ),
           answerParagraph(
             `${req.body?.developmentalValue?.relationshipPrimaryAdults}`
           ),
           questionParagraph(
-            "181. How many of these siblings were you raised by?"
+            "182. How many of these siblings were you raised with?"
           ),
           answerParagraph(`${req.body?.developmentalValue?.haveSiblings}`),
           req.body?.developmentalValue?.haveSiblings === "Yes"
@@ -3697,7 +3757,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body?.developmentalValue?.haveSiblings === "Yes"
             ? questionParagraph(
-                "How many of these siblings were you raised by?"
+                "How many of these siblings were you raised with?"
               )
             : undefined,
           req.body?.developmentalValue?.haveSiblings === "Yes"
@@ -3715,12 +3775,12 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "182. Did you experience any abuse during your childhood?"
+            "183. Did you experience any abuse during your childhood?"
           ),
           answerParagraph(
             `${req.body?.developmentalValue?.experienceAbuseChildhood}`
           ),
-          questionParagraph("183. Were your parents ever married?"),
+          questionParagraph("184. Were your parents ever married?"),
           answerParagraph(`${req.body?.developmentalValue?.parentsMarried}`),
           req.body?.developmentalValue?.parentsMarried === "Yes"
             ? questionParagraph("Did your parents remain married?")
@@ -3749,7 +3809,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("184. Did your mother work?"),
+          questionParagraph("185. Did your mother work?"),
           answerParagraph(`${req.body?.developmentalValue?.motherWork}`),
           req.body?.developmentalValue?.motherWork === "Yes"
             ? questionParagraph("What was her job?")
@@ -3766,7 +3826,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("185. Is your mother current living?"),
+          questionParagraph("186. Is your mother current living?"),
           answerParagraph(`${req.body?.developmentalValue?.bornPlace}`),
           req.body?.developmentalValue?.motherCurrentLiving === "No"
             ? questionParagraph("How old was she when she died?")
@@ -3781,7 +3841,7 @@ router.post("/", async (req, res) => {
             ? answerParagraph(`${req.body?.developmentalValue?.whatDiedMother}`)
             : undefined,
 
-          questionParagraph("186. Did your father work?"),
+          questionParagraph("187. Did your father work?"),
           answerParagraph(`${req.body?.developmentalValue?.fatherWork}`),
           req.body?.developmentalValue?.fatherWork === "Yes"
             ? questionParagraph("What was his job?")
@@ -3798,7 +3858,7 @@ router.post("/", async (req, res) => {
               )
             : undefined,
 
-          questionParagraph("187. Is your father current living?"),
+          questionParagraph("188. Is your father current living?"),
           answerParagraph(`${req.body?.developmentalValue?.bornPlace}`),
           req.body?.developmentalValue?.fatherCurrentLiving === "No"
             ? questionParagraph("How old was he when she died?")
@@ -3814,14 +3874,14 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph(
-            "188. Which of these statements best describes your social life as a child:"
+            "189. Which of these statements best describes your social life as a child:"
           ),
           answerParagraph(
             `${req.body?.developmentalValue?.bestDescribesSocialLifeChild}`
           ),
 
           questionParagraph(
-            "189. What activities did you enjoy during your childhood?"
+            "190. What activities did you enjoy during your childhood?"
           ),
           answerParagraph(
             `${req.body?.developmentalValue?.enjoyActivitiesChild}`
@@ -3829,11 +3889,11 @@ router.post("/", async (req, res) => {
 
           TitleParagraph("Additional Information"),
           questionParagraph(
-            "190. Is there anything else you would like to share with the evaluating clinician before your visit begins?"
+            "191. Is there anything else you would like to share with the evaluating clinician before your visit begins?"
           ),
           answerParagraph(`${req.body?.additionalValue?.evaluatingClinician}`),
           questionParagraph(
-            "191. Please provide any other additional information not already covered above"
+            "192. Please provide any other additional information not already covered above"
           ),
           answerParagraph(
             `${req.body?.additionalValue?.yourAdditionalInformation}`
@@ -3857,13 +3917,13 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 } is a ${formatAge(
                   req.body?.demographicInformation?.birth
-                )}-year-old,`
+                )}-year-old,`,
               ]),
               ...createTextLowerRuns([
-                `${req.body?.demographicInformation?.maritalStatusItems}, ${req.body?.demographicInformation?.checkedEthnicityItems}, `
+                `${req.body?.demographicInformation?.maritalStatusItems}, ${req.body?.demographicInformation?.checkedEthnicityItems}, `,
               ]),
               ...createTextLowerRuns([
-                `${req.body?.demographicInformation?.radioSexItem}. `
+                `${req.body?.demographicInformation?.radioSexItem}. `,
               ]),
             ],
           }),
@@ -3871,6 +3931,10 @@ router.post("/", async (req, res) => {
           storyParagraph(
             `who goes by a preferred pronoun of ${req.body?.demographicInformation?.radioPreferPronounItem}. `
           ),
+          storyParagraph(""),
+
+          storyParagraph(`${req.body?.demographicInformation?.email}`),
+          storyParagraph(`${req.body?.demographicInformation?.phoneNumber}`),
           storyParagraph(""),
 
           TitleStoryParagraph(
@@ -3976,9 +4040,9 @@ router.post("/", async (req, res) => {
                   ])),
 
               ...(req.body.employmentInjuryPhysicalValue
-                ?.radioMedicationsBeforeInjuryItem === "Yes"
+                ?.radioMedicationsNameBeforeInjuryItem
                 ? createTextRuns([
-                    `The medications ${pronounPrefer} was taking before the injury were the following: `,
+                    `The medications ${pronounPrefer} was taking before the injury were the following: ${req.body?.employmentInjuryPhysicalValue?.radioMedicationsNameBeforeInjuryItem}`,
                   ])
                 : []),
               ...createTextRuns([
@@ -4082,7 +4146,7 @@ router.post("/", async (req, res) => {
                 req.body?.employmentInjuryPhysicalValue?.verbalWarning
               )
                 ? createTextRuns([
-                    `${pronounPrefer} has received verbal or written warnings, `,
+                    `${pronounPrefer} has received verbal or written warnings `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} has not received any verbal or written warnings, `,
@@ -4114,7 +4178,7 @@ router.post("/", async (req, res) => {
                 req.body?.employmentInjuryPhysicalValue?.lastStraw
               )
                 ? createTextRuns([
-                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work. `,
+                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work `,
                   ])
                 : createTextRuns([
                     `${surname}${req.body?.demographicInformation?.lastName} stated that there was not a "Last Straw" event near the last day of work. `,
@@ -4333,6 +4397,18 @@ router.post("/", async (req, res) => {
                 `During this current or most recent symptom episode, ${pronoun} symptoms were the worst in ${req.body?.longitudinalHistoryValue?.mostWorstSymptom}. `,
               ]),
               ...createTextRuns([
+                `${pronoun} emotional symptoms became ${req.body.longitudinalHistoryValue?.emotionalSymptomBecome} since ${req.body?.longitudinalHistoryValue?.emotionalSymptomDate}. `,
+              ]),
+              ...createTextRuns([
+                `${pronounPrefer} experiences the above emotions ${req.body?.longitudinalHistoryValue?.feelEmotion}.`,
+              ]),
+            ],
+          }),
+
+          storyParagraph(""),
+          new Paragraph({
+            children: [
+              ...createTextRuns([
                 `${pronounPrefer} rated ${pronoun} depressive symptoms as a ${req.body?.longitudinalHistoryValue?.depressiveSymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
               ]),
               ...createTextRuns([
@@ -4435,62 +4511,61 @@ router.post("/", async (req, res) => {
 
           storyParagraph(""),
 
-
           new Paragraph({
             children: [
               ...(req.body?.PHQValue?.feelingEnergy !== "not at all"
-              ? createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} feels tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
-                ])
-              : createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} does not feel tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
-                ])),
-            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} has experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} has not experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
-                ])),
-            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} has ${req.body?.PHQValue?.recentlyWeightPounds} pounds. `,
-                ])
-              : []),
-            ...(req.body?.PHQValue?.poorAppetite !== "not at all"
-              ? createTextLowerRuns([
-                  `in the last ${req.body?.PHQValue?.weightGainLostLong}. `,
-                ])
-              : []),
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} feels tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} does not feel tired or having little energy ${req.body?.PHQValue?.feelingEnergy} during the week. `,
+                  ])),
+              ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} has experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not experienced poor appetite or overeating ${req.body?.PHQValue?.poorAppetite} during the week. `,
+                  ])),
+              ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} has ${req.body?.PHQValue?.recentlyWeightPounds} pounds. `,
+                  ])
+                : []),
+              ...(req.body?.PHQValue?.poorAppetite !== "not at all"
+                ? createTextLowerRuns([
+                    `in the last ${req.body?.PHQValue?.weightGainLostLong}. `,
+                  ])
+                : []),
 
-            ...(req.body?.PHQValue?.yourselfFeelingBad !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} reported feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
-                ])),
-            ...(req.body?.PHQValue?.troubleConCentratingThing !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} reported trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
-                ])),
-            ...(req.body?.PHQValue?.fidgetyMoving !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} reported moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
-                ])),
-            ...(req.body?.PHQValue?.betterOffDeadYourself !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} reported thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
-                ])),
+              ...(req.body?.PHQValue?.yourselfFeelingBad !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied feeling bad about ${manPronoun} or that ${pronounPrefer} is a failure or has let ${manPronoun} or ${pronoun} family down ${req.body?.PHQValue?.yourselfFeelingBad}. `,
+                  ])),
+              ...(req.body?.PHQValue?.troubleConCentratingThing !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied trouble concentrating ${req.body?.PHQValue?.troubleConCentratingThing} in the last two weeks. `,
+                  ])),
+              ...(req.body?.PHQValue?.fidgetyMoving !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied moving or speaking so slowly that other people could have noticed, or being so fidgety or restless that ${pronounPrefer} has to move a lot more than usual ${req.body?.PHQValue?.fidgetyMoving}. `,
+                  ])),
+              ...(req.body?.PHQValue?.betterOffDeadYourself !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied thinking ${pronounPrefer} would be better off dead or had thoughts of hurting ${manPronoun} ${req.body?.PHQValue?.betterOffDeadYourself}. `,
+                  ])),
             ],
           }),
 
@@ -4499,7 +4574,9 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...createTextRuns([
-                `${surname}${req.body?.demographicInformation?.lastName}'s PHQ-9 score was in the ${ScoreCalculate(
+                `${surname}${
+                  req.body?.demographicInformation?.lastName
+                }'s PHQ-9 score was in the ${ScoreCalculate(
                   req.body?.PHQValue?.phqScore
                 )} range: ${req.body.PHQValue?.phqScore}. `,
               ]),
@@ -4575,7 +4652,7 @@ router.post("/", async (req, res) => {
                     : []
                   : []
                 : [],
-                
+
               ...(req.body?.PHQValue?.preparedAnythingEndYourlife === "Yes"
                 ? createTextRuns([
                     `${pronounPrefer} answered yes (or no) when asked if ${pronounPrefer} has ever done anything, started to do anything, or prepared to do anything to end ${pronoun} life `,
@@ -4598,7 +4675,7 @@ router.post("/", async (req, res) => {
               ...createTextRuns([
                 `${pronounPrefer} rated his current depressive symptoms as a ${req.body?.PHQValue?.currentDepressiveSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no depression and 10 equaling the most severe depressive symptoms imaginable. `,
               ]),
-            ]
+            ],
           }),
 
           storyParagraph(""),
@@ -4667,10 +4744,12 @@ router.post("/", async (req, res) => {
 
           storyParagraph(""),
 
-          new  Paragraph({
+          new Paragraph({
             children: [
               ...createTextRuns([
-                `${surname}${req.body?.demographicInformation?.lastName}'s GAD-7 score was in the ${ScoreCalculate(
+                `${surname}${
+                  req.body?.demographicInformation?.lastName
+                }'s GAD-7 score was in the ${ScoreCalculate(
                   req.body?.GADValue?.gadScore
                 )} range: ${req.body.GADValue?.gadScore}. `,
               ]),
@@ -4686,7 +4765,9 @@ router.post("/", async (req, res) => {
                   ])),
               ...(req.body?.GADValue?.panicAttacks === "Yes"
                 ? createTextLowerRuns([
-                    `${divideArray(req.body?.GADValue?.panicPhysicalSymptoms)} `,
+                    `${divideArray(
+                      req.body?.GADValue?.panicPhysicalSymptoms
+                    )} `,
                   ])
                 : []),
               ...(req.body?.GADValue?.panicAttacks === "Yes"
@@ -4703,27 +4784,38 @@ router.post("/", async (req, res) => {
                       `${pronoun} panic attacks are not spontaneous and are unrelated to any events. `,
                     ])
                 : []),
-            ]
+              ...(req.body?.GADValue?.panicAttacks === "Yes" &&
+              req.body?.GADValue?.panicOccur !== ""
+                ? createTextRuns([
+                    `${pronoun} panic attacks occur every ${req.body?.GADValue?.panicOccur}.`,
+                  ])
+                : []),
+              ...(req.body?.GADValue?.panicAttacks === "Yes" &&
+              req.body?.GADValue?.panicAttacksList !== ""
+                ? createTextRuns([
+                    `${pronounPrefer} reported that ${req.body?.GADValue?.panicAttacksList} triggers ${pronoun} panic attacks.`,
+                  ])
+                : []),
+            ],
           }),
 
           req.body?.GADValue?.pastTraumaticEvents === "Yes"
             ? storyParagraph("")
             : undefined,
-         
 
           storyParagraph(""),
 
           new Paragraph({
             children: [
               ...(req.body?.GADValue?.pastTraumaticEvents === "Yes"
-              ? createTextRuns([
-                  `${surname}${
-                    req.body?.demographicInformation?.lastName
-                  } reported experiencing traumatic events consisting of ${divideArray(
-                    req.body?.GADValue?.traumaticEventExperience
-                  )}`
-                ])
-              : []),
+                ? createTextRuns([
+                    `${surname}${
+                      req.body?.demographicInformation?.lastName
+                    } reported experiencing traumatic events consisting of ${divideArray(
+                      req.body?.GADValue?.traumaticEventExperience
+                    )}`,
+                  ])
+                : []),
               ...(req.body?.GADValue?.pastTraumaticEvents === "Yes"
                 ? createTextRuns([
                     `${pronounPrefer} experienced past traumatic event(s) consisting of ${req.body?.GADValue?.describeTraumaticExperience}. `,
@@ -4785,148 +4877,148 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.avoidingMemories !== "not at all"
-              ? createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} endorsed avoiding memories, thoughts, or feelings related to the stressful experience as ${req.body?.PCLValue?.avoidingMemories}. `,
-                ])
-              : createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName}} denied avoiding memories, thoughts, or feelings related to the stressful experience as. `,
-                ])),
-            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations) ${req.body?.PCLValue?.avoidingExternalReminders}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations). `,
-                ])),
-            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} reported avoiding the following: ${req.body?.PCLValue?.describeSituations}. `,
-                ])
-              : []),
-            ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
-              ? createTextRuns([
-                  `The activities ${pronounPrefer} avoids in relation to the trauma include ${req.body?.PCLValue?.avoidActivities}`,
-                ])
-              : []),
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} endorsed avoiding memories, thoughts, or feelings related to the stressful experience as ${req.body?.PCLValue?.avoidingMemories}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName}} denied avoiding memories, thoughts, or feelings related to the stressful experience as. `,
+                  ])),
+              ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations) ${req.body?.PCLValue?.avoidingExternalReminders}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations). `,
+                  ])),
+              ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} reported avoiding the following: ${req.body?.PCLValue?.describeSituations}. `,
+                  ])
+                : []),
+              ...(req.body?.PCLValue?.avoidingExternalReminders !== "not at all"
+                ? createTextRuns([
+                    `The activities ${pronounPrefer} avoids in relation to the trauma include ${req.body?.PCLValue?.avoidActivities}`,
+                  ])
+                : []),
 
-            ...(req.body?.PCLValue?.troubleStressfulExperience !==
-            "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} described trouble remembering important parts of the stressful experience ${req.body?.PCLValue?.troubleStressfulExperience}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} described trouble remembering important parts of the stressful experience. `,
-                ])),
-            ...(req.body?.PCLValue?.strongNegativeBeliefs !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me), as ${req.body?.PCLValue?.strongNegativeBeliefs}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me). `,
-                ])),
-            ...(req.body?.PCLValue?.stressfulExperienceBlaming !==
-            "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed blaming ${manPronoun} or someone else for the stressful experience or what happened after it ${req.body?.PCLValue?.stressfulExperienceBlaming}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied blaming ${manPronoun} or someone else for the stressful experience or what happened after it. `,
-                ])),
-            ]
+              ...(req.body?.PCLValue?.troubleStressfulExperience !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} described trouble remembering important parts of the stressful experience ${req.body?.PCLValue?.troubleStressfulExperience}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} described trouble remembering important parts of the stressful experience. `,
+                  ])),
+              ...(req.body?.PCLValue?.strongNegativeBeliefs !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me), as ${req.body?.PCLValue?.strongNegativeBeliefs}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} described having strong negative beliefs about ${manPronoun}, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me). `,
+                  ])),
+              ...(req.body?.PCLValue?.stressfulExperienceBlaming !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed blaming ${manPronoun} or someone else for the stressful experience or what happened after it ${req.body?.PCLValue?.stressfulExperienceBlaming}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied blaming ${manPronoun} or someone else for the stressful experience or what happened after it. `,
+                  ])),
+            ],
           }),
 
           storyParagraph(""),
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.strongNegativefeelings !== "not at all"
-              ? createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} endorsed having strong negative feelings such as fear, horror, anger, guilt, or shame as ${req.body?.PCLValue?.strongNegativefeelings}. `,
-                ])
-              : createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} denied having strong negative feelings such as fear, horror, anger, guilt, or shame as. `,
-                ])),
-            ...(req.body?.PCLValue?.lossInterestActivity !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed loss of interest in activities that ${pronounPrefer} used to enjoy as ${req.body?.PCLValue?.lossInterestActivity}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied loss of interest in activities that ${pronounPrefer} used to enjoy. `,
-                ])),
-            ...(req.body?.PCLValue?.feelingDistantPeople !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed experiencing feeling distant or cut off from other people ${req.body?.PCLValue?.feelingDistantPeople}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied experiencing feeling distant or cut off from other people. `,
-                ])),
-            ...(req.body?.PCLValue?.troubleExperiencePositiveFeeling !==
-            "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}) ${req.body?.PCLValue?.troubleExperiencePositiveFeeling}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}). `,
-                ])),
-            ...(req.body?.PCLValue?.irritableBehavior !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed irritable behavior, angry outbursts, or acting aggressively as ${req.body?.PCLValue?.irritableBehavior}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied irritable behavior, angry outbursts, or acting aggressively. `,
-                ])),
-            ...(req.body?.PCLValue?.manyRisksThing !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed taking too many risks or doing things that could cause you harm ${req.body?.PCLValue?.manyRisksThing}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied taking too many risks or doing things that could cause you harm. `,
-                ])),
-            ...(req.body?.PCLValue?.beingWatchful !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed being “superalert” or watchful or on guard ${req.body?.PCLValue?.beingWatchful}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied being “superalert” or watchful or on guard. `,
-                ])),
-            ...(req.body?.PCLValue?.easilyStartled !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed feeling jumpy or being easily startled ${req.body?.PCLValue?.easilyStartled}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied feeling jumpy or being easily startled. `,
-                ])),
-            ...(req.body?.PCLValue?.difficultyConcentrating !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed having difficulty concentrating ${req.body?.PCLValue?.difficultyConcentrating}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied having difficulty concentrating. `,
-                ])),
-            ...(req.body?.PCLValue?.troubleFallingAsleep !== "not at all"
-              ? createTextRuns([
-                  `${pronounPrefer} endorsed trouble falling or staying asleep ${req.body?.PCLValue?.troubleFallingAsleep}. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied trouble falling or staying asleep. `,
-                ])),
-            ]
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} endorsed having strong negative feelings such as fear, horror, anger, guilt, or shame as ${req.body?.PCLValue?.strongNegativefeelings}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied having strong negative feelings such as fear, horror, anger, guilt, or shame as. `,
+                  ])),
+              ...(req.body?.PCLValue?.lossInterestActivity !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed loss of interest in activities that ${pronounPrefer} used to enjoy as ${req.body?.PCLValue?.lossInterestActivity}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied loss of interest in activities that ${pronounPrefer} used to enjoy. `,
+                  ])),
+              ...(req.body?.PCLValue?.feelingDistantPeople !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed experiencing feeling distant or cut off from other people ${req.body?.PCLValue?.feelingDistantPeople}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied experiencing feeling distant or cut off from other people. `,
+                  ])),
+              ...(req.body?.PCLValue?.troubleExperiencePositiveFeeling !==
+              "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}) ${req.body?.PCLValue?.troubleExperiencePositiveFeeling}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to ${manPronoun}). `,
+                  ])),
+              ...(req.body?.PCLValue?.irritableBehavior !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed irritable behavior, angry outbursts, or acting aggressively as ${req.body?.PCLValue?.irritableBehavior}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied irritable behavior, angry outbursts, or acting aggressively. `,
+                  ])),
+              ...(req.body?.PCLValue?.manyRisksThing !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed taking too many risks or doing things that could cause you harm ${req.body?.PCLValue?.manyRisksThing}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied taking too many risks or doing things that could cause you harm. `,
+                  ])),
+              ...(req.body?.PCLValue?.beingWatchful !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed being “superalert” or watchful or on guard ${req.body?.PCLValue?.beingWatchful}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied being “superalert” or watchful or on guard. `,
+                  ])),
+              ...(req.body?.PCLValue?.easilyStartled !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed feeling jumpy or being easily startled ${req.body?.PCLValue?.easilyStartled}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied feeling jumpy or being easily startled. `,
+                  ])),
+              ...(req.body?.PCLValue?.difficultyConcentrating !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed having difficulty concentrating ${req.body?.PCLValue?.difficultyConcentrating}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied having difficulty concentrating. `,
+                  ])),
+              ...(req.body?.PCLValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} endorsed trouble falling or staying asleep ${req.body?.PCLValue?.troubleFallingAsleep}. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied trouble falling or staying asleep. `,
+                  ])),
+            ],
           }),
 
           storyParagraph(""),
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.PCLScore >= 31 &&
-                req.body?.PCLValue?.PCLScore <= 33
-                  ? createTextRuns([
-                      `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
-                    ])
-                  : createTextRuns([
-                      `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is not indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
-                    ])),
-                ...createTextRuns([
-                  `${pronounPrefer} rated ${pronoun} current post-trauma symptoms as an ${req.body?.PCLValue?.currentRelatedSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no post-trauma symptoms and 10 equaling the most severe post-traumatic symptoms imaginable. `,
-                ]),
-            ]
+              req.body?.PCLValue?.PCLScore <= 33
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is not indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                  ])),
+              ...createTextRuns([
+                `${pronounPrefer} rated ${pronoun} current post-trauma symptoms as an ${req.body?.PCLValue?.currentRelatedSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no post-trauma symptoms and 10 equaling the most severe post-traumatic symptoms imaginable. `,
+              ]),
+            ],
           }),
 
           storyParagraph(""),
@@ -4939,6 +5031,12 @@ router.post("/", async (req, res) => {
               ...createTextRuns([
                 `${surname}${req.body?.demographicInformation?.lastName} currently takes the following psychiatric medications: ${req.body?.currentTreatmentValue?.currentlyPsychiatricMedications}. `,
               ]),
+              ...(req.body?.currentTreatmentValue
+                ?.currentlyPsychiatricMedications === "Yes"
+                ? createTextRuns([
+                    `The psychiatric medications he takes consist of the following: ${req.body?.currentTreatmentValue?.medicationList}. `,
+                  ])
+                : []),
               ...(req.body?.currentTreatmentValue
                 ?.currentlyPsychiatricMedications === "Yes"
                 ? createTextRuns([
@@ -4956,7 +5054,7 @@ router.post("/", async (req, res) => {
               ...(req.body?.currentTreatmentValue
                 ?.currentlyPsychiatricMedications === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} stated that these medications have produced ${cardFieldType(
+                    `${pronounPrefer} stated that these medications have produced ${formatMedication(
                       req.body?.currentTreatmentValue
                         ?.medicationsEffectYourCondition
                     )}. `,
@@ -5104,13 +5202,7 @@ router.post("/", async (req, res) => {
                     ])
                   : []
                 : []),
-              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-                ? req.body?.pastHistoryValue?.highEnergyTime === "Yes"
-                  ? createTextRuns([
-                      `During this decreased sleep episode, [${pronounPrefer} remained clean and sober throughout that time was using substances] during that time. `,
-                    ])
-                  : []
-                : []),
+
               ...(req.body?.pastHistoryValue?.highEnergyTime === "Yes"
                 ? createTextRuns([
                     `During this high energy time ${pronounPrefer} did engage in high-risk behaviors. `,
@@ -5118,6 +5210,13 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `During this high energy time ${pronounPrefer} did not engage in any high-risk behaviors. `,
                   ])),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? req.body?.pastHistoryValue?.alcoholSubstances === "Yes"
+                  ? createTextRuns([
+                      `During this decreased sleep episode, [${pronounPrefer} remained clean and sober ${pronounPrefer} was using substances]. `,
+                    ])
+                  : []
+                : []),
             ],
           }),
 
@@ -5188,7 +5287,6 @@ router.post("/", async (req, res) => {
                   req.body?.pastHistoryValue?.diagnosedMentalHealth
                 )}. `,
               ]),
-             
             ],
           }),
 
@@ -5268,7 +5366,7 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `${pronounPrefer} has not previously received psychotherapy. `,
                   ])),
-            ]
+            ],
           }),
 
           req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
@@ -5364,8 +5462,6 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `${pronounPrefer} had never experienced suicidal ideation. `,
                   ])),
-
-             
             ],
           }),
 
@@ -5374,96 +5470,96 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-              ? createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} had made a suicide attempt. `,
-                ])
-              : createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} had never made a suicide attempt. `,
-                ])),
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} had made a suicide attempt. `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} had never made a suicide attempt. `,
+                  ])),
 
-            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} has attempted suicide ${req.body?.pastHistoryValue?.attemptedSuicideTimes} times. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} has attempted suicide by ${req.body?.pastHistoryValue?.suicideAllMethods}. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
-              ? createTextRuns([
-                  `${pronoun} most recent attempt was ${req.body?.pastHistoryValue?.attemptedSuicideDate}. `,
-                ])
-              : []),
+              ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has attempted suicide ${req.body?.pastHistoryValue?.attemptedSuicideTimes} times. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has attempted suicide by ${req.body?.pastHistoryValue?.suicideAllMethods}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.suicideAttempt === "Yes"
+                ? createTextRuns([
+                    `${pronoun} most recent attempt was ${req.body?.pastHistoryValue?.attemptedSuicideDate}. `,
+                  ])
+                : []),
 
-            ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} has experienced additional psychiatric symptoms besides those described above. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} has denied experienced additional psychiatric symptoms besides those described above. `,
-                ])),
-            ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} reported experiencing additional psychiatric symptoms consisting of ${req.body?.pastHistoryValue?.describeOtherPsychiatricSymptoms}. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
-            "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} reported denied receiving additional psychotherapy or psychiatric medication treatment. `,
-                ])),
+              ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has experienced additional psychiatric symptoms besides those described above. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has denied experienced additional psychiatric symptoms besides those described above. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.otherPsychiatricSymptoms === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported experiencing additional psychiatric symptoms consisting of ${req.body?.pastHistoryValue?.describeOtherPsychiatricSymptoms}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} reported denied receiving additional psychotherapy or psychiatric medication treatment. `,
+                  ])),
 
-            ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
-            "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body?.pastHistoryValue?.describeOtherPsychotherapyTreatment}. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue
-              ?.evaluatedOtherwisePsychiatrists === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} denied being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
-                ])),
-            ...(req.body?.pastHistoryValue
-              ?.evaluatedOtherwisePsychiatrists === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body?.pastHistoryValue?.evaluationReason}. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue
-              ?.evaluatedOtherwisePsychiatrists === "Yes"
-              ? createTextRuns([
-                  `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed}. `,
-                ])
-              : []),
-            ...(req.body?.pastHistoryValue
-              ?.evaluatedOtherwisePsychiatrists === "Yes"
-              ? createTextLowerRuns([
-                  `and occurred ${req.body?.pastHistoryValue?.evaluationOccur}. `,
-                ])
-              : []),
+              ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment consisting of ${req.body?.pastHistoryValue?.describeOtherPsychotherapyTreatment}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.evaluatedOtherwisePsychiatrists === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} denied being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
+                  ])),
+              ...(req.body?.pastHistoryValue
+                ?.evaluatedOtherwisePsychiatrists === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for ${req.body?.pastHistoryValue?.evaluationReason}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.evaluatedOtherwisePsychiatrists === "Yes"
+                ? createTextRuns([
+                    `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed}. `,
+                  ])
+                : []),
+              ...(req.body?.pastHistoryValue
+                ?.evaluatedOtherwisePsychiatrists === "Yes"
+                ? createTextLowerRuns([
+                    `and occurred ${req.body?.pastHistoryValue?.evaluationOccur}. `,
+                  ])
+                : []),
 
-            ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
-              ? createTextRuns([
-                  `${pronounPrefer} has been involved in physical altercations or violence `,
-                ])
-              : createTextRuns([
-                  `${pronounPrefer} has not been involved in physical altercations or violence. `,
-                ])),
-            ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
-              ? createTextRuns([
-                  `${req.body?.pastHistoryValue?.physicialAltercationsMany} times. `,
-                ])
-              : []),
-            ]
+              ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
+                ? createTextRuns([
+                    `${pronounPrefer} has been involved in physical altercations or violence `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} has not been involved in physical altercations or violence. `,
+                  ])),
+              ...(req.body?.pastHistoryValue?.physicalAltercations === "Yes"
+                ? createTextRuns([
+                    `${req.body?.pastHistoryValue?.physicialAltercationsMany} times. `,
+                  ])
+                : []),
+            ],
           }),
 
           storyParagraph(""),
@@ -5517,14 +5613,18 @@ router.post("/", async (req, res) => {
                   ])
                 : []),
 
-              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 && req.body?.substanceUseValue?.toleranceFollowingSubstances.length > 0
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 &&
+              req.body?.substanceUseValue?.toleranceFollowingSubstances.length >
+                0
                 ? createTextRuns([
                     `${pronounPrefer} reported ${pronounPrefer} ${formatToleranceFollowingSubstances(
                       req.body?.substanceUseValue?.toleranceFollowingSubstances
                     )}. `,
                   ])
                 : []),
-              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 && req.body?.substanceUseValue?.withdrawalFollowingSubstances.length > 0
+              ...(req.body?.substanceUseValue?.followingSubstances.length > 0 &&
+              req.body?.substanceUseValue?.withdrawalFollowingSubstances
+                .length > 0
                 ? createTextRuns([
                     `${pronounPrefer} reported ${pronounPrefer} ${formatWithdrawalFollowingSubstances(
                       req.body?.substanceUseValue?.withdrawalFollowingSubstances
@@ -5566,19 +5666,22 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
-                "Yes"
+              "Yes"
+                ? req.body?.substanceUseValue?.completeTreatmentProgram ===
+                  "Yes"
                   ? createTextRuns([
                       `${surname}${req.body?.demographicInformation?.lastName} completed this treatment program that lasted `,
                     ])
                   : createTextRuns([
                       `${surname}${req.body?.demographicInformation?.lastName} did not complete this treatment program that lasted. `,
-                    ])),
-                ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
-                "Yes"
-                  ? createTextLowerRuns([
-                      `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
                     ])
-                  : []),
+                : []),
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? createTextLowerRuns([
+                    `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
+                  ])
+                : []),
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
               "Yes"
                 ? createTextRuns([
@@ -5600,14 +5703,13 @@ router.post("/", async (req, res) => {
                   ])
                 : []),
 
-                ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
-                  "Yes"
-                    ? createTextRuns([
-                        `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was ${req.body?.substanceUseValue?.cleanSoberLongest}. `,
-                      ])
-                    : []),
+              ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
+              "Yes"
+                ? createTextRuns([
+                    `The longest that ${pronounPrefer} has remained completely clean and sober from all alcohol and substance use was ${req.body?.substanceUseValue?.cleanSoberLongest}. `,
+                  ])
+                : []),
 
-                    
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
               "Yes"
                 ? req.body?.substanceUseValue
@@ -5619,8 +5721,6 @@ router.post("/", async (req, res) => {
                       `While ${pronounPrefer} was clean and sober, ${pronounPrefer} did not continue to experience his psychiatric symptoms described above. `,
                     ])
                 : []),
-
-
             ],
           }),
 
@@ -5685,7 +5785,6 @@ router.post("/", async (req, res) => {
                     `consisting of ${req.body?.medicalHistoryValue?.surgeriesDateList}. `,
                   ])
                 : []),
-              
             ],
           }),
 
@@ -5725,7 +5824,7 @@ router.post("/", async (req, res) => {
 
               ...(req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} suffers from allergies or intolerances to medication or food. `,
+                    `${pronounPrefer} suffers from allergies or intolerances to medication or food `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} does not suffer from allergies or intolerances to medication or food. `,
@@ -5770,8 +5869,7 @@ router.post("/", async (req, res) => {
                     `with treatment consisting of ${req.body?.familyHistoryValue?.psychiatricConditionsTreatment}. `,
                   ])
                 : []),
-              ...(req.body?.familyHistoryValue
-                ?.familyAttemptedSuicide === "Yes"
+              ...(req.body?.familyHistoryValue?.familyAttemptedSuicide === "Yes"
                 ? createTextRuns([
                     `${pronoun} family members have attempted or committed suicide. `,
                   ])
@@ -5798,7 +5896,7 @@ router.post("/", async (req, res) => {
               ...(req.body?.relationshipHistoryValue
                 ?.currentlyIntimateRelationship === "Yes" &&
               req.body?.relationshipHistoryValue?.currentlyMarried === "Yes"
-                ? createTextRuns([`${pronoun} current marriage. `])
+                ? createTextRuns([`${pronoun} current marriage `])
                 : createTextRuns([
                     `${pronoun} current significant intimate relationship. `,
                   ])),
@@ -5962,40 +6060,36 @@ router.post("/", async (req, res) => {
                     `${pronounPrefer} has not difficulty performing ${pronoun} job duties. `,
                   ])),
 
-              ...createTextRuns([
-                `${pronoun} Employer History: ${employerList(
-                  req.body?.employmentHistoryValue?.employerList
-                )}. `,
-              ]),
-
-              
             ],
           }),
+
+          storyParagraph(`${pronoun} Employer History:`),
+          table(req.body?.employmentHistoryValue?.employerList),
 
           storyParagraph(""),
 
           new Paragraph({
             children: [
               ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
-                "Yes"
-                  ? createTextRuns([
-                      `${surname}${req.body?.demographicInformation?.lastName} reported a history of workplace injury `,
-                    ])
-                  : createTextRuns([
-                      `${surname}${req.body?.demographicInformation?.lastName} denied any history of workplace injury. `,
-                    ])),
-                ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
-                "Yes"
-                  ? createTextLowerRuns([
-                      `in ${req.body?.employmentHistoryValue?.injuriesOccurTime}. `,
-                    ])
-                  : []),
-                ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
-                "Yes"
-                  ? createTextRuns([
-                      `${pronoun} injury consisted of the following:${req.body?.employmentHistoryValue?.injuryNature}. `,
-                    ])
-                  : []),
+              "Yes"
+                ? createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} reported a history of workplace injury `,
+                  ])
+                : createTextRuns([
+                    `${surname}${req.body?.demographicInformation?.lastName} denied any history of workplace injury. `,
+                  ])),
+              ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
+              "Yes"
+                ? createTextLowerRuns([
+                    `in ${req.body?.employmentHistoryValue?.injuriesOccurTime}. `,
+                  ])
+                : []),
+              ...(req.body?.employmentHistoryValue?.pastWorkplaceInjuries ===
+              "Yes"
+                ? createTextRuns([
+                    `${pronoun} injury consisted of the following:${req.body?.employmentHistoryValue?.injuryNature}. `,
+                  ])
+                : []),
               ...(req.body?.employmentHistoryValue?.workerCompensationClaim ===
               "Yes"
                 ? createTextRuns([
@@ -6088,15 +6182,15 @@ router.post("/", async (req, res) => {
 
               ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
                 ? req.body?.educationHistoryValue?.completeYourDegree === "Yes"
-                  ? createTextRuns([`${pronounPrefer} completed a degree at. `])
+                  ? createTextRuns([`${pronounPrefer} completed a degree. `])
                   : createTextRuns([
-                      `${pronounPrefer} did not complete a degree at. `,
+                      `${pronounPrefer} did not complete a degree. `,
                     ])
                 : []),
 
               ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} attended ${req.body?.educationHistoryValue?.collegeName}. `,
+                    `${pronounPrefer} attended ${req.body?.educationHistoryValue?.collegeName} `,
                   ])
                 : []),
               ...(req.body?.educationHistoryValue?.goToCollege === "Yes"
@@ -6249,8 +6343,6 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `${pronounPrefer} is not experiencing other stressors. `,
                   ])),
-
-             
             ],
           }),
 
@@ -6259,39 +6351,39 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-              ? createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} reported a history of arrests. `,
-                ])
-              : createTextRuns([
-                  `${surname}${req.body?.demographicInformation?.lastName} denied any history of criminal behavior or arrests. `,
-                ])),
-            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-              ? createTextLowerRuns([
-                  `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate} `,
-                ])
-              : []),
-
-            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-              ? createTextLowerRuns([
-                  `for the charges of ${req.body?.criminalHistoryValue?.charges}. `,
-                ])
-              : []),
-            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-              ? createTextRuns([
-                  `${pronoun} past sentences lasted ${req.body?.criminalHistoryValue?.everIncarcerated}. `,
-                ])
-              : []),
-
-            ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-              ? req.body?.criminalHistoryValue?.currentlyParole === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} is currently on parole or probation. `,
+                    `${surname}${req.body?.demographicInformation?.lastName} reported a history of arrests. `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} is not currently on parole or probation. `,
+                    `${surname}${req.body?.demographicInformation?.lastName} denied any history of criminal behavior or arrests. `,
+                  ])),
+              ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+                ? createTextLowerRuns([
+                    `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate} `,
                   ])
-              : []),
-            ]
+                : []),
+
+              ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+                ? createTextLowerRuns([
+                    `for the charges of ${req.body?.criminalHistoryValue?.charges}. `,
+                  ])
+                : []),
+              ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+                ? createTextRuns([
+                    `${pronoun} past sentences lasted ${req.body?.criminalHistoryValue?.everIncarcerated}. `,
+                  ])
+                : []),
+
+              ...(req.body?.criminalHistoryValue?.arrested === "Yes"
+                ? req.body?.criminalHistoryValue?.currentlyParole === "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} is currently on parole or probation. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} is not currently on parole or probation. `,
+                    ])
+                : []),
+            ],
           }),
 
           // req.body?.socialHistoryValue?.describeCurrentLivingSituation
@@ -6460,7 +6552,7 @@ router.post("/", async (req, res) => {
             ? storyParagraph(
                 `${surname}${
                   req.body?.demographicInformation?.lastName
-                } denied any history of difficulty in performing simple and repetitive tasks, ${formatTroubleFollowing(
+                } reported impairment in ${formatTroubleFollowing(
                   req.body?.currentDailyActivitiesValue?.troubleFollowing
                 )}. `
               )
@@ -6472,14 +6564,14 @@ router.post("/", async (req, res) => {
             ? storyParagraph(
                 `${surname}${
                   req.body?.demographicInformation?.lastName
-                } reported impairment in ${formatTroubleFollowingNo(
+                } denied any history of difficulty in performing simple and repetitive tasks, ${formatTroubleFollowingNo(
                   req.body?.currentDailyActivitiesValue?.troubleFollowing
                 )}. `
               )
             : undefined,
 
           storyParagraph(""),
-         
+
           new Paragraph({
             children: [
               ...(formatDailyLivingFollowing(
@@ -6490,48 +6582,51 @@ router.post("/", async (req, res) => {
                       req.body?.demographicInformation?.lastName
                     } reported that ${pronounPrefer} is able to perform all of the following activities independently and without assistance: ${
                       formatDailyLivingFollowing(
-                        req.body?.currentDailyActivitiesValue?.dailyLivingFollowing
+                        req.body?.currentDailyActivitiesValue
+                          ?.dailyLivingFollowing
                       ).resultIndepently
-                    }`
+                    }`,
                   ])
                 : []),
               ...(formatDailyLivingFollowing(
                 req.body?.currentDailyActivitiesValue.dailyLivingFollowing
               ).resultNeedHelp
-                ? createTextRuns(
+                ? createTextRuns([
                     `${pronounPrefer} reported that ${pronounPrefer} needs help when ${
                       formatDailyLivingFollowing(
-                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                        req.body?.currentDailyActivitiesValue
+                          .dailyLivingFollowing
                       ).resultNeedHelp
-                    } `
-                  )
+                    } `,
+                  ])
                 : []),
-    
+
               ...(formatDailyLivingFollowing(
                 req.body?.currentDailyActivitiesValue.dailyLivingFollowing
               ).resultDon
                 ? createTextRuns([
                     `${pronounPrefer} does not do ${
                       formatDailyLivingFollowing(
-                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                        req.body?.currentDailyActivitiesValue
+                          .dailyLivingFollowing
                       ).resultDon
-                    } `
+                    } `,
                   ])
                 : []),
-    
+
               ...(formatDailyLivingFollowing(
                 req.body?.currentDailyActivitiesValue.dailyLivingFollowing
               ).resultCan
                 ? createTextRuns([
                     `${pronounPrefer} can't perform ${
                       formatDailyLivingFollowing(
-                        req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+                        req.body?.currentDailyActivitiesValue
+                          .dailyLivingFollowing
                       ).resultCan
-                    } `
+                    } `,
                   ])
                 : []),
-    
-            ]
+            ],
           }),
 
           storyParagraph(""),
@@ -6630,7 +6725,9 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.developmentalValue?.haveSiblings === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} described ${pronoun} relationship with ${pronoun} siblings as ${divideArray(req.body?.developmentalValue?.relationshipSiblings)}. `,
+                    `${pronounPrefer} described ${pronoun} relationship with ${pronoun} siblings as ${divideArray(
+                      req.body?.developmentalValue?.relationshipSiblings
+                    )}. `,
                   ])
                 : []),
               ...createTextRuns([
@@ -6641,7 +6738,9 @@ router.post("/", async (req, res) => {
 
               ...(req.body?.developmentalValue?.parentsMarried === "Yes"
                 ? createTextRuns([`${pronoun} parents were married. `])
-                : createTextRuns([`${pronoun} parents were ${req.body.developmentalValue.parentsDivorce}. `])),
+                : createTextRuns([
+                    `${pronoun} parents were ${req.body.developmentalValue.parentsDivorce}. `,
+                  ])),
               ...(req.body?.developmentalValue?.parentsMarried === "Yes"
                 ? req.body?.developmentalValue?.parentsRemainMarried === "Yes"
                   ? createTextRuns([`${pronoun} parents remained married. `])
@@ -6666,9 +6765,9 @@ router.post("/", async (req, res) => {
                   ])
                 : []),
               ...(req.body?.developmentalValue?.motherWork === "Yes"
-                ? createTextRuns([
-                    `${pronoun} mother's current job is ${req.body?.developmentalValue?.motherStillWork}. `,
-                  ])
+                ? req.body?.developmentalValue?.motherStillWork === "Yes"
+                  ? createTextRuns([`${pronoun} mother still works. `])
+                  : `${pronoun} mother doesn't work.`
                 : []),
 
               ...(req.body?.developmentalValue?.motherCurrentLiving === "Yes"
@@ -6693,9 +6792,9 @@ router.post("/", async (req, res) => {
                   ])
                 : []),
               ...(req.body?.developmentalValue?.fatherWork === "Yes"
-                ? createTextRuns([
-                    `${pronoun} father's current job is ${req.body?.developmentalValue?.fatherStillWork}. `,
-                  ])
+                ? req.body?.developmentalValue?.fatherStillWork === "Yes"
+                  ? createTextRuns([`${pronoun} father still works. `])
+                  : `${pronoun} father doesn't work.`
                 : []),
               ...(req.body?.developmentalValue?.fatherCurrentLiving === "Yes"
                 ? createTextRuns([`${pronoun} father is currently living. `])
