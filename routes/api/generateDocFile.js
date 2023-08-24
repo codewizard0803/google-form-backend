@@ -1030,14 +1030,12 @@ router.post("/", async (req, res) => {
     };
   };
 
-  const formatEmployerList = (value, lastName) => {
-    console.log(value);
-
+  const formatEmployerList = (value, surname, lastName) => {
     let outPut = value.map((item, index) => {
       if (item.reasonForLeaving) {
-        return `Mr. ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment} and left this job due to ${item.reasonForLeaving}`;
+        return `${surname} ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment} and left this job due to ${item.reasonForLeaving}.`;
       } else {
-        return `Mr. ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment}`;
+        return `${surname} ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment}.`;
       }
     });
 
@@ -1045,26 +1043,8 @@ router.post("/", async (req, res) => {
   };
 
   const storyParagraphs = (value) => {
-    console.log(value);
     const sentences = value.split(", ");
-    const paragraphs = sentences.map((sentence) => {
-      const capitalizedValue =
-        sentence.charAt(0).toUpperCase() + sentence.slice(1);
-
-      return new Paragraph({
-        children: [
-          new TextRun({
-            text: capitalizedValue,
-            font: "Times New Roman",
-            size: 24,
-          }),
-        ],
-      });
-    });
-
-    console.log(sentences);
-
-    return paragraphs;
+    return sentences;
   };
 
   const doc = new Document({
@@ -6226,11 +6206,29 @@ router.post("/", async (req, res) => {
           }),
 
           storyParagraph(`${pronoun} employment history is as follows:`),
-          storyParagraph(`
-            ${formatEmployerList(
+          // new Paragraph({
+          //   children: [
+          //     ...storyParagraphs(
+          //       formatEmployerList(
+          //         req.body?.employmentHistoryValue?.employerList,
+          //         surname,
+          //         req.body.demographicInformation.lastName
+          //       )
+          //     ),
+          //   ],
+          // }),
+          ...storyParagraphs(
+            formatEmployerList(
               req.body?.employmentHistoryValue?.employerList,
+              surname,
               req.body.demographicInformation.lastName
-            )}`),
+            )
+          )?.map(
+            (item) =>
+              new Paragraph({
+                children: [storyLine(item)],
+              })
+          ),
 
           // table(req.body?.employmentHistoryValue?.employerList),
 
