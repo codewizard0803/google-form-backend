@@ -110,7 +110,7 @@ router.post("/", async (req, res) => {
         scorelevel = "moderate";
         break;
       case value >= 15 && value <= 19:
-        scorelevel = "mod-severe";
+        scorelevel = "moderate-severe";
         break;
       case value >= 20:
         scorelevel = "severe";
@@ -189,19 +189,58 @@ router.post("/", async (req, res) => {
   };
 
   const formatCurrentlySubstance = (value) => {
-    let outPut = value.map((item, index) => {
-      if (index === value.length - 1) {
-        return `${item.condition} ${item.effect}`;
-      } else {
-        return `${item.condition} ${item.effect} and `;
-      }
-    });
+    if (value.length === 0) {
+      return "";
+    }
+    if (value.length === 1) {
+      return value[0].condition + " " + value[0].effect;
+    }
+    if (value.length === 2) {
+      return (
+        value[0].condition +
+        " " +
+        value[0].effect +
+        " and " +
+        value[1].condition +
+        " " +
+        value[1].effect
+      );
+    }
 
-    return outPut;
+    const lastElement =
+      ", and " +
+      value[value.length - 1].condition +
+      " " +
+      value[value.length - 1].effect;
+    let elements = value
+      .slice(0, -1)
+      .map((item, index) => {
+        return `${item.condition} ${item.effect}`;
+      })
+      .join(", ");
+
+    return elements + lastElement;
   };
 
   const formatRegardingAlcoholAnyFollowing = (value) => {
-    let outPut = value
+    let lastElement = "";
+    if (value.length - 1) {
+      if (
+        value[value.length - 1] ===
+        "tolerance as defined by either of the following"
+      ) {
+        lastElement = ", and tolerance";
+      } else if (
+        value[value.length - 1] ===
+        "withdrawal as manifested by either of the following"
+      ) {
+        lastElement = ", and characteristic withdrawal symptoms";
+      } else {
+        lastElement = ", and " + item;
+      }
+    }
+    let elements = value
+      .slice(0, -1)
       .map((item, index) => {
         if (item === "tolerance as defined by either of the following") {
           return "tolerance";
@@ -215,17 +254,17 @@ router.post("/", async (req, res) => {
       })
       .join(", ");
 
-    return outPut;
+    return elements + lastElement;
   };
 
   const cardField = (value) => {
     let outPut = value.map((item, index) => {
       if (index === value.length - 2) {
-        return `${item.condition} was ${item.effect} `;
+        return `${item.condition} was ${item.effect}`;
       } else if (index === value.length - 1) {
-        return `and ${item.condition} was ${item.effect} `;
+        return ` and ${item.condition} was ${item.effect}`;
       } else {
-        return `${item.condition} was ${item.effect}, `;
+        return `${item.condition} was ${item.effect}`;
       }
     });
 
@@ -422,17 +461,61 @@ router.post("/", async (req, res) => {
   };
 
   const formatEachSubstance = (value) => {
-    let outPut = value.map((item, index) => {
-      if (index === value.length - 1) {
-        return `${item.condition} in the amount of ${item.effect} `;
-      } else if (index === value.length - 2) {
-        return `and ${item.condition} in the amount of ${item.effect}`;
-      } else {
-        return `${item.condition} in the amount of ${item.effect}, `;
-      }
+    if (value.length === 0) {
+      return "";
+    }
+    if (value.length === 1) {
+      return value[0].condition + " in the amount of " + value[0].effect;
+    }
+    if (value.length === 2) {
+      return (
+        value[0].condition +
+        " in the amount of " +
+        value[0].effect +
+        " and " +
+        value[1].condition +
+        " in the amount of " +
+        value[1].effect
+      );
+    }
+
+    const lastElement =
+      ", and " +
+      value[value.length - 1].condition +
+      " in the amount of " +
+      value[value.length - 1].effect;
+    let elements = value.slice(0, -1).map((item, index) => {
+      return `${item.condition} in the amount of ${item.effect}`;
     });
 
-    return outPut;
+    return elements + lastElement;
+  };
+
+  const formatSubstanceListStartedOld = (value, pronounPrefer) => {
+    if (value.length === 0) {
+      return "";
+    }
+    if (value.length === 1) {
+      return `${pronounPrefer} was ${value[0].effect} when ${pronounPrefer} started using ${value[0].condition}`;
+    }
+    if (value.length === 2) {
+      return `${pronounPrefer} was ${value[0].effect} when ${pronounPrefer} started using ${value[0].condition} and ${pronounPrefer} was ${value[1].effect} when ${pronounPrefer} started using ${value[1].condition}`;
+    }
+    const lastElement =
+      ", and " +
+      pronounPrefer +
+      " was " +
+      value[value.length - 1].effect +
+      " when " +
+      pronounPrefer +
+      " started using " +
+      value[value.length - 1].condition;
+
+    let elements = value.slice(0, -1).map((item, index) => {
+      return `${pronounPrefer} was ${item.effect} when ${pronounPrefer} started using ${item.condition}`;
+    });
+
+    return elements + lastElement;
   };
 
   const formatToleranceFollowingSubstances = (value) => {
@@ -648,7 +731,7 @@ router.post("/", async (req, res) => {
     if (lastIndex !== -1) {
       output =
         output.substring(0, lastIndex) +
-        ", and" +
+        ", and " +
         output.substring(lastIndex + 2);
     }
     return output;
@@ -727,6 +810,7 @@ router.post("/", async (req, res) => {
     let resultNeedHelp = "";
     let resultDon = "";
     let resultCan = "";
+    let resultNA = "";
 
     const filterObjectIndepently = value.filter(
       (obj) => Object.values(obj)[0] === "Able to Do Independently"
@@ -815,7 +899,29 @@ router.post("/", async (req, res) => {
       }
     }
 
-    return { resultIndepently, resultNeedHelp, resultDon, resultCan };
+    const filterObjectNA = value.filter(
+      (obj) => Object.values(obj)[0] === "N/A"
+    );
+
+    if (filterObjectNA.length > 0) {
+      const keyNA = filterObjectNA.map((obj) =>
+        Object.keys(obj)[0].toLowerCase()
+      );
+
+      const NALength = keyNA.length;
+
+      if (NALength === 1) {
+        resultNA = keyNA[0];
+      } else if (NALength === 2) {
+        resultNA = `${keyNA[0]} and ${keyNA[1]}`;
+      } else {
+        resultNA = `${keyNA.slice(0, -1).join(", ")}, and ${
+          keyNA[NALength - 1]
+        }`;
+      }
+    }
+
+    return { resultIndepently, resultNeedHelp, resultDon, resultCan, resultNA };
   };
 
   const formatDifficultAmount = (value) => {
@@ -836,13 +942,13 @@ router.post("/", async (req, res) => {
       const keysNoDifficultLength = keysNoDifficult.length;
 
       if (keysNoDifficultLength === 1) {
-        resultNoDifficult = keysNoDifficult[0];
+        resultNoDifficult = keysNoDifficult[0] + ". ";
       } else if (keysNoDifficultLength === 2) {
-        resultNoDifficult = `${keysNoDifficult[0]} and ${keysNoDifficult[1]}`;
+        resultNoDifficult = `${keysNoDifficult[0]} and ${keysNoDifficult[1]}. `;
       } else {
         resultNoDifficult = `${keysNoDifficult.slice(0, -1).join(", ")}, and ${
           keysNoDifficult[keysNoDifficultLength - 1]
-        }`;
+        }. `;
       }
     }
 
@@ -858,13 +964,15 @@ router.post("/", async (req, res) => {
       const keysSomeDifficultLength = keysSomeDifficult.length;
 
       if (keysSomeDifficultLength === 1) {
-        resultSomeDifficult = keysSomeDifficult[0];
+        resultSomeDifficult = keysSomeDifficult[0] + ". ";
       } else if (keysSomeDifficultLength === 2) {
-        resultSomeDifficult = `${keysSomeDifficult[0]} and ${keysSomeDifficult[1]}`;
+        resultSomeDifficult = `${keysSomeDifficult[0]} and ${keysSomeDifficult[1]}. `;
       } else {
         resultSomeDifficult = `${keysSomeDifficult
           .slice(0, -1)
-          .join(", ")}, and ${keysSomeDifficult[keysSomeDifficultLength - 1]}`;
+          .join(", ")}, and ${
+          keysSomeDifficult[keysSomeDifficultLength - 1]
+        }. `;
       }
     }
 
@@ -880,13 +988,15 @@ router.post("/", async (req, res) => {
       const keysMuchDifficultLength = keysMuchDifficult.length;
 
       if (keysMuchDifficultLength === 1) {
-        resultMuchDifficult = keysMuchDifficult[0];
+        resultMuchDifficult = keysMuchDifficult[0] + ". ";
       } else if (keysMuchDifficultLength === 2) {
-        resultMuchDifficult = `${keysMuchDifficult[0]} and ${keysMuchDifficult[1]}`;
+        resultMuchDifficult = `${keysMuchDifficult[0]} and ${keysMuchDifficult[1]}. `;
       } else {
         resultMuchDifficult = `${keysMuchDifficult
           .slice(0, -1)
-          .join(", ")}, and ${keysMuchDifficult[keysMuchDifficultLength - 1]}`;
+          .join(", ")}, and ${
+          keysMuchDifficult[keysMuchDifficultLength - 1]
+        }. `;
       }
     }
 
@@ -902,13 +1012,13 @@ router.post("/", async (req, res) => {
       const keysUnableDoLength = keysUnableDo.length;
 
       if (keysUnableDoLength === 1) {
-        resultUnableDo = keysUnableDo[0];
+        resultUnableDo = keysUnableDo[0] + ". ";
       } else if (keysUnableDoLength === 2) {
-        resultUnableDo = `${keysUnableDo[0]} and ${keysUnableDo[1]}`;
+        resultUnableDo = `${keysUnableDo[0]} and ${keysUnableDo[1]}. `;
       } else {
         resultUnableDo = `${keysUnableDo.slice(0, -1).join(", ")}, and ${
           keysUnableDo[keysUnableDoLength - 1]
-        }`;
+        }. `;
       }
     }
 
@@ -918,6 +1028,43 @@ router.post("/", async (req, res) => {
       resultMuchDifficult,
       resultUnableDo,
     };
+  };
+
+  const formatEmployerList = (value, lastName) => {
+    console.log(value);
+
+    let outPut = value.map((item, index) => {
+      if (item.reasonForLeaving) {
+        return `Mr. ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment} and left this job due to ${item.reasonForLeaving}`;
+      } else {
+        return `Mr. ${lastName} worked for ${item.employer} as a ${item.jobTitle} ${item.datesOfEmployment}`;
+      }
+    });
+
+    return outPut.join(", ");
+  };
+
+  const storyParagraphs = (value) => {
+    console.log(value);
+    const sentences = value.split(", ");
+    const paragraphs = sentences.map((sentence) => {
+      const capitalizedValue =
+        sentence.charAt(0).toUpperCase() + sentence.slice(1);
+
+      return new Paragraph({
+        children: [
+          new TextRun({
+            text: capitalizedValue,
+            font: "Times New Roman",
+            size: 24,
+          }),
+        ],
+      });
+    });
+
+    console.log(sentences);
+
+    return paragraphs;
   };
 
   const doc = new Document({
@@ -3859,7 +4006,9 @@ router.post("/", async (req, res) => {
             : undefined,
 
           questionParagraph("188. Is your father current living?"),
-          answerParagraph(`${req.body?.developmentalValue?.bornPlace}`),
+          answerParagraph(
+            `${req.body?.developmentalValue?.fatherCurrentLiving}`
+          ),
           req.body?.developmentalValue?.fatherCurrentLiving === "No"
             ? questionParagraph("How old was he when she died?")
             : undefined,
@@ -3931,16 +4080,16 @@ router.post("/", async (req, res) => {
           storyParagraph(
             `who goes by a preferred pronoun of ${req.body?.demographicInformation?.radioPreferPronounItem}. `
           ),
-          storyParagraph(""),
 
           storyParagraph(`${req.body?.demographicInformation?.email}`),
           storyParagraph(`${req.body?.demographicInformation?.phoneNumber}`),
-          storyParagraph(""),
 
           TitleStoryParagraph(
             `Employment Where the Physical or Emotional Injury Occurred`
           ),
+
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...createTextRuns([
@@ -3991,6 +4140,7 @@ router.post("/", async (req, res) => {
             ],
           }),
 
+          storyParagraph(""),
           new Paragraph({
             children: [
               ...(validateBoolean(
@@ -4026,7 +4176,7 @@ router.post("/", async (req, res) => {
                   ])),
 
               ...createTextRuns([
-                `${pronounPrefer} described these medical or emotional conditions or symptoms before the injury as follows: ${req.body.employmentInjuryPhysicalValue?.describeMedicalCondition}.`,
+                `${pronounPrefer} described these medical or emotional conditions or symptoms before the injury as follows: ${req.body.employmentInjuryPhysicalValue?.describeMedicalCondition}. `,
               ]),
               ...(validateBoolean(
                 req.body?.employmentInjuryPhysicalValue
@@ -4042,14 +4192,20 @@ router.post("/", async (req, res) => {
               ...(req.body.employmentInjuryPhysicalValue
                 ?.radioMedicationsNameBeforeInjuryItem
                 ? createTextRuns([
-                    `The medications ${pronounPrefer} was taking before the injury were the following: ${req.body?.employmentInjuryPhysicalValue?.radioMedicationsNameBeforeInjuryItem}`,
+                    `The medications ${pronounPrefer} was taking before the injury were the following: ${req.body?.employmentInjuryPhysicalValue?.radioMedicationsNameBeforeInjuryItem}. `,
                   ])
                 : []),
+            ],
+          }),
+          storyParagraph(""),
+
+          new Paragraph({
+            children: [
               ...createTextRuns([
-                `${pronoun} injury occurred on the following date: ${req.body.employmentInjuryPhysicalValue?.injuryDate} `,
+                `${surname}${req.body?.demographicInformation?.lastName}'s injury occurred on the following date: ${req.body.employmentInjuryPhysicalValue?.injuryDate}. `,
               ]),
               ...createTextRuns([
-                `${pronounPrefer} described ${pronoun} injury as follows: ${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred} `,
+                `${pronounPrefer} described ${pronoun} injury as follows: ${req.body.employmentInjuryPhysicalValue.describeInjuryOccurred}. `,
               ]),
               ...(validateBoolean(
                 req.body?.employmentInjuryPhysicalValue
@@ -4085,7 +4241,7 @@ router.post("/", async (req, res) => {
           storyParagraph(""),
 
           new Paragraph({
-            childre: [
+            children: [
               ...(validateBoolean(
                 req.body?.employmentInjuryPhysicalValue?.radioConflictsItem
               )
@@ -4123,18 +4279,28 @@ router.post("/", async (req, res) => {
               ...createTextRuns([
                 `${pronoun} immediate supervisor was ${req.body?.employmentInjuryPhysicalValue?.immediateSupervisorName}, `,
               ]),
-              ...createTextLowerRuns([
-                `and ${pronounPrefer} described their relationship as ${req.body?.employmentInjuryPhysicalValue?.relationshipImmediateSupervisor}, `,
-              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                ?.relationshipImmediateSupervisor === "poor"
+                ? createTextLowerRuns([
+                    `and ${pronounPrefer} described their relationship as ${req.body?.employmentInjuryPhysicalValue?.relationshipImmediateSupervisor}, `,
+                  ])
+                : createTextLowerRuns([
+                    `and ${pronounPrefer} described their relationship as ${req.body?.employmentInjuryPhysicalValue?.relationshipImmediateSupervisor}. `,
+                  ])),
               ...(req.body?.employmentInjuryPhysicalValue
                 ?.relationshipImmediateSupervisor === "poor"
                 ? createTextLowerRuns([
                     `due to ${req.body?.employmentInjuryPhysicalValue?.explainSuperVisorReason}. `,
                   ])
                 : []),
-              ...createTextRuns([
-                `${pronoun} performance appraisals were ${req.body?.employmentInjuryPhysicalValue?.performanceAppraisals}. `,
-              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                .performanceAppraisals === "poor"
+                ? createTextRuns([
+                    `${pronoun} performance appraisals were ${req.body?.employmentInjuryPhysicalValue?.performanceAppraisals}, `,
+                  ])
+                : createTextRuns([
+                    `${pronoun} performance appraisals were ${req.body?.employmentInjuryPhysicalValue?.performanceAppraisals}. `,
+                  ])),
               ...(req.body?.employmentInjuryPhysicalValue
                 ?.performanceAppraisals === "poor"
                 ? createTextRuns([
@@ -4146,10 +4312,10 @@ router.post("/", async (req, res) => {
                 req.body?.employmentInjuryPhysicalValue?.verbalWarning
               )
                 ? createTextRuns([
-                    `${pronounPrefer} has received verbal or written warnings `,
+                    `${pronounPrefer} has received verbal or written warnings, `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} has not received any verbal or written warnings, `,
+                    `${pronounPrefer} has not received any verbal or written warnings. `,
                   ])),
               ...(validateBoolean(
                 req.body?.employmentInjuryPhysicalValue?.verbalWarning
@@ -4158,9 +4324,14 @@ router.post("/", async (req, res) => {
                     `consisting of ${req.body?.employmentInjuryPhysicalValue?.verbalWarningDateReason}. `,
                   ])
                 : []),
-              ...createTextRuns([
-                `${pronounPrefer} described ${pronoun} working relationship with ${pronoun} coworkers as ${req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers}, `,
-              ]),
+              ...(req.body?.employmentInjuryPhysicalValue
+                ?.relationshipCoWorkers === "poor"
+                ? createTextRuns([
+                    `${pronounPrefer} described ${pronoun} working relationship with ${pronoun} coworkers as ${req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers}, `,
+                  ])
+                : createTextRuns([
+                    `${pronounPrefer} described ${pronoun} working relationship with ${pronoun} coworkers as ${req.body?.employmentInjuryPhysicalValue?.relationshipCoWorkers}. `,
+                  ])),
               ...(req.body?.employmentInjuryPhysicalValue
                 ?.relationshipCoWorkers === "poor"
                 ? createTextLowerRuns([
@@ -4169,7 +4340,6 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
@@ -4178,7 +4348,7 @@ router.post("/", async (req, res) => {
                 req.body?.employmentInjuryPhysicalValue?.lastStraw
               )
                 ? createTextRuns([
-                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work `,
+                    `${surname}${req.body?.demographicInformation?.lastName} stated that there was a "Last Straw" event near the last day of work. `,
                   ])
                 : createTextRuns([
                     `${surname}${req.body?.demographicInformation?.lastName} stated that there was not a "Last Straw" event near the last day of work. `,
@@ -4187,16 +4357,16 @@ router.post("/", async (req, res) => {
                 req.body?.employmentInjuryPhysicalValue?.lastStraw
               )
                 ? createTextLowerRuns([
-                    `consisting of ${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}. `,
+                    `consisting of ${req.body?.employmentInjuryPhysicalValue?.explainLastStraw}.`,
                   ])
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Current Employer (If Different Than Above)"),
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...(validateBoolean(
@@ -4264,13 +4434,12 @@ router.post("/", async (req, res) => {
               validateBoolean(
                 req.body?.currentEmployerValue?.currentlyWorkLikeThisJob
               )
-                ? createTextRuns([`${pronounPrefer} enjoys this job. `])
+                ? createTextRuns([`${pronounPrefer} enjoys this job.`])
                 : createTextRuns([
-                    `${pronounPrefer} does not enjoy this job. `,
+                    `${pronounPrefer} does not enjoy this job.`,
                   ])),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Physical Injury"),
@@ -4327,17 +4496,14 @@ router.post("/", async (req, res) => {
               ])),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Emotional Symptoms and Injuries"),
           storyParagraph(""),
+
           storyParagraph(
             `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronounPrefer} is most bothered on this day by the following: ${req.body?.chiefComplaintValue?.mostBothered}. `
           ),
-
-          storyParagraph(""),
-
           new Paragraph({
             children: [
               ...createTextRuns([
@@ -4345,7 +4511,7 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 } reported that ${pronounPrefer} has experienced a cluster of ${divideArray(
                   req.body?.chiefComplaintValue?.currentlyExperiencingSymptom
-                )} symptoms,`,
+                )} symptoms, `,
               ]),
               ...(req.body?.chiefComplaintValue
                 ?.currentlyExperiencingSymptom !== "" &&
@@ -4381,7 +4547,6 @@ router.post("/", async (req, res) => {
           }),
 
           storyParagraph(""),
-
           TitleStoryParagraph("Longitudinal History"),
           storyParagraph(""),
 
@@ -4404,12 +4569,12 @@ router.post("/", async (req, res) => {
               ]),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...createTextRuns([
-                `${pronounPrefer} rated ${pronoun} depressive symptoms as a ${req.body?.longitudinalHistoryValue?.depressiveSymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
+                `${surname}${req.body?.demographicInformation?.lastName} rated ${pronoun} depressive symptoms as a ${req.body?.longitudinalHistoryValue?.depressiveSymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
               ]),
               ...createTextRuns([
                 `${pronounPrefer} rated ${pronoun} anxiety symptoms as a ${req.body?.longitudinalHistoryValue?.anxietySymptom} out of 10, when they were most severe, on a scale of 1 to 10, with 0-1 equaling minimal or no symptoms and 10 equaling the most severe symptoms imaginable. `,
@@ -4433,24 +4598,24 @@ router.post("/", async (req, res) => {
                 req.body?.longitudinalHistoryValue?.symptomsAffectedJob
               )
                 ? createTextRuns([
-                    `${pronounPrefer} explained this affect as: ${req.body?.longitudinalHistoryValue?.describeSymptomsAffectedJob}. `,
+                    `${pronounPrefer} explained this effect as: ${req.body?.longitudinalHistoryValue?.describeSymptomsAffectedJob}. `,
                   ])
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Current Symptoms"),
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...createTextRuns([
                 `${surname}${req.body?.demographicInformation?.lastName} reported that ${pronoun} current depressive symptoms over the last 2 weeks consist of the following: `,
               ]),
-              ...(req.body?.PHQValue?.interestThing === "not at all"
+              ...(req.body?.PHQValue?.interestThing !== "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} has retained the ability to enjoy activities that were previously enjoyable for ${req.body.PHQValue?.interestThing}. `,
+                    `${pronounPrefer} has retained the ability to enjoy activities that were previously enjoyable for ${req.body.PHQValue?.interestThing}, `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} has lost the ability to enjoy activities that were previously enjoyable. `,
@@ -4473,7 +4638,8 @@ router.post("/", async (req, res) => {
                     `${pronoun} depressive symptoms occur ${req.body?.PHQValue?.oftenFeelDepressed} `,
                   ])
                 : []),
-              ...(req.body?.PHQValue?.feelingDepressed !== "not at all"
+              ...(req.body?.PHQValue?.feelingDepressed !== "not at all" &&
+              req.body?.PHQValue?.PHQValue?.experienceDepression === "Yes"
                 ? createTextLowerRuns([`for a majority of the time each day. `])
                 : createTextLowerRuns([
                     `for a minority of the time each day. `,
@@ -4486,6 +4652,11 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `${pronounPrefer} does not have trouble falling asleep, staying asleep or sleeping too much ${req.body?.PHQValue?.troubleFallingAsleep} per week. `,
                   ])),
+              ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
+                ? createTextRuns([
+                    `${pronounPrefer} falls asleep after ${req.body?.PHQValue?.fallASleep} of ${pronoun} going to bed. `,
+                  ])
+                : []),
               ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
                 ? createTextRuns([
                     `${pronounPrefer} wakes up ${req.body?.PHQValue?.wakeUpTimes} times per night. `,
@@ -4508,7 +4679,6 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
@@ -4568,7 +4738,6 @@ router.post("/", async (req, res) => {
                   ])),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
@@ -4578,7 +4747,7 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 }'s PHQ-9 score was in the ${ScoreCalculate(
                   req.body?.PHQValue?.phqScore
-                )} range: ${req.body.PHQValue?.phqScore}. `,
+                )} range:${req.body.PHQValue?.phqScore}. `,
               ]),
               ...(req.body?.PHQValue?.deadWishWakeUp !== "not at all"
                 ? createTextRuns([
@@ -4599,7 +4768,7 @@ router.post("/", async (req, res) => {
                     `In the past month, ${pronounPrefer} is not sure if ${pronounPrefer} had any actual thoughts of killing ${manPronoun}. `,
                   ])),
 
-              req.body?.PHQValue?.killingYourself !== "No" &&
+              ...(req.body?.PHQValue?.killingYourself !== "No" &&
               req.body?.PHQValue?.killMethod === "Yes"
                 ? createTextRuns([
                     `${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}. `,
@@ -4611,9 +4780,9 @@ router.post("/", async (req, res) => {
                   ])
                 : createTextRuns([
                     `${pronounPrefer} is not sure if ${pronounPrefer} has been thinking about how ${pronounPrefer} might kill ${manPronoun}. `,
-                  ]),
+                  ])),
 
-              req.body?.PHQValue?.killingYourself !== "No" &&
+              ...(req.body?.PHQValue?.killingYourself !== "No" &&
               req.body?.PHQValue?.killMethod !== "No" &&
               req.body?.PHQValue?.actingIntention === "Yes"
                 ? createTextRuns([
@@ -4627,9 +4796,9 @@ router.post("/", async (req, res) => {
                   ])
                 : createTextRuns([
                     `${pronounPrefer} is not sure if ${pronounPrefer} had these thoughts, and had some intention of acting on them. `,
-                  ]),
+                  ])),
 
-              req.body?.PHQValue?.killingYourself !== "No"
+              ...(req.body?.PHQValue?.killingYourself !== "No"
                 ? req.body?.PHQValue?.killMethod !== "No"
                   ? req.body?.PHQValue?.actingIntention !== "No"
                     ? req.body?.PHQValue?.killIntentionCarryout === "Yes"
@@ -4651,7 +4820,7 @@ router.post("/", async (req, res) => {
                       : []
                     : []
                   : []
-                : [],
+                : []),
 
               ...(req.body?.PHQValue?.preparedAnythingEndYourlife === "Yes"
                 ? createTextRuns([
@@ -4677,13 +4846,12 @@ router.post("/", async (req, res) => {
               ]),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
             children: [
               ...createTextRuns([
-                `Over the last 2 weeks, ${surname}${req.body?.demographicInformation?.lastName} reported experiencing anxiety symptoms for ${req.body?.GADValue?.feelingNervous} `,
+                `Over the last 2 weeks, ${surname}${req.body?.demographicInformation?.lastName} reported experiencing anxiety symptoms for ${req.body?.GADValue?.feelingNervous}. `,
               ]),
               ...(req.body?.GADValue?.feelingNervous !== "not at all"
                 ? createTextRuns([
@@ -4705,7 +4873,7 @@ router.post("/", async (req, res) => {
                   ])),
               ...(req.body?.GADValue?.worringDifferentThing !== "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} reported worrying too much about different things. `,
+                    `${pronounPrefer} reported worrying too much about different things `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} denies worrying too much about different things. `,
@@ -4717,7 +4885,13 @@ router.post("/", async (req, res) => {
                     )}. `,
                   ])
                 : []),
-
+              ...(req.body?.GADValue?.worringDifferentThing !== "not at all"
+                ? createTextLowerRuns([
+                    `${pronounPrefer} reported the following triggers make his anxiety worse:${req.body?.GADValue?.specificAnxietyWorse}. `,
+                  ])
+                : createTextLowerRuns([
+                    `${pronounPrefer} denied that any specific triggers make his anxiety worse. `,
+                  ])),
               ...(req.body?.GADValue?.troubleRelaxing !== "not at all"
                 ? createTextRuns([
                     `${pronounPrefer} reported trouble relaxing ${req.body?.GADValue?.troubleRelaxing}. `,
@@ -4741,7 +4915,6 @@ router.post("/", async (req, res) => {
                   ])),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
@@ -4751,7 +4924,7 @@ router.post("/", async (req, res) => {
                   req.body?.demographicInformation?.lastName
                 }'s GAD-7 score was in the ${ScoreCalculate(
                   req.body?.GADValue?.gadScore
-                )} range: ${req.body.GADValue?.gadScore}. `,
+                )} range:${req.body.GADValue?.gadScore}. `,
               ]),
               ...createTextRuns([
                 `${pronounPrefer} rated his current anxiety symptoms as a ${req.body?.GADValue?.currentAnxietySymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no anxiety and 10 equaling the most severe anxiety symptoms imaginable. `,
@@ -4761,7 +4934,7 @@ router.post("/", async (req, res) => {
                     `${pronounPrefer} also has experienced panic attacks consisting of `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} also has not experienced panic attacks`,
+                    `${pronounPrefer} also has not experienced panic attacks.`,
                   ])),
               ...(req.body?.GADValue?.panicAttacks === "Yes"
                 ? createTextLowerRuns([
@@ -4793,17 +4966,11 @@ router.post("/", async (req, res) => {
               ...(req.body?.GADValue?.panicAttacks === "Yes" &&
               req.body?.GADValue?.panicAttacksList !== ""
                 ? createTextRuns([
-                    `${pronounPrefer} reported that ${req.body?.GADValue?.panicAttacksList} triggers ${pronoun} panic attacks.`,
+                    `${pronounPrefer} reported that ${req.body?.GADValue?.panicAttacksList} triggers ${pronoun} panic attacks. `,
                   ])
                 : []),
             ],
           }),
-
-          req.body?.GADValue?.pastTraumaticEvents === "Yes"
-            ? storyParagraph("")
-            : undefined,
-
-          storyParagraph(""),
 
           new Paragraph({
             children: [
@@ -4828,10 +4995,10 @@ router.post("/", async (req, res) => {
               ...(req.body?.PCLValue?.stressfulExperienceMemories !==
               "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} reports repeated, disturbing, and unwanted memories of the stressful experience ${req.body?.PCLValue?.stressfulExperienceMemories}. `,
+                    `${pronounPrefer} reported repeated, disturbing, and unwanted memories of the stressful experience ${req.body?.PCLValue?.stressfulExperienceMemories}. `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} denies repeated, disturbing, and unwanted memories of the stressful experience. `,
+                    `${pronounPrefer} denied repeated, disturbing, and unwanted memories of the stressful experience. `,
                   ])),
               ...(req.body?.PCLValue?.stressfulExperience !== "not at all"
                 ? createTextRuns([
@@ -4865,15 +5032,15 @@ router.post("/", async (req, res) => {
               ...(req.body?.PCLValue
                 ?.strongPhysicalReactionStressfulExperience !== "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} endorsed having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating): ${req.body.PCLValue.strongPhysicalReactionStressfulExperience}. `,
+                    `${pronounPrefer} endorsed having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating):${req.body.PCLValue.strongPhysicalReactionStressfulExperience}. `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} denied having strong physical reactions when something reminded ${prepositionPronoun} of the stressful experience (for example, heart pounding, trouble breathing, sweating). `,
                   ])),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.avoidingMemories !== "not at all"
@@ -4926,8 +5093,8 @@ router.post("/", async (req, res) => {
                   ])),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.strongNegativefeelings !== "not at all"
@@ -5003,24 +5170,23 @@ router.post("/", async (req, res) => {
                   ])),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...(req.body?.PCLValue?.PCLScore >= 31 &&
               req.body?.PCLValue?.PCLScore <= 33
                 ? createTextRuns([
-                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD:${req.body.PCLValue.PCLScore}. `,
                   ])
                 : createTextRuns([
-                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is not indicative of probable PTSD. ${req.body.PCLValue.PCLScore}. `,
+                    `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is not indicative of probable PTSD:${req.body.PCLValue.PCLScore}. `,
                   ])),
               ...createTextRuns([
                 `${pronounPrefer} rated ${pronoun} current post-trauma symptoms as an ${req.body?.PCLValue?.currentRelatedSymptoms} out of 10, on a scale of 1 to 10, with 0-1 equaling minimal or no post-trauma symptoms and 10 equaling the most severe post-traumatic symptoms imaginable. `,
               ]),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Current Treatment"),
@@ -5029,7 +5195,7 @@ router.post("/", async (req, res) => {
           new Paragraph({
             children: [
               ...createTextRuns([
-                `${surname}${req.body?.demographicInformation?.lastName} currently takes the following psychiatric medications: ${req.body?.currentTreatmentValue?.currentlyPsychiatricMedications}. `,
+                `${surname}${req.body?.demographicInformation?.lastName} currently takes psychiatric medications. `,
               ]),
               ...(req.body?.currentTreatmentValue
                 ?.currentlyPsychiatricMedications === "Yes"
@@ -5046,7 +5212,7 @@ router.post("/", async (req, res) => {
               ...(req.body?.currentTreatmentValue
                 ?.currentlyPsychiatricMedications === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} stated he takes these medications for ${divideArray(
+                    `${pronounPrefer} stated that he takes these medications for ${divideArray(
                       req.body?.currentTreatmentValue?.medicationReason
                     )}. `,
                   ])
@@ -5104,7 +5270,6 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           new Paragraph({
@@ -5143,7 +5308,6 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
-
           storyParagraph(""),
 
           TitleStoryParagraph("Past Psychiatric History"),
@@ -5179,16 +5343,16 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
                 ? createTextLowerRuns([
-                    `energy is ${req.body?.pastHistoryValue?.lackSleepEnergy} during that time. `,
+                    `energy was ${req.body?.pastHistoryValue?.lackSleepEnergy} during that time. `,
                   ])
                 : []),
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
               req.body?.pastHistoryValue?.sleepFewer === "Yes"
                 ? createTextRuns([
-                    `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired. `,
+                    `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired. `,
                   ])
                 : createTextRuns([
-                    `During this time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired. `,
+                    `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired. `,
                   ])),
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
                 ? createTextRuns([
@@ -5219,8 +5383,8 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...createTextRuns([
@@ -5237,15 +5401,16 @@ router.post("/", async (req, res) => {
                     `The thoughts, behaviors, or rituals ${pronounPrefer} reported experiencing are ${req.body?.pastHistoryValue?.recurrentRituals}. `,
                   ])
                 : []),
-              ...(req.body?.pastHistoryValue?.experienceFollowing.length > 0 &&
-              req.body?.pastHistoryValue?.pastHistoryValue
-                ?.symptomsDrinkingAlcohol === "Yes"
-                ? createTextRuns([
-                    `${pronounPrefer} was clean and sober throughout that time. `,
-                  ])
-                : createTextRuns([
-                    `${pronounPrefer} was not clean and sober throughout that time. `,
-                  ])),
+              ...(req.body?.pastHistoryValue?.experienceFollowing.length > 0
+                ? req.body?.pastHistoryValue?.pastHistoryValue
+                    ?.symptomsDrinkingAlcohol === "Yes"
+                  ? createTextRuns([
+                      `${pronounPrefer} was clean and sober throughout that time. `,
+                    ])
+                  : createTextRuns([
+                      `${pronounPrefer} was not clean and sober throughout that time. `,
+                    ])
+                : []),
 
               ...(req.body?.pastHistoryValue?.harmKillYourSelf === "Yes"
                 ? createTextRuns([
@@ -5256,15 +5421,15 @@ router.post("/", async (req, res) => {
                   ])),
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} reports ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time. `,
+                    `${pronounPrefer} reports ever experiencing so much energy that ${pronounPrefer} did not need to sleep for several days or a week at a time. `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} denies ever experiencing so much energy that ${pronounPrefer} do not need to sleep for several days or a week at a time. `,
+                    `${pronounPrefer} denies ever experiencing so much energy that ${pronounPrefer} did not need to sleep for several days or a week at a time. `,
                   ])),
             ],
           }),
-
           storyParagraph(""),
+
           new Paragraph({
             children: [
               ...(req.body?.pastHistoryValue?.emotionalSymptomsRelationShip ===
@@ -5289,6 +5454,7 @@ router.post("/", async (req, res) => {
               ]),
             ],
           }),
+          storyParagraph(""),
 
           new Paragraph({
             children: [
@@ -5312,14 +5478,14 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
                 ? createTextRuns([
-                    `${pronoun} stated that ${pronoun} past psychiatric medication produced ${formatPastPsychiatricMedication(
+                    `${pronoun} stated that ${pronoun} past psychiatric medication produced ${formatMedication(
                       req.body?.pastHistoryValue?.pastPsychiatricMedication
                     )}. `,
                   ])
                 : []),
               ...(req.body?.pastHistoryValue?.otherMedications === "Yes"
                 ? createTextRuns([
-                    `${pronoun} past psychiatric medications were stopped on due to ${stopedMedicationReason(
+                    `${pronoun} past psychiatric medications were stopped due to ${stopedMedicationReason(
                       pronoun,
                       pronounPrefer,
                       req.body?.pastHistoryValue
@@ -5368,10 +5534,7 @@ router.post("/", async (req, res) => {
                   ])),
             ],
           }),
-
-          req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
-            ? storyParagraph("")
-            : undefined,
+          storyParagraph(""),
 
           new Paragraph({
             children: [
@@ -5511,7 +5674,7 @@ router.post("/", async (req, res) => {
                     `${pronounPrefer} reported receiving additional psychotherapy or psychiatric medication treatment. `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} reported denied receiving additional psychotherapy or psychiatric medication treatment. `,
+                    `${pronounPrefer} denied receiving additional psychotherapy or psychiatric medication treatment. `,
                   ])),
 
               ...(req.body?.pastHistoryValue?.otherPsychotherapyTreatment ===
@@ -5523,7 +5686,7 @@ router.post("/", async (req, res) => {
               ...(req.body?.pastHistoryValue
                 ?.evaluatedOtherwisePsychiatrists === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
+                    `${pronounPrefer} reported being evaluated by psychiatrists or psychologists for other purpose outside of what is described above. `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} denied being evaluated by psychiatrists or psychologists for any other purpose outside of what is described above. `,
@@ -5537,13 +5700,13 @@ router.post("/", async (req, res) => {
               ...(req.body?.pastHistoryValue
                 ?.evaluatedOtherwisePsychiatrists === "Yes"
                 ? createTextRuns([
-                    `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed}. `,
+                    `This evaluation was performed by ${req.body?.pastHistoryValue?.evaluationPerformed} `,
                   ])
                 : []),
               ...(req.body?.pastHistoryValue
                 ?.evaluatedOtherwisePsychiatrists === "Yes"
                 ? createTextLowerRuns([
-                    `and occurred ${req.body?.pastHistoryValue?.evaluationOccur}. `,
+                    `and occurred on ${req.body?.pastHistoryValue?.evaluationOccur}. `,
                   ])
                 : []),
 
@@ -5597,12 +5760,12 @@ router.post("/", async (req, res) => {
                 : []),
 
               ...(req.body?.substanceUseValue?.followingSubstances.length > 0
-                ? req.body?.substanceUseValue?.eachSubstanceListStartedOld.map(
-                    (item) =>
-                      createTextRuns([
-                        `${pronounPrefer} was ${item.effect} when ${pronounPrefer} started using ${item.condition}. `,
-                      ])
-                  )
+                ? createTextRuns([
+                    `${formatSubstanceListStartedOld(
+                      req.body?.substanceUseValue?.eachSubstanceListStartedOld,
+                      pronounPrefer
+                    )}. `,
+                  ])
                 : []),
 
               ...(req.body?.substanceUseValue?.followingSubstances.length > 0
@@ -5678,9 +5841,12 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
               "Yes"
-                ? createTextLowerRuns([
-                    `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
-                  ])
+                ? req.body?.substanceUseValue?.completeTreatmentProgram ===
+                  "Yes"
+                  ? createTextLowerRuns([
+                      `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
+                    ])
+                  : []
                 : []),
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
               "Yes"
@@ -5818,10 +5984,6 @@ router.post("/", async (req, res) => {
               ...createTextRuns([
                 `${pronounPrefer} described ${pronoun} hospitalization history as follows: ${req.body?.medicalHistoryValue?.hospitalListEverBeen}. `,
               ]),
-              ...createTextRuns([
-                `${pronounPrefer} described ${pronoun} current medication treatment as follows: ${req.body?.medicalHistoryValue?.medicationsListTaking}. `,
-              ]),
-
               ...(req.body?.medicalHistoryValue?.allergiesMedication === "Yes"
                 ? createTextRuns([
                     `${pronounPrefer} suffers from allergies or intolerances to medication or food `,
@@ -5837,6 +5999,7 @@ router.post("/", async (req, res) => {
                 : []),
             ],
           }),
+          storyParagraph(""),
 
           TitleStoryParagraph("Family History"),
           storyParagraph(""),
@@ -5920,7 +6083,7 @@ router.post("/", async (req, res) => {
                 ? req.body?.relationshipHistoryValue
                     ?.sufferPsychiatricConditions === "Yes"
                   ? createTextRuns([
-                      `${pronoun} spouse or partner suffers from any general medical or psychiatric condition(s). `,
+                      `${pronoun} spouse or partner suffers from general medical or psychiatric condition(s). `,
                     ])
                   : createTextRuns([
                       `${pronoun} spouse or partner doesn't suffer from any general medical or psychiatric condition(s). `,
@@ -5932,10 +6095,10 @@ router.post("/", async (req, res) => {
                 ? req.body?.relationshipHistoryValue
                     ?.stressfulPsychiatricConditions === "Yes"
                   ? createTextRuns([
-                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is stressful for them. `,
+                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is stressful for ${prepositionPronoun}. `,
                     ])
                   : createTextRuns([
-                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is not stressful for them. `,
+                      `${pronounPrefer} reported that ${pronoun} partner or spouse’s medical or psychiatric condition is not stressful for ${prepositionPronoun}. `,
                     ])
                 : []),
 
@@ -5984,7 +6147,7 @@ router.post("/", async (req, res) => {
 
               ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} has ${req.body?.relationshipHistoryValue?.childrenNumberAndAge}`,
+                    `${pronounPrefer} has ${req.body?.relationshipHistoryValue?.childrenNumberAndAge}. `,
                   ])
                 : []),
               ...(req.body?.relationshipHistoryValue?.haveChildren === "Yes"
@@ -6023,7 +6186,7 @@ router.post("/", async (req, res) => {
               req.body?.employmentHistoryValue?.currentEmploymentStatus ===
                 "employed full time"
                 ? createTextLowerRuns([
-                    `at ${req.body?.employmentHistoryValue?.employerName}. `,
+                    `at ${req.body?.employmentHistoryValue?.employerName} `,
                   ])
                 : []),
               ...(req.body?.employmentHistoryValue?.currentEmploymentStatus ===
@@ -6059,12 +6222,17 @@ router.post("/", async (req, res) => {
                 : createTextRuns([
                     `${pronounPrefer} has not difficulty performing ${pronoun} job duties. `,
                   ])),
-
             ],
           }),
 
-          storyParagraph(`${pronoun} Employer History:`),
-          table(req.body?.employmentHistoryValue?.employerList),
+          storyParagraph(`${pronoun} employment history is as follows:`),
+          storyParagraph(`
+            ${formatEmployerList(
+              req.body?.employmentHistoryValue?.employerList,
+              req.body.demographicInformation.lastName
+            )}`),
+
+          // table(req.body?.employmentHistoryValue?.employerList),
 
           storyParagraph(""),
 
@@ -6287,7 +6455,7 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.socialHistoryValue?.presentTimeDanger === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} feels in danger at the present time due to ${req.body?.socialHistoryValue?.describeFeelDanger}. `,
+                    `${surname} ${req.body?.demographicInformation?.lastName} feels in danger at the present time due to ${req.body?.socialHistoryValue?.describeFeelDanger}. `,
                   ])
                 : createTextRuns([
                     `${pronounPrefer} does not feel in danger at the present time. `,
@@ -6358,7 +6526,7 @@ router.post("/", async (req, res) => {
                     `${surname}${req.body?.demographicInformation?.lastName} denied any history of criminal behavior or arrests. `,
                   ])),
               ...(req.body?.criminalHistoryValue?.arrested === "Yes"
-                ? createTextLowerRuns([
+                ? createTextRuns([
                     `${pronounPrefer} reported a history or arrests on ${req.body?.criminalHistoryValue?.arrestedDate} `,
                   ])
                 : []),
@@ -6430,7 +6598,7 @@ router.post("/", async (req, res) => {
 
               ...(req.body?.violenceHistoryValue?.thoughtsHurtAnyone === "Yes"
                 ? createTextRuns([
-                    `${pronounPrefer} described ${pronoun} thoughts of violence towards others as follows: ${req.body?.violenceHistoryValue?.explainAccomplishingHurt} `,
+                    `${pronounPrefer} described ${pronoun} thoughts of violence towards others as follows: ${req.body?.violenceHistoryValue?.explainAccomplishingHurt}. `,
                   ])
                 : []),
 
@@ -6462,7 +6630,7 @@ router.post("/", async (req, res) => {
                 ? createTextRuns([
                     `${surname}${
                       req.body?.demographicInformation?.lastName
-                    } reported a history of enlisting in the military consisting of ${
+                    } reported a history of enlisting in the military consisting of the ${
                       req.body?.militaryHistoryValue?.branchMilitary
                     } from ${formatDate(
                       req.body?.militaryHistoryValue?.militaryDatesFrom
@@ -6585,7 +6753,7 @@ router.post("/", async (req, res) => {
                         req.body?.currentDailyActivitiesValue
                           ?.dailyLivingFollowing
                       ).resultIndepently
-                    }`,
+                    }. `,
                   ])
                 : []),
               ...(formatDailyLivingFollowing(
@@ -6597,7 +6765,7 @@ router.post("/", async (req, res) => {
                         req.body?.currentDailyActivitiesValue
                           .dailyLivingFollowing
                       ).resultNeedHelp
-                    } `,
+                    }. `,
                   ])
                 : []),
 
@@ -6610,7 +6778,7 @@ router.post("/", async (req, res) => {
                         req.body?.currentDailyActivitiesValue
                           .dailyLivingFollowing
                       ).resultDon
-                    } `,
+                    }. `,
                   ])
                 : []),
 
@@ -6623,7 +6791,21 @@ router.post("/", async (req, res) => {
                         req.body?.currentDailyActivitiesValue
                           .dailyLivingFollowing
                       ).resultCan
-                    } `,
+                    }. `,
+                  ])
+                : []),
+              ...(formatDailyLivingFollowing(
+                req.body?.currentDailyActivitiesValue.dailyLivingFollowing
+              ).resultNA
+                ? createTextRuns([
+                    `${surname} ${
+                      req.body?.demographicInformation?.lastName
+                    } elected not to respond whether ${pronounPrefer} is able to perform the following tasks: ${
+                      formatDailyLivingFollowing(
+                        req.body?.currentDailyActivitiesValue
+                          .dailyLivingFollowing
+                      ).resultNA
+                    }. `,
                   ])
                 : []),
             ],
@@ -6675,7 +6857,7 @@ router.post("/", async (req, res) => {
                 req.body?.currentDailyActivitiesValue?.difficultAmount
               ).resultUnableDo
                 ? createTextRuns([
-                    `${pronounPrefer} responded that ${pronounPrefer} is unable to perform in ${
+                    `${pronounPrefer} responded that ${pronounPrefer} is unable to perform ${
                       formatDifficultAmount(
                         req.body?.currentDailyActivitiesValue?.difficultAmount
                       ).resultUnableDo
@@ -6702,7 +6884,7 @@ router.post("/", async (req, res) => {
                 `${pronounPrefer} was raised by ${pronoun} ${req.body?.developmentalValue?.raisedChilhood}. `,
               ]),
               ...createTextRuns([
-                `${pronounPrefer} was raised by ${req.body?.developmentalValue?.describeRelationshipPerson}. `,
+                `${pronounPrefer} described ${pronoun} relationship with the person who primarily raised ${pronoun} during ${pronoun} childhood as ${req.body?.developmentalValue?.describeRelationshipPerson}. `,
               ]),
               ...createTextRuns([
                 `${pronounPrefer} described ${pronoun} relationship with the primary adults who raised ${prepositionPronoun} when ${pronounPrefer} was a child as ${divideArray(
@@ -6743,7 +6925,7 @@ router.post("/", async (req, res) => {
                   ])),
               ...(req.body?.developmentalValue?.parentsMarried === "Yes"
                 ? req.body?.developmentalValue?.parentsRemainMarried === "Yes"
-                  ? createTextRuns([`${pronoun} parents remained married. `])
+                  ? createTextRuns([`${pronoun} parents remained married`])
                   : []
                 : []),
               ...(req.body?.developmentalValue?.parentsMarried === "Yes"
@@ -6777,7 +6959,7 @@ router.post("/", async (req, res) => {
                   ])),
               ...(req.body?.developmentalValue?.motherCurrentLiving === "No"
                 ? createTextRuns([
-                    `She died when she was ${req.body?.developmentalValue?.diedMotherOld}. `,
+                    `She died when she was ${req.body?.developmentalValue?.diedMotherOld} `,
                   ])
                 : []),
               ...(req.body?.developmentalValue?.motherCurrentLiving === "No"
