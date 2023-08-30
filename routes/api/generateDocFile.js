@@ -1607,7 +1607,7 @@ router.post("/", async (req, res) => {
           req.body?.PHQValue?.feelingDepressed !== "" &&
           req.body?.PHQValue?.feelingDepressed !== "not at all"
             ? questionParagraph(
-                "Have your depressive symptoms improved or become worse since they started?"
+                "Have your depressive symptoms improved, become worse, or stayed the same since they started?"
               )
             : undefined,
           req.body?.PHQValue?.feelingDepressed !== "" &&
@@ -1858,7 +1858,7 @@ router.post("/", async (req, res) => {
           ),
           answerParagraph(`${req.body?.GADValue?.feelingAfraidAwfulThing}`),
           questionParagraph(
-            "85. Over the last 2 weeks, how often have you been with zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
+            "85. With zero to 1 equaling no or minimal symptoms and 10 equaling the most severe symptoms possible, how do you rate your current anxiety symptoms?"
           ),
           answerParagraph(`${req.body?.GADValue?.currentAnxietySymptoms}`),
           questionParagraph(
@@ -3872,9 +3872,7 @@ router.post("/", async (req, res) => {
           answerParagraph(
             `${req.body?.developmentalValue?.relationshipPrimaryAdults}`
           ),
-          questionParagraph(
-            "182. How many of these siblings were you raised with?"
-          ),
+          questionParagraph("182. Do you have siblings?"),
           answerParagraph(`${req.body?.developmentalValue?.haveSiblings}`),
           req.body?.developmentalValue?.haveSiblings === "Yes"
             ? questionParagraph("How many siblings do you have?")
@@ -5004,10 +5002,10 @@ router.post("/", async (req, res) => {
               ...(req.body?.PCLValue?.veryUpsetStressfulExperience !==
               "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} endorsed experiencing repeated, disturbing dreams of the stressful experience ${req.body?.PCLValue?.veryUpsetStressfulExperience}. `,
+                    `${pronounPrefer} endorsed feeling very upset when something reminded ${prepositionPronoun} of the stressful experience ${req.body?.PCLValue?.veryUpsetStressfulExperience}. `,
                   ])
                 : createTextRuns([
-                    `${pronounPrefer} denied experiencing repeated, disturbing dreams of the stressful experience. `,
+                    `${pronounPrefer} denied feeling very upset when something reminded ${prepositionPronoun} of the stressful experience. `,
                   ])),
               ...(req.body?.PCLValue
                 ?.strongPhysicalReactionStressfulExperience !== "not at all"
@@ -5154,8 +5152,7 @@ router.post("/", async (req, res) => {
 
           new Paragraph({
             children: [
-              ...(req.body?.PCLValue?.PCLScore >= 31 &&
-              req.body?.PCLValue?.PCLScore <= 33
+              ...(req.body?.PCLValue?.PCLScore >= 31
                 ? createTextRuns([
                     `${surname}${req.body?.demographicInformation?.lastName}'s PCL-5 score is indicative of probable PTSD:${req.body.PCLValue.PCLScore}. `,
                   ])
@@ -5377,13 +5374,18 @@ router.post("/", async (req, res) => {
                 )}. `,
               ]),
               ...(req.body?.pastHistoryValue?.experienceFollowing !== ""
-                ? createTextRuns([
-                    `The thoughts, behaviors, or rituals ${pronounPrefer} reported experiencing are ${req.body?.pastHistoryValue?.recurrentRituals}. `,
-                  ])
+                ? req.body?.pastHistoryValue?.experienceFollowing.filter(
+                    (item) =>
+                      item ===
+                      "Had thoughts, behaviors, or rituals that are recurrent, intrusive, and time consuming"
+                  ).length > 0
+                  ? createTextRuns([
+                      `The thoughts, behaviors, or rituals ${pronounPrefer} reported experiencing are ${req.body?.pastHistoryValue?.recurrentRituals}. `,
+                    ])
+                  : []
                 : []),
               ...(req.body?.pastHistoryValue?.experienceFollowing.length > 0
-                ? req.body?.pastHistoryValue?.pastHistoryValue
-                    ?.symptomsDrinkingAlcohol === "Yes"
+                ? req.body?.pastHistoryValue?.symptomsDrinkingAlcohol === "Yes"
                   ? createTextRuns([
                       `${pronounPrefer} was clean and sober throughout that time. `,
                     ])
@@ -6862,6 +6864,10 @@ router.post("/", async (req, res) => {
                     }. `,
                   ])
                 : []),
+
+              ...createTextRuns([
+                `${pronounPrefer} reported that ${pronounPrefer} is unable to perform the following activities: ${req.body?.currentDailyActivitiesValue?.anyActivitiesListBefore}`,
+              ]),
             ],
           }),
 
