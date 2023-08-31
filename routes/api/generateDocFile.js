@@ -5323,14 +5323,15 @@ router.post("/", async (req, res) => {
                     `energy was ${req.body?.pastHistoryValue?.lackSleepEnergy} during that time. `,
                   ])
                 : []),
-              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes" &&
-              req.body?.pastHistoryValue?.sleepFewer === "Yes"
-                ? createTextRuns([
-                    `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired. `,
-                  ])
-                : createTextRuns([
-                    `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired. `,
-                  ])),
+              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
+                ? req.body?.pastHistoryValue?.sleepFewer === "Yes"
+                  ? createTextRuns([
+                      `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he felt excessively tired. `,
+                    ])
+                  : createTextRuns([
+                      `During that time that ${pronounPrefer} slept fewer than 4 hours per night for 4-7 or more consecutive nights, he did not feel excessively tired. `,
+                    ])
+                : []),
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
                 ? createTextRuns([
                     `When ${pronounPrefer} experienced these episodes of decreased need for sleep, ${pronoun} mood was ${req.body?.pastHistoryValue?.mood}. `,
@@ -5354,9 +5355,11 @@ router.post("/", async (req, res) => {
               ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
                 ? req.body?.pastHistoryValue?.alcoholSubstances === "Yes"
                   ? createTextRuns([
-                      `During this decreased sleep episode, [${pronounPrefer} remained clean and sober ${pronounPrefer} was using substances]. `,
+                      `During this decreased sleep episode, ${pronounPrefer} was using substances. `,
                     ])
-                  : []
+                  : createTextRuns([
+                      `During this decreased sleep episode, ${pronounPrefer} remained clean and sober. `,
+                    ])
                 : []),
             ],
           }),
@@ -5400,13 +5403,6 @@ router.post("/", async (req, res) => {
                   ])
                 : createTextRuns([
                     `${pronounPrefer} has not been recently thinking about how ${pronounPrefer} might harm or kill ${manPronoun}. `,
-                  ])),
-              ...(req.body?.pastHistoryValue?.experienceMuchEnergy === "Yes"
-                ? createTextRuns([
-                    `${pronounPrefer} reports ever experiencing so much energy that ${pronounPrefer} did not need to sleep for several days or a week at a time. `,
-                  ])
-                : createTextRuns([
-                    `${pronounPrefer} denies ever experiencing so much energy that ${pronounPrefer} did not need to sleep for several days or a week at a time. `,
                   ])),
             ],
           }),
