@@ -1529,7 +1529,7 @@ router.post("/", async (req, res) => {
             `${req.body?.longitudinalHistoryValue?.mostWorstSymptom}`
           ),
           questionParagraph(
-            "58. Have your emotional symptoms become worse or better since they started or since a specific date or event?"
+            "58. Have your emotional symptoms become worse, better, or stayed the same, since they started or since a specific date or event?"
           ),
           answerParagraph(
             `${req.body?.longitudinalHistoryValue?.emotionalSymptomBecome}`
@@ -1862,7 +1862,7 @@ router.post("/", async (req, res) => {
           ),
           answerParagraph(`${req.body?.GADValue?.currentAnxietySymptoms}`),
           questionParagraph(
-            "86. Over the last 2 weeks, how often have you been experience panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
+            "86. Over the last 2 weeks, have you experienced panic attacks, in which your heart races, you feel like you can't breathe, you shake or sweat?"
           ),
           answerParagraph(`${req.body?.GADValue?.panicAttacks}`),
           req.body?.GADValue?.panicAttacks === "Yes"
@@ -2031,7 +2031,7 @@ router.post("/", async (req, res) => {
             "103. Taking too many risks or doing things that could cause you harm?"
           ),
           answerParagraph(`${req.body?.PCLValue?.manyRisksThing}`),
-          questionParagraph("104. Being “superalert” or watchful or on guard?"),
+          questionParagraph("104. Being “superalert”, watchful or on guard?"),
           answerParagraph(`${req.body?.PCLValue?.beingWatchful}`),
           questionParagraph("105. Feeling jumpy or easily startled?"),
           answerParagraph(`${req.body?.PCLValue?.easilyStartled}`),
@@ -2241,12 +2241,10 @@ router.post("/", async (req, res) => {
             "111. Have you ever previously experienced any of the following symptoms"
           ),
           answerParagraph(
-            `${req.body?.pastHistoryValue?.previouslyExperiencedSymptom}`
+            cardFieldType(
+              req.body?.pastHistoryValue?.previouslyExperiencedSymptom
+            )
           ),
-          questionParagraph(
-            "Please describe your post traumatic stress symptoms at that time:"
-          ),
-          answerParagraph(`${req.body?.pastHistoryValue?.describeSymptoms}`),
           questionParagraph(
             "112. Have you ever experienced having so much energy that you do not need to sleep for several days or a week at a time?"
           ),
@@ -2442,7 +2440,7 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body?.pastHistoryValue?.otherMedications === "Yes"
             ? questionParagraph(
-                "Did a psychiatrist, psychiatric nurse practitionaer, or primacy care clinician prescribe this medication to you?"
+                "Did a psychiatrist, psychiatric nurse practitioner, or primary care clinician prescribe this medication to you?"
               )
             : undefined,
           req.body?.pastHistoryValue?.otherMedications === "Yes"
@@ -2537,7 +2535,7 @@ router.post("/", async (req, res) => {
 
           req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
             ? questionParagraph(
-                "Please list the names of your past psychotherapists and dates you saw them."
+                "Please list the names of your past psychotherapists and time periods you saw them."
               )
             : undefined,
           req.body?.pastHistoryValue?.previouslyReceivedPsychotherapy === "Yes"
@@ -2836,11 +2834,8 @@ router.post("/", async (req, res) => {
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? questionParagraph(
-                "This treatment lasted from what date to what date?"
+                "List the names of the substance recovery treatment programs you entered and dates you were in these programs?"
               )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? questionParagraph("From:")
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? answerParagraph(
@@ -2848,16 +2843,8 @@ router.post("/", async (req, res) => {
               )
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? questionParagraph("To:")
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? answerParagraph(
-                `${req.body?.substanceUseValue?.treatmentLastedDateTo}`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? questionParagraph(
-                "Following this treatment you remained clean and sober for how long?"
+                "Following any of these treatment programs, how long did you remain clean and sober?"
               )
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
@@ -2868,23 +2855,12 @@ router.post("/", async (req, res) => {
 
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? questionParagraph(
-                "This clean and sober period lasted from when to when?"
+                "These clean and sober period(s) lasted from when to when?"
               )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? questionParagraph("From:")
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
             ? answerParagraph(
                 `${req.body?.substanceUseValue?.cleanSoberLastedFrom}`
-              )
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? questionParagraph("To:")
-            : undefined,
-          req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
-            ? answerParagraph(
-                `${req.body?.substanceUseValue?.cleanSoberLastedTo}`
               )
             : undefined,
           req.body?.substanceUseValue?.enrolledTreatmentProgram === "Yes"
@@ -2962,6 +2938,13 @@ router.post("/", async (req, res) => {
           ),
           answerParagraph(
             `${req.body?.medicalHistoryValue?.medicationsSideEffect}`
+          ),
+
+          questionParagraph(
+            "Please list the medications and side effects they produced."
+          ),
+          answerParagraph(
+            `${req.body?.medicalHistoryValue?.medicationsSideEffectList}`
           ),
 
           questionParagraph("133. Have you ever had any surgeries?"),
@@ -3536,6 +3519,40 @@ router.post("/", async (req, res) => {
           )
             ? answerParagraph(`${req.body?.socialHistoryValue?.ownYourHome}`)
             : undefined,
+
+          req.body?.socialHistoryValue?.describeCurrentLivingSituation
+            .length !== 0 &&
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "homeless"
+            ).length > 0
+          ) &&
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "living alone"
+            ).length > 0
+          )
+            ? questionParagraph(
+                "How long have you lived at your current location?"
+              )
+            : undefined,
+          req.body?.socialHistoryValue?.describeCurrentLivingSituation
+            .length !== 0 &&
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "homeless"
+            ).length > 0
+          ) &&
+          !(
+            req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
+              (item) => item === "living alone"
+            ).length > 0
+          )
+            ? answerParagraph(
+                `${req.body?.socialHistoryValue?.currentLocation}`
+              )
+            : undefined,
+
           // req.body?.socialHistoryValue?.describeCurrentLivingSituation.length !==
           //   0 &&
           // req.body?.socialHistoryValue?.describeCurrentLivingSituation.filter(
@@ -4647,7 +4664,9 @@ router.post("/", async (req, res) => {
                 : []),
               ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
                 ? createTextRuns([
-                    `${pronounPrefer} is awoken by ${req.body?.PHQValue?.awakeSleepReason}. `,
+                    `${pronounPrefer} is awoken by ${divideArray(
+                      req.body?.PHQValue?.awakeSleepReason
+                    )}. `,
                   ])
                 : []),
               ...(req.body?.PHQValue?.troubleFallingAsleep !== "not at all"
@@ -5822,7 +5841,7 @@ router.post("/", async (req, res) => {
                 ? req.body?.substanceUseValue?.completeTreatmentProgram ===
                   "Yes"
                   ? createTextLowerRuns([
-                      `from ${req.body?.substanceUseValue?.treatmentLastedDateFrom} to ${req.body?.substanceUseValue?.treatmentLastedDateTo}. `,
+                      `${req.body?.substanceUseValue?.treatmentLastedDateFrom}.`,
                     ])
                   : []
                 : []),
@@ -5833,11 +5852,9 @@ router.post("/", async (req, res) => {
                       req.body?.demographicInformation?.lastName
                     } remained clean and sober for ${
                       req.body?.substanceUseValue?.remainedTreatmentClean
-                    }, from ${formatDate(
+                    }, ${
                       req.body?.substanceUseValue?.cleanSoberLastedFrom
-                    )}, to ${formatDate(
-                      req.body?.substanceUseValue?.cleanSoberLastedTo
-                    )}. `,
+                    }`,
                   ])
                 : []),
               ...(req.body?.substanceUseValue?.enrolledTreatmentProgram ===
